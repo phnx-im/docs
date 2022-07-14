@@ -1,0 +1,1 @@
+This book contains design considerations and documentation for an infrastructure that allows clients to exchange messages via the Messaging Layer Security (MLS) protocol.
