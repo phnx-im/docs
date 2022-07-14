@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="functional_requirements.html" class="active"><strong aria-hidden="true">1.</strong> Functional Requirements</a></li><li class="chapter-item expanded "><a href="performance_goals.html"><strong aria-hidden="true">2.</strong> Performance Goals</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="functional_requirements.html" class="active"><strong aria-hidden="true">1.</strong> Functional Requirements</a></li><li class="chapter-item expanded "><a href="modularization.html"><strong aria-hidden="true">2.</strong> Modularization</a></li><li class="chapter-item expanded "><a href="performance_goals.html"><strong aria-hidden="true">3.</strong> Performance Goals</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -151,52 +151,15 @@
 <li>Asset distribution: Clients must be able to share files with one-another that are too large for individual MLS messages and the queuing system. The homeserver must enable clients to upload encrypted files for other clients to download.</li>
 </ul>
 <p>Besides these basic example, a modern messenger should enable other sophisticated features such as real time voice and video chat. Since the goal of this project is an initial proof of concept, we omit these for now.</p>
-<h1 id="modularization-and-architecture-overview"><a class="header" href="#modularization-and-architecture-overview">Modularization and Architecture Overview</a></h1>
-<p>The requirements sketched above provide a good distribution of services across modules within the homeserver. Here, we provide a list of modules, as well as the functionality we expect them to provide to users and their clients.</p>
-<h2 id="modules"><a class="header" href="#modules">Modules</a></h2>
-<ul>
-<li>Delivery service:
-<ul>
-<li>Initial creation of a group and management of the corresponding state (including addition and removal of members)</li>
-<li>Message delivery to members of a given group</li>
-</ul>
-</li>
-<li>Authentication service:
-<ul>
-<li>Registration of new users</li>
-<li>Addition and removal of clients of a given user</li>
-<li>User discovery</li>
-<li>Authentication of users through their clients</li>
-</ul>
-</li>
-<li>Queuing service:
-<ul>
-<li>Creation of queues for clients</li>
-<li>Enqueuing of messages by the delivery service</li>
-<li>Dequeuing of messages by the client owning the queue</li>
-</ul>
-</li>
-<li>KeyPackage service:
-<ul>
-<li>Upload of KeyPackages</li>
-<li>Retrieval of KeyPackages for a given client or user</li>
-</ul>
-</li>
-</ul>
-<h2 id="architecture"><a class="header" href="#architecture">Architecture</a></h2>
-<p>The following shows a simplified interface between client and homeserver. Note, that for some of the security requirements (which we will detail in a later report), we might add one or more additional modules. For example, we will likely add a module that provides DDoS protection.</p>
-<p><img src="images/homeserver_interface.png" alt="Simplified interface for client ↔ backend communication." /></p>
-<p>Simplified interface for client ↔ backend communication.</p>
-<h2 id="federated-architecture"><a class="header" href="#federated-architecture">Federated Architecture</a></h2>
-<p>We will later generalize the above architecture to work in a federated setting. The general principle here is that individual clients only ever communicate through their own homeserver, so if a client’s query is w.r.t. another client, user or group that exists on another backend, that query will be forwarded accordingly. The target client/user/group’s homeserver is implicit in the GroupId/UserId/QueueId in question.</p>
-<p><img src="images/cross_homeserver_flow.png" alt="Sketch of a message delivery from one client across two homeserver. Alice contacts her Delivery Service, which in turn contacts the Queuing Service of Backend 2. Finally, Bob can retrieve the message from his homeserver by contacting the Queuing Service." /></p>
-<p>Sketch of a message delivery from one client across two homeserver. Alice contacts her Delivery Service, which in turn contacts the Queuing Service of Backend 2. Finally, Bob can retrieve the message from his homeserver by contacting the Queuing Service.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="next" href="performance_goals.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="prev" href="introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="modularization.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         <div style="clear: both"></div>
@@ -205,7 +168,10 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="next" href="performance_goals.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="prev" href="introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="modularization.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
