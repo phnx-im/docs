@@ -13,6 +13,5 @@ Besides these basic functional requirements, a modern messaging infrastructure h
 - Realtime notifications: When a message is queued for a given user, the homeserver should try to alert the user in real-time, such that they can retrieve their message. The ability to do so might depend on the user’s client(s).
 - Group management: Message distribution will require that a certain amount of group-specific information is stored on the homeserver. Users should be able to manage that information. Ability to manage the group should be subject to a member’s role in the group (Admin/Member)
 - User discovery: Users must be able to find other users and initiate a conversation with them. This is closely related to KeyPackage distribution, which enables the establishment of the shared key material between the two users’ clients.
-- Asset distribution: Clients must be able to share files with one-another that are too large for individual MLS messages and the queuing system. The homeserver must enable clients to upload encrypted files for other clients to download.
 
 Besides these basic example, a modern messenger should enable other sophisticated features such as real time voice and video chat. Since the goal of this project is an initial proof of concept, we omit these for now.
