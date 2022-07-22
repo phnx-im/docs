@@ -3,8 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Docs</title>
-        <meta name="robots" content="noindex" />
+        <title>Threat Model - Docs</title>
         <!-- Custom HTML head -->
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
@@ -76,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="status.html">Status</a></li><li class="chapter-item expanded "><a href="functional_requirements.html"><strong aria-hidden="true">1.</strong> Functional Requirements</a></li><li class="chapter-item expanded "><a href="modularization.html"><strong aria-hidden="true">2.</strong> Modularization</a></li><li class="chapter-item expanded "><a href="performance_goals.html"><strong aria-hidden="true">3.</strong> Performance Goals</a></li><li class="chapter-item expanded "><a href="threat_model.html"><strong aria-hidden="true">4.</strong> Threat Model</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="status.html">Status</a></li><li class="chapter-item expanded "><a href="functional_requirements.html"><strong aria-hidden="true">1.</strong> Functional Requirements</a></li><li class="chapter-item expanded "><a href="modularization.html"><strong aria-hidden="true">2.</strong> Modularization</a></li><li class="chapter-item expanded "><a href="performance_goals.html"><strong aria-hidden="true">3.</strong> Performance Goals</a></li><li class="chapter-item expanded "><a href="threat_model.html" class="active"><strong aria-hidden="true">4.</strong> Threat Model</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -135,97 +134,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <p>This book contains design considerations and documentation for an infrastructure that allows clients to exchange messages via the Messaging Layer Security (MLS) protocol.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="open-mls-infrastructure-project-status"><a class="header" href="#open-mls-infrastructure-project-status">Open MLS Infrastructure Project Status</a></h1>
-<h2 id="update-0-july-22-2022"><a class="header" href="#update-0-july-22-2022">Update 0, July 22 2022</a></h2>
-<p>Today, we publish a <a href="./threat_model.html">threat model</a> for an abstract homeserver that aims fulfills the functional requirements. The threat model also contains privacy and security requirements. This is a first iteration and just like the functional requirements, we expect this to be a living document that grows as we move forward with this project.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="functional-requirements"><a class="header" href="#functional-requirements">Functional Requirements</a></h1>
-<p>Before we introduce the architecture and the individual modules, we first define the functional requirements for the homeserver as a whole. We begin with the requirements dictated by the underlying Messaging Layer Security (MLS) protocol. While MLS doesn’t necessarily require a central component like a homeserver, it greatly increases the robustness of the protocol. All references to MLS within this document refer to draft 16 of the MLS specification.</p>
-<ul>
-<li>Message distribution: Clients MUST be able to have the homeserver distribute <a href="https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-7">MLS messages</a> to other members of a group.</li>
-<li>Authentication: Clients MUST be able to authenticate other clients. The homeserver MUST provide the baseline in terms of client authentication by providing a cryptographic link between the user's primary identifier (e.g. a username) of a given user and the key material they use to sign their MLS messages.</li>
-<li>KeyPackage distribution: Clients MUST be able to upload their own <a href="https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11">KeyPackages</a> to the homeserver and download those of other clients to facilitate asynchronous group additions.</li>
-</ul>
-<p>Besides these basic functional requirements, a modern messaging infrastructure has to provide a few additional services.</p>
-<ul>
-<li>User and client management: Users MUST be able to register and add or remove clients afterwards, as well as delete their own user account, along with any of their associated data.</li>
-<li>Queuing: Since message distribution should be possible asynchronously, the homeserver MUST provide a mechanism for messages to be queued until their intended recipient comes online to collect them.</li>
-<li>Realtime notifications: When a message is queued for a given user, the homeserver MUST try to alert the user in real-time, such that they can retrieve their message. The ability to do so might depend on the user’s client(s).</li>
-<li>Group management: Message distribution will require that a certain amount of group-specific information is stored on the homeserver. Users MUST be able to manage that information. Ability to manage the group SHOULD be subject to a member’s role in the group (Admin/Member).</li>
-<li>User discovery: Users MUST be able to find other users by their full, primary identifier and obtain KeyPackages for their client(s).</li>
-</ul>
-<p>Finally, homeservers should be able to federate with one-another. The scope of the federation, i.e. with which set of homeserver a given homeserver federates is up to the individual homeserver operators.</p>
-<ul>
-<li>Federated user discovery and KeyPackage distribution: Users on a given homeserver MUST be able to find users on other, federated homeservers and obtain KeyPackages for their client(s).</li>
-<li>Federated message distribution: Users must be able to send MLS messages to users on a federated homeserver.</li>
-</ul>
-<p>Besides these basic example, a modern messenger should enable other sophisticated features such as real time voice and video chat. Since the goal of this project is an initial proof of concept, we omit these for now.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="modularization-and-architecture-overview"><a class="header" href="#modularization-and-architecture-overview">Modularization and Architecture Overview</a></h1>
-<p>The requirements sketched above provide a good distribution of services across modules within the homeserver. Here, we provide a list of modules, as well as the functionality we expect them to provide to users and their clients.</p>
-<h2 id="modules"><a class="header" href="#modules">Modules</a></h2>
-<ul>
-<li>Delivery service:
-<ul>
-<li>Initial creation of a group and management of the corresponding state (including addition and removal of members)</li>
-<li>Message delivery to members of a given group</li>
-</ul>
-</li>
-<li>Authentication service:
-<ul>
-<li>Registration of new users</li>
-<li>Addition and removal of clients of a given user</li>
-<li>User discovery</li>
-<li>Authentication of users through their clients</li>
-</ul>
-</li>
-<li>Queuing service:
-<ul>
-<li>Creation of queues for clients</li>
-<li>Enqueuing of messages by the delivery service</li>
-<li>Dequeuing of messages by the client owning the queue</li>
-</ul>
-</li>
-<li>KeyPackage service:
-<ul>
-<li>Upload of KeyPackages</li>
-<li>Retrieval of KeyPackages for a given client or user</li>
-</ul>
-</li>
-</ul>
-<h2 id="architecture"><a class="header" href="#architecture">Architecture</a></h2>
-<p>The following shows a simplified interface between client and homeserver. Note, that for some of the security requirements (which we will detail in a later report), we might add one or more additional modules. For example, we will likely add a module that provides DDoS protection.</p>
-<p><img src="images/homeserver_interface.png" alt="Simplified interface for client ↔ backend communication." /></p>
-<p>Simplified interface for client ↔ backend communication.</p>
-<h2 id="federated-architecture"><a class="header" href="#federated-architecture">Federated Architecture</a></h2>
-<p>We will later generalize the above architecture to work in a federated setting. The general principle here is that individual clients only ever communicate through their own homeserver, so if a client’s query is w.r.t. another client, user or group that exists on another backend, that query will be forwarded accordingly. The target client/user/group’s homeserver is implicit in the GroupId/UserId/QueueId in question.</p>
-<p><img src="images/cross_homeserver_flow.png" alt="Sketch of a message delivery from one client across two homeserver. Alice contacts her Delivery Service, which in turn contacts the Queuing Service of Backend 2. Finally, Bob can retrieve the message from his homeserver by contacting the Queuing Service." /></p>
-<p>Sketch of a message delivery from one client across two homeserver. Alice contacts her Delivery Service, which in turn contacts the Queuing Service of Backend 2. Finally, Bob can retrieve the message from his homeserver by contacting the Queuing Service.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="performance-goals"><a class="header" href="#performance-goals">Performance goals</a></h1>
-<p>The goal of the homeserver(s) is to facilitate messaging for consumers in general and in particular consumers with resource constrained devices such as smartphones running. Despite the advances in battery capacity, memory and computational performance in modern smartphones, consumers should still be able to communicate with the infrastructure without incurring disproportionate resource consumption. Additionally applications should be able to use the infrastructure without requiring exceptions to the restrictions that platforms running on modern smartphones (Android, iOS) impose on applications such as limited computation time when running in the background.</p>
-<p>Similarly, homeserver operators should be able to run their servers without a significant overhead in costs due to computation, memory or persistent storage.</p>
-<p>Quantifying performance goals is hard, since the hardware differs significantly across vendors. However, since cryptography is going to make up the largest consumer of computation time, as well as memory and persistent storage, we are going to use asymmetric cryptographic operations (public key encryption, signatures) as unit of measurement for computational overhead and number of keys that need to be stored as unit of measurement for memory and persistent storage overhead. This has the added advantage that we can later estimate the additional overhead in case of adoption of a Post-Quantum secure scheme with significantly larger key sizes.</p>
-<h2 id="client-queries"><a class="header" href="#client-queries">Client Queries</a></h2>
-<ul>
-<li>Network overhead: Clients should be able to perform the most commonly used queries (i.e. send a message to a group or retrieve messages from their queue) with a single round-trip. In particular, it should be possible to request own messages in batch, although the service might limit the size each batch of messages retrieved at a time, leading to additional round trips.</li>
-<li>Computational overhead: The estimated computational cost for a given query heavily depends on the type of query. Let n be the number of member in a given group.
-<ul>
-<li>Simple (application) message to a group: One asymmetric operation for both sender and receiver</li>
-<li>Message updating encryption key material: Less than 3log(n) asymmetric operations for the sender and less than log(n)</li>
-<li>Message updating authentication key material of adding/removing a group member: Same as updating encryption key material plus &lt;10 asymmetric operations per joining client</li>
-<li>Joining a new group: between 5n and 10n asymmetric operations</li>
-</ul>
-</li>
-</ul>
-<p>Performance constraints are especially important if the respective operations are potentially performed in the background, i.e. when a user is not currently interacting with the client.</p>
-<h2 id="homeserver-processing"><a class="header" href="#homeserver-processing">Homeserver Processing</a></h2>
-<ul>
-<li>Network overhead: Homeservers should typically respond to one message with one response, although fan-out of a message can result in additional messages sent over the network in a federated setting. Note, that disproportionate amplification of network traffic (i.e. one client request causing a number of server requests) will be mitigated by rate limiting measures such as traditional IP-based rate limiting and schemes such as Privacy Pass.</li>
-<li>Computational overhead: With the exception of the group joining cost, the computational cost of the server will be roughly equivalent to that of a client processing a given message.</li>
-<li>IO overhead: A query from a client should result in at most one read and one write operation from/to the homeserver’s database, although we expect caching to reduce the number of reads significantly.</li>
-</ul>
-<h2 id="additional-overhead-due-to-rate-limiting"><a class="header" href="#additional-overhead-due-to-rate-limiting">Additional Overhead due to Rate-Limiting</a></h2>
-<p>More sophisticated rate limiting measures, such as the Privacy Pass protocol might create additional overhead, such as an occasional additional round-trip and asymmetric operation to retrieve an access token from the homeserver. We estimate the required frequency of this kind of operation to be at most once per day.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="threat-model"><a class="header" href="#threat-model">Threat model</a></h1>
+                        <h1 id="threat-model"><a class="header" href="#threat-model">Threat model</a></h1>
 <p>The subject of this threat analysis is a running homeserver application that serves its client and, potentially, other, federated homeservers. This document currently does not consider threats to the code base of the homeserver the deployment process, or any other supply chain attacks.</p>
 <h2 id="requirements-and-objectives"><a class="header" href="#requirements-and-objectives">Requirements and objectives</a></h2>
 <p>The goal of this project is to provide an implementation of a homeserver. The homeserver should facilitate the communication between clients encrypted with the Messaging Layer Security (MLS) protocol, both for clients of the homeserver itself, as well as clients of other homeservers that the homeserver federates with.</p>
@@ -404,12 +313,18 @@
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="performance_goals.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
                         <div style="clear: both"></div>
                     </nav>
                 </div>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="performance_goals.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
             </nav>
 
         </div>
@@ -425,10 +340,5 @@
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
-        <script type="text/javascript">
-        window.addEventListener('load', function() {
-            window.setTimeout(window.print, 100);
-        });
-        </script>
     </body>
 </html>
