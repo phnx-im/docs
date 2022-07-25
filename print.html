@@ -76,7 +76,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="status.html">Status</a></li><li class="chapter-item expanded "><a href="functional_requirements.html"><strong aria-hidden="true">1.</strong> Functional Requirements</a></li><li class="chapter-item expanded "><a href="modularization.html"><strong aria-hidden="true">2.</strong> Modularization</a></li><li class="chapter-item expanded "><a href="performance_goals.html"><strong aria-hidden="true">3.</strong> Performance Goals</a></li><li class="chapter-item expanded "><a href="threat_model.html"><strong aria-hidden="true">4.</strong> Threat Model</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="status.html">Status</a></li><li class="chapter-item expanded "><a href="functional_requirements.html"><strong aria-hidden="true">1.</strong> Functional Requirements</a></li><li class="chapter-item expanded "><a href="modularization.html"><strong aria-hidden="true">2.</strong> Modularization</a></li><li class="chapter-item expanded "><a href="performance_goals.html"><strong aria-hidden="true">3.</strong> Performance Goals</a></li><li class="chapter-item expanded "><a href="threat_model.html"><strong aria-hidden="true">4.</strong> Threat Model</a></li><li class="chapter-item expanded "><a href="cryptographic_primitives.html"><strong aria-hidden="true">5.</strong> Cryptographic Primitives and Schemes</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -399,6 +399,40 @@
 <li><strong>MitM2:</strong> Provide a client with bogus key material that allows the adversary to impersonate other clients towards the target client, potentially doing the same in the other direction as well for a full meddler-in-the-middle attack.</li>
 <li><strong>MitM3:</strong> Create one or more fake clients for a given user and try to have the client’s contacts add them to the groups that the user’s other clients are in.</li>
 </ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="cryptographic-primitives-and-schemes"><a class="header" href="#cryptographic-primitives-and-schemes">Cryptographic primitives and schemes</a></h1>
+<p>To fulfill the functional and performance requirements, as well as those for security and privacy, the homeserver will need to employ a number of cryptographic primitives, e.g. signature, authenticated encryption, etc. This chapter discusses the primitives required, as well as the choice of schemes that are used for the initial specification. As customary in other protocol specifications the set of schemes used by a homeserver is called the homeserver's ciphersuite.</p>
+<h2 id="federation-and-cryptographic-agility"><a class="header" href="#federation-and-cryptographic-agility">Federation and cryptographic agility</a></h2>
+<p>Each homeserver operator will have its own requirements with regard to the ciphersuite that they want to use. This could be, for example, due to the requirement for the primitives to be certified in some way, or to meet a specific level of security for organizational policy reasons.</p>
+<p>The underlying Messaging Layer Security (MLS) supports agility for a number of reasons and homeservers should, too.</p>
+<p>For the initial homeserver specification, however, only one ciphersuite will be supported, even though the design will accommodate the requirement for homeservers to advertise their ciphersuite support.</p>
+<h2 id="list-of-cryptographic-primitives-and-schemes"><a class="header" href="#list-of-cryptographic-primitives-and-schemes">List of cryptographic primitives and schemes</a></h2>
+<p>For now, the homeserver is anticipated to require mostly basic symmetric and asymmetric primitives to fulfill its functional requirements. This is with the exception of an unlinkable token scheme to enable rate-limiting while allowing clients to access the homeservers services anonymously.</p>
+<p>Along with the list of primitives, the list also includes a concrete scheme for each primitive that will be used in the initial specification.</p>
+<p>In addition to the scheme's fitness to facilitate the listed requirements of the homeserver (functional, security, privacy, performance), an implementation of each scheme has to be available and fulfill the following criteria:</p>
+<ul>
+<li>Open source with an OSI-recognized license</li>
+<li>ideally implemented in Rust</li>
+<li>actively and well maintained</li>
+</ul>
+<p>The RustCrypto suite of cryptographic implementations provides well-maintained Rust implementations of a large variety of cryptographic primitives and schemes. While they are generally not as highly optimized for performance as other available implementations, they provide a good baseline that is sufficient for a PoC homeserver implementation. In the future, we hope to upgrade any implementations we decide on for the PoC with similarly well performing ones that have formally verified properties such as functional correctness and secret-independent execution,</p>
+<p>When it comes to the concrete choice of primitives and schemes, an easy choice for the initial specification is the suite of schemes in the “mandatory-to-implement” (MTI) ciphersuite of MLS, as it represents a compromise between security and good performance on a variety of devices. In particular, the primitives and schemes are</p>
+<ul>
+<li>Signatures: Ed25519</li>
+<li>Hash function: SHA256</li>
+<li>AEAD scheme: AES128-GCM</li>
+<li>KEM: DHKEMX25519</li>
+</ul>
+<p>Additional recommendations for primitives that might be used in the homeserver specification are</p>
+<ul>
+<li>MAC: HMAC-SHA256</li>
+<li>KDF: HKDF-SHA256</li>
+</ul>
+<p>While these are the schemes that should make up the first ciphersuite of the homeserver, the specification should remain modular, such that multiple schemes can be supported and different versions of the homeserver protocols can introduce or deprecate individual ciphersuites.</p>
+<p>All schemes above have been well-tested in a variety of modern, cryptographic protocols (e.g. Signal, TLS). The only choice that might not be immediately obvious is AES128-GCM as AEAD scheme, since in many cases, Chacha20-Poly1905 is frequently used as a more efficient scheme on devices that don’t have hardware support for AES, most of those with ARM processors. However, with the most recent generations of ARM processors supporting AES instructions, AES128-GCM is a good choice for a first ciphersuite, given that support for multiple ciphersuites is planned for the future.</p>
+<h2 id="unlinkable-tokens"><a class="header" href="#unlinkable-tokens">Unlinkable tokens</a></h2>
+<p>Should unlinkable tokens be used to facilitate a metadata friendly rate-limiting mechanism, their performance is essentially to not ultimately represent a denial of service vulnerability themselves.</p>
+<p>Since the Privacy Pass protocol is the only well-known unlinkable token scheme that has seen extensive real-world use and analysis, it is recommended as the protocol of choice for metadata-friendly rate-limiting. Besides its use in practice, it is also on the finishing stretch of the IETF standardization process. Privacy Pass defines a number of token types, each backed by another cryptographic scheme. Performance tests have revealed, however, that all schemes suggested in the draft specification are prohibitively expensive in terms of computational overhead in the various protocol operations. To mitigate this shortcoming, the authors of this document have proposed a new batched token type based on the <a href="https://datatracker.ietf.org/doc/draft-irtf-cfrg-ristretto255-decaf448/">Ristretto255</a> group (also in the process of IETF standardization), which has significantly improved performance over the schemes used by existing token types. These improved results come at a slight security cost, which can be mitigated by a conservative key rotation policy.</p>
+<p>The authors have already performed initial performance tests justifying the effort and published <a href="https://raphaelrobert.github.io/privacypass-batched-tokens/draft-robert-privacypass-batched-tokens.html">a document</a> defining the new token type, as well detailing the security recommendations for consideration by the Privacy Pass working group at the IETF.</p>
 
                     </main>
 

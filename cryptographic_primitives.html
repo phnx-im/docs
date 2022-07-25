@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Functional Requirements - Docs</title>
+        <title>Cryptographic Primitives and Schemes - Docs</title>
         <!-- Custom HTML head -->
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="status.html">Status</a></li><li class="chapter-item expanded "><a href="functional_requirements.html" class="active"><strong aria-hidden="true">1.</strong> Functional Requirements</a></li><li class="chapter-item expanded "><a href="modularization.html"><strong aria-hidden="true">2.</strong> Modularization</a></li><li class="chapter-item expanded "><a href="performance_goals.html"><strong aria-hidden="true">3.</strong> Performance Goals</a></li><li class="chapter-item expanded "><a href="threat_model.html"><strong aria-hidden="true">4.</strong> Threat Model</a></li><li class="chapter-item expanded "><a href="cryptographic_primitives.html"><strong aria-hidden="true">5.</strong> Cryptographic Primitives and Schemes</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="status.html">Status</a></li><li class="chapter-item expanded "><a href="functional_requirements.html"><strong aria-hidden="true">1.</strong> Functional Requirements</a></li><li class="chapter-item expanded "><a href="modularization.html"><strong aria-hidden="true">2.</strong> Modularization</a></li><li class="chapter-item expanded "><a href="performance_goals.html"><strong aria-hidden="true">3.</strong> Performance Goals</a></li><li class="chapter-item expanded "><a href="threat_model.html"><strong aria-hidden="true">4.</strong> Threat Model</a></li><li class="chapter-item expanded "><a href="cryptographic_primitives.html" class="active"><strong aria-hidden="true">5.</strong> Cryptographic Primitives and Schemes</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -134,37 +134,47 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="functional-requirements"><a class="header" href="#functional-requirements">Functional Requirements</a></h1>
-<p>Before we introduce the architecture and the individual modules, we first define the functional requirements for the homeserver as a whole. We begin with the requirements dictated by the underlying Messaging Layer Security (MLS) protocol. While MLS doesn’t necessarily require a central component like a homeserver, it greatly increases the robustness of the protocol. All references to MLS within this document refer to draft 16 of the MLS specification.</p>
+                        <h1 id="cryptographic-primitives-and-schemes"><a class="header" href="#cryptographic-primitives-and-schemes">Cryptographic primitives and schemes</a></h1>
+<p>To fulfill the functional and performance requirements, as well as those for security and privacy, the homeserver will need to employ a number of cryptographic primitives, e.g. signature, authenticated encryption, etc. This chapter discusses the primitives required, as well as the choice of schemes that are used for the initial specification. As customary in other protocol specifications the set of schemes used by a homeserver is called the homeserver's ciphersuite.</p>
+<h2 id="federation-and-cryptographic-agility"><a class="header" href="#federation-and-cryptographic-agility">Federation and cryptographic agility</a></h2>
+<p>Each homeserver operator will have its own requirements with regard to the ciphersuite that they want to use. This could be, for example, due to the requirement for the primitives to be certified in some way, or to meet a specific level of security for organizational policy reasons.</p>
+<p>The underlying Messaging Layer Security (MLS) supports agility for a number of reasons and homeservers should, too.</p>
+<p>For the initial homeserver specification, however, only one ciphersuite will be supported, even though the design will accommodate the requirement for homeservers to advertise their ciphersuite support.</p>
+<h2 id="list-of-cryptographic-primitives-and-schemes"><a class="header" href="#list-of-cryptographic-primitives-and-schemes">List of cryptographic primitives and schemes</a></h2>
+<p>For now, the homeserver is anticipated to require mostly basic symmetric and asymmetric primitives to fulfill its functional requirements. This is with the exception of an unlinkable token scheme to enable rate-limiting while allowing clients to access the homeservers services anonymously.</p>
+<p>Along with the list of primitives, the list also includes a concrete scheme for each primitive that will be used in the initial specification.</p>
+<p>In addition to the scheme's fitness to facilitate the listed requirements of the homeserver (functional, security, privacy, performance), an implementation of each scheme has to be available and fulfill the following criteria:</p>
 <ul>
-<li>Message distribution: Clients MUST be able to have the homeserver distribute <a href="https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-7">MLS messages</a> to other members of a group.</li>
-<li>Authentication: Clients MUST be able to authenticate other clients. The homeserver MUST provide the baseline in terms of client authentication by providing a cryptographic link between the user's primary identifier (e.g. a username) of a given user and the key material they use to sign their MLS messages.</li>
-<li>KeyPackage distribution: Clients MUST be able to upload their own <a href="https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11">KeyPackages</a> to the homeserver and download those of other clients to facilitate asynchronous group additions.</li>
+<li>Open source with an OSI-recognized license</li>
+<li>ideally implemented in Rust</li>
+<li>actively and well maintained</li>
 </ul>
-<p>Besides these basic functional requirements, a modern messaging infrastructure has to provide a few additional services.</p>
+<p>The RustCrypto suite of cryptographic implementations provides well-maintained Rust implementations of a large variety of cryptographic primitives and schemes. While they are generally not as highly optimized for performance as other available implementations, they provide a good baseline that is sufficient for a PoC homeserver implementation. In the future, we hope to upgrade any implementations we decide on for the PoC with similarly well performing ones that have formally verified properties such as functional correctness and secret-independent execution,</p>
+<p>When it comes to the concrete choice of primitives and schemes, an easy choice for the initial specification is the suite of schemes in the “mandatory-to-implement” (MTI) ciphersuite of MLS, as it represents a compromise between security and good performance on a variety of devices. In particular, the primitives and schemes are</p>
 <ul>
-<li>User and client management: Users MUST be able to register and add or remove clients afterwards, as well as delete their own user account, along with any of their associated data.</li>
-<li>Queuing: Since message distribution should be possible asynchronously, the homeserver MUST provide a mechanism for messages to be queued until their intended recipient comes online to collect them.</li>
-<li>Realtime notifications: When a message is queued for a given user, the homeserver MUST try to alert the user in real-time, such that they can retrieve their message. The ability to do so might depend on the user’s client(s).</li>
-<li>Group management: Message distribution will require that a certain amount of group-specific information is stored on the homeserver. Users MUST be able to manage that information. Ability to manage the group SHOULD be subject to a member’s role in the group (Admin/Member).</li>
-<li>User discovery: Users MUST be able to find other users by their full, primary identifier and obtain KeyPackages for their client(s).</li>
+<li>Signatures: Ed25519</li>
+<li>Hash function: SHA256</li>
+<li>AEAD scheme: AES128-GCM</li>
+<li>KEM: DHKEMX25519</li>
 </ul>
-<p>Finally, homeservers should be able to federate with one-another. The scope of the federation, i.e. with which set of homeserver a given homeserver federates is up to the individual homeserver operators.</p>
+<p>Additional recommendations for primitives that might be used in the homeserver specification are</p>
 <ul>
-<li>Federated user discovery and KeyPackage distribution: Users on a given homeserver MUST be able to find users on other, federated homeservers and obtain KeyPackages for their client(s).</li>
-<li>Federated message distribution: Users must be able to send MLS messages to users on a federated homeserver.</li>
+<li>MAC: HMAC-SHA256</li>
+<li>KDF: HKDF-SHA256</li>
 </ul>
-<p>Besides these basic example, a modern messenger should enable other sophisticated features such as real time voice and video chat. Since the goal of this project is an initial proof of concept, we omit these for now.</p>
+<p>While these are the schemes that should make up the first ciphersuite of the homeserver, the specification should remain modular, such that multiple schemes can be supported and different versions of the homeserver protocols can introduce or deprecate individual ciphersuites.</p>
+<p>All schemes above have been well-tested in a variety of modern, cryptographic protocols (e.g. Signal, TLS). The only choice that might not be immediately obvious is AES128-GCM as AEAD scheme, since in many cases, Chacha20-Poly1905 is frequently used as a more efficient scheme on devices that don’t have hardware support for AES, most of those with ARM processors. However, with the most recent generations of ARM processors supporting AES instructions, AES128-GCM is a good choice for a first ciphersuite, given that support for multiple ciphersuites is planned for the future.</p>
+<h2 id="unlinkable-tokens"><a class="header" href="#unlinkable-tokens">Unlinkable tokens</a></h2>
+<p>Should unlinkable tokens be used to facilitate a metadata friendly rate-limiting mechanism, their performance is essentially to not ultimately represent a denial of service vulnerability themselves.</p>
+<p>Since the Privacy Pass protocol is the only well-known unlinkable token scheme that has seen extensive real-world use and analysis, it is recommended as the protocol of choice for metadata-friendly rate-limiting. Besides its use in practice, it is also on the finishing stretch of the IETF standardization process. Privacy Pass defines a number of token types, each backed by another cryptographic scheme. Performance tests have revealed, however, that all schemes suggested in the draft specification are prohibitively expensive in terms of computational overhead in the various protocol operations. To mitigate this shortcoming, the authors of this document have proposed a new batched token type based on the <a href="https://datatracker.ietf.org/doc/draft-irtf-cfrg-ristretto255-decaf448/">Ristretto255</a> group (also in the process of IETF standardization), which has significantly improved performance over the schemes used by existing token types. These improved results come at a slight security cost, which can be mitigated by a conservative key rotation policy.</p>
+<p>The authors have already performed initial performance tests justifying the effort and published <a href="https://raphaelrobert.github.io/privacypass-batched-tokens/draft-robert-privacypass-batched-tokens.html">a document</a> defining the new token type, as well detailing the security recommendations for consideration by the Privacy Pass working group at the IETF.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="status.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="threat_model.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
-                            </a>
-                            <a rel="next" href="modularization.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
                             </a>
                         <div style="clear: both"></div>
                     </nav>
@@ -172,11 +182,8 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="status.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="threat_model.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
-                    </a>
-                    <a rel="next" href="modularization.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
 
