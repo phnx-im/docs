@@ -56,7 +56,7 @@ Clients run by federated users. Just like a client, but associated with a federa
 
 The distinction between users their clients is difficult, because the user will perform most of their interactions with the homeserver through the client. Here, we list the operations that, while performed through the client, concern the user as their own entity and might thus also affect all of their clients.
 
-1. MUST be able to manage clients
+1. MUST be able to manage clients (this includes updates to client key material)
 1. SHOULD be able to reset the account if the last client is lost
 1. MUST be able to change their user name
 1. MUST be able to discover other users
