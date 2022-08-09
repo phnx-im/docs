@@ -35,6 +35,7 @@ In this section, we analyze each operation described in section [Application ass
 | --------------- | ------------------------------------------------------------------------------- | -------------------------------------------- |
 | Authentication  | Only local or federated clients can send messages                               |                                              |
 |                 | Only members of a given group can send messages to that group                   |                                              |
+|                 | Members must not be able to send messages on behalf of other members            |                                              |
 | Integrity       | The homeserver must perform checks to ensure the message is valid               | Only possible to a certain extent            |
 | Non-repudiation | Group members must be able to identify the sender of a message                  |                                              |
 | Confidentiality | The homeserver must not learn the identity of the sender                        | Authentication can be done psedudonymously   |
