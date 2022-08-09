@@ -1,5 +1,53 @@
 # Threat model
 
+This document contains a threat model for an MLS homeserver. For now, this threat model is based solely on its functional requirements. As we build the specification of the homeserver, we will update this document to consider any additional assets.
+
+## Functional requirements
+
+The homeserver is expected to fulfill the functional requirements described [here](./functional_requirements.md) and is expected to interface with parties fulfilling the roles outlined in that document.
+
+## Security requirements
+
+First, note that the homeserver facilitates communication between clients via the Messaging Layer Security (MLS) protocol, which already provides a number of [security guarantees](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-intended-security-guarantee) which we do not describe here.
+
+### Application assets
+
+To fulfill its requirements, the homeserver will likely keep the following state (information assets).
+
+1. Group state (for message delivery, including associated metadata such as group membership lists)
+1. [KeyPackages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-key-packages) for retrieval by clients
+1. Authentication key material of users and their clients
+1. Users' user names
+
+Additionally, it will have to perform the following actions:
+
+* allow clients to asynchronously send [MLS messages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-7) to all members of an MLS group that the sending client is a member of (this implies the "filtering server" role specified by the ["delivery of messages"](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#section-4.3) requirement of the MLS architecture document)
+
+TODO: Expand to all actions listed in the functional requirements (rewrite branch) and translate the information assets to operations
+
+### Analysis using STRIDE
+
+In this section, we analyze each operation described in section [Application assets](./threat_model.md#application-assets) according to the STRIDE properties as described [here](https://www.securesoftware.nl/resources/FrameworkSecureSoftware_v1.pdf).
+
+#### Sending group messages
+
+| STRIDE property | Requirement                                                                     | Remark                                       |
+| --------------- | ------------------------------------------------------------------------------- | -------------------------------------------- |
+| Authentication  | Only local or federated clients can send messages                               |                                              |
+|                 | Only members of a given group can send messages to that group                   |                                              |
+| Integrity       | The homeserver must perform checks to ensure the message is valid               | Only possible to a certain extent            |
+| Non-repudiation | Group members must be able to identify the sender of a message                  |                                              |
+| Confidentiality | The homeserver must not learn the identity of the sender                        | Authentication can be done psedudonymously   |
+|                 | The metadata in the message must be encrypted in transit                        |                                              |
+|                 | The homeserver must delete unneeded metadata after processing a message         |                                              |
+|                 | Metadata that needs to be persisted must be encrypted at rest                   |                                              |
+| Availability    | Users should always be able to send messages to groups that they are members of |                                              |
+| Authorization   |                                                                                 | Group policy enforcement will be added later |
+
+
+
+# Old content below
+
 The subject of this threat analysis is a running homeserver application that serves its client and, potentially, other, federated homeservers. This document currently does not consider threats to the code base of the homeserver the deployment process, or any other supply chain attacks.
 
 ## Requirements and objectives
