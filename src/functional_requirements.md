@@ -52,6 +52,8 @@ Operators
 
 ### Functional Requirements for the Network
 
+Entities able to access the homeserver via the network
+
 1. MUST be able to register a new user
 
 ### Functional Requirements for Users
