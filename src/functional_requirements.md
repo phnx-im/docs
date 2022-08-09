@@ -14,7 +14,7 @@ The entity that operates a homeserver. It is assumed to have control over the do
 
 ### The Network
 
-The network includes all entities that have access to the port the homeserver exposes its endpoints on.
+The network includes all entities that have access to the port exposing the homeserver endpoints.
 
 ### Users
 
@@ -26,23 +26,25 @@ In the context of federation, users of a given homeserver will sometimes be call
 
 ### Clients
 
-A client is a piece of software associated with and run by a user that. The client holds the key material that authenticate itself (and thus the user) to other clients and their users. Each client is associated with a _client id_ that is scoped by its user's user id.
+A client is a piece of software associated with and run by a user. The client holds the key material used to authenticate (and thus the user) to other clients and their users. Each client is associated with a _client id_ that is scoped by its user's ID.
 
 ### Federated Homeservers
 
-Other instances of the homeserver that are reachable via the network, where both the given and the federated homeserver have been configured to allow mutual federation. Each is assumed to be configured with its own home domain.
+Other instances of the homeserver that are reachable via the network, where both the local and the federated homeserver have been configured to allow mutual federation. Each is assumed to be configured with its own home domain.
 
 ### Federated Users
 
-Individuals that have registered with a federated homeserver in the same way as users have with the given one.
+Individuals that have registered with a federated homeserver in the same way as users have with the local one.
 
 ### Federated Clients
 
-Clients run by federated users. Just like a client, but associated with a federated user instead of a (local) user.
+Federated clients are clients which are run by federated users. They are regular clients that are associated with a federated user instead of a local user.
 
 ## Functional Requirements for each Role
 
 ### Functional Requirements for Homeserver Operators
+
+Operators
 
 1. MUST be able to configure the homeserver and manage its users locally
 1. MUST be able to set the home domain of the homeserver during setup
@@ -54,7 +56,9 @@ Clients run by federated users. Just like a client, but associated with a federa
 
 ### Functional Requirements for Users
 
-The distinction between users their clients is difficult, because the user will perform most of their interactions with the homeserver through the client. Here, we list the operations that, while performed through the client, concern the user as their own entity and might thus also affect all of their clients.
+The distinction between users and their clients is difficult because the user will perform most of their interactions with the homeserver through the client. The following is a list of operations performed through the client, which concern the user as their own entity and might thus also affect all of their clients.
+
+Users
 
 1. MUST be able to manage clients (this includes updates to client key material)
 1. SHOULD be able to reset the account if the last client is lost
@@ -68,16 +72,20 @@ The distinction between users their clients is difficult, because the user will 
 
 MLS natively provides a number of group management mechanics such as membership management. The homeserver's task is thus to fulfill the role of an MLS [Delivery Service](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#section-4).
 
+Clients
+
 1. MUST be able to initialize an MLS group
 1. MUST be able to asynchronously send [MLS messages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-7) to all members of an MLS group that it is a member of (this implies the "filtering server" role specified by the ["delivery of messages"](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#section-4.3) requirement of the MLS architecture document)
 1. MUST be able to retrieve [KeyPackages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11) for clients of users with a previously established connection (this implies the ["key storage"](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-key-storage) requirement)
 1. MUST be able to send [Welcome](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-13.4.3.1) messages to clients of users with a previously established connection
-1. MUST be able to fetch own messages
-1. MUST be able to verify authenticity of MLS leaf [Credentials](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-credentials) of clients it shares a group with (this implies at least partially fulfilling the [Authentication Service](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-authentication-service) role)
+1. MUST be able to fetch their own messages
+1. MUST be able to verify the authenticity of an MLS leaf [Credentials](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-credentials) of clients with which it shares a group (this implies at least partially fulfilling the [Authentication Service](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-authentication-service) role)
 1. MUST be able to publish [KeyPackages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11) (this implies the ["key retrieval"](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-key-retrieval) requirement)
-1. SHOULD be able to configure notification settings of groups that it is a member of
+1. SHOULD be able to configure notification settings of groups of which it is a member
 
 ### Functional Requirements for Federated Homeservers
+
+Federated homeservers
 
 1. MUST be able to send messages for delivery to one of the homeserver's clients
 
