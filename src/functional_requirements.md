@@ -79,7 +79,7 @@ Clients
 1. MUST be able to retrieve [KeyPackages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11) for clients of users with a previously established connection (this implies the ["key storage"](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-key-storage) requirement)
 1. MUST be able to send [Welcome](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-13.4.3.1) messages to clients of users with a previously established connection
 1. MUST be able to fetch their own messages
-1. MUST be able to verify the authenticity of an MLS leaf [Credentials](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-credentials) of clients with which it shares a group (this implies at least partially fulfilling the [Authentication Service](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-authentication-service) role)
+1. MUST be able to verify the authenticity of MLS leaf [Credentials](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-credentials) of clients with which it shares a group (this implies at least partially fulfilling the [Authentication Service](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-authentication-service) role)
 1. MUST be able to publish [KeyPackages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11) (this implies the ["key retrieval"](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-key-retrieval) requirement)
 1. SHOULD be able to configure notification settings of groups of which it is a member
 
