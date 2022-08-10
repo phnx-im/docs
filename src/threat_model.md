@@ -12,39 +12,245 @@ First, note that the homeserver facilitates communication between clients via th
 
 ### Application assets
 
-To fulfill its requirements, the homeserver will likely keep the following state (information assets).
+The homeserver will have to perform all actions listed for the individual roles in the [functional requirements section](./functional_requirements.md).
+
+To fulfill its requirements, the homeserver will likely keep the following state (information assets). Each piece of state is annotated by the actions involved in its lifecycle.
 
 1. Group state (for message delivery, including associated metadata such as group membership lists)
+    * Create: Group creation
+    * Read, Update, Delete: Message delivery (with inline MLS group management)
 1. [KeyPackages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-key-packages) for retrieval by clients
+    * Create/Update/Delete: KeyPackage publishing (publication of new KeyPackages implies deletion of old ones)
+    * Read/Delete: KeyPackage retrieval (reading implies deletion, except for [KeyPackages of last resort](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-keypackage-reuse))
 1. Authentication key material of users and their clients
+    * Create/Update/Delete: Client management
+    * Delete: Account reset
+    * Read: Client authentication
 1. Users' user names
+    * Create: User registration
+    * Update: User name change
+    * Read: User discovery
+    * Delete: Account deletion
 
-Additionally, it will have to perform the following actions:
+### Security Assumptions
 
-* allow clients to asynchronously send [MLS messages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-7) to all members of an MLS group that the sending client is a member of (this implies the "filtering server" role specified by the ["delivery of messages"](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#section-4.3) requirement of the MLS architecture document)
+#### Operators
 
-TODO: Expand to all actions listed in the functional requirements (rewrite branch) and translate the information assets to operations
+The operator has a large amount of control over the homeserver and the homeserver's users have to trust it to a certain degree. In particular, users trust homeserver operators in the following ways.
+
+* Operators are trusted not to subject users to spam
+* Operators are trusted not to deny the homeserver's service to individual users
 
 ### Analysis using STRIDE
 
 In this section, we analyze each operation described in section [Application assets](./threat_model.md#application-assets) according to the STRIDE properties as described [here](https://www.securesoftware.nl/resources/FrameworkSecureSoftware_v1.pdf).
 
-#### Sending group messages
+#### Spam reduction
 
-| STRIDE property | Requirement                                                                     | Remark                                       |
-| --------------- | ------------------------------------------------------------------------------- | -------------------------------------------- |
-| Authentication  | Only local or federated clients can send messages                               |                                              |
-|                 | Only members of a given group can send messages to that group                   |                                              |
-|                 | Members must not be able to send messages on behalf of other members            |                                              |
-| Integrity       | The homeserver must perform checks to ensure the message is valid               | Only possible to a certain extent            |
-| Non-repudiation | Group members must be able to identify the sender of a message                  |                                              |
-| Confidentiality | The homeserver must not learn the identity of the sender                        | Authentication can be done psedudonymously   |
-|                 | The metadata in the message must be encrypted in transit                        |                                              |
-|                 | The homeserver must delete unneeded metadata after processing a message         |                                              |
-|                 | Metadata that needs to be persisted must be encrypted at rest                   |                                              |
-| Availability    | Users should always be able to send messages to groups that they are members of |                                              |
-| Authorization   |                                                                                 | Group policy enforcement will be added later |
+Spam (outside of its potential for a denial-of-service attack on the homeserver) is a general risk for a messaging service. As a consequence, we consider spam potential a security risk for every action that leads to messages being sent to users.
 
+#### Basic confidentiality and authentication
+
+As a general rule, all actions performed via the network (which includes all actions with the possible exception those of the operator) MUST use be performed through a unilaterally authenticated TLS connection using the home domain of the homeserver.
+
+TODO: Details on requirements regarding the TLS connection.
+
+#### Metadata minimalism
+
+Another general rule is that metadata that is not required to provide functionality at a later point in time has to be deleted immediately. Similarly, all metadata that is not required to be stored in the clear must be stored encrypted-at-rest.
+
+#### Homeserver operator actions
+
+##### Homeserver management
+
+| STRIDE property | Requirement                                                             | Remark                                             |
+| --------------- | ----------------------------------------------------------------------- | -------------------------------------------------- |
+| Authentication  | Only administrators can perform management actions                      |                                                    |
+| Integrity       | The homeserver must perform checks to ensure the configuration is valid |                                                    |
+| Non-repudiation | Not a risk. There is only one homeserver operator                       | Different operators will be added later            |
+| Confidentiality | Not a risk. Homeserver management actions are not confidential          |                                                    |
+| Availability    | Operators should always be able to perform management actions           |                                                    |
+| Authorization   | Not a risk. There is only one homeserver operator role                  | Different operator roles can be added later        |
+| Spam prevention | Not a risk, since homeserver management actions are not message sending | TODO: We might have to trust operators not to spam |
+
+##### Homeserver setup
+
+| STRIDE property | Requirement                                                             | Remark |
+| --------------- | ----------------------------------------------------------------------- | ------ |
+| Authentication  | Not a risk. The entity setting up the server can only be the operator   |        |
+| Integrity       | The homeserver must check if the homeserver domain is a FQDN at startup |        |
+| Non-repudiation | Not a risk. At the time of setup, identities don't exist yet            |        |
+| Confidentiality | Not a risk. The home domain is public                                   |        |
+| Availability    | This is a setup action. The homeserver is not running at that time      |        |
+| Authorization   | Not a risk. Setup is done by a single entity.                           |        |
+| Spam prevention | Not a risk. Users don't exist at the time of homeserver setup           |        |
+
+##### Federation configuration
+
+| STRIDE property | Requirement                                                                | Remark                                      |
+| --------------- | -------------------------------------------------------------------------- | ------------------------------------------- |
+| Authentication  | Only administrators can configure federation                               |                                             |
+| Integrity       |                                                                            |                                             |
+| Non-repudiation | Not a risk. There is only one homeserver operator                          | Different operators will be added later     |
+| Confidentiality | Not a risk. Federation configuration actions are not confidential          |                                             |
+| Availability    | Operators should always be able to manage homeserver federation            |                                             |
+| Authorization   | Not a risk. There is only one homeserver operator role                     | Different operator roles can be added later |
+| Spam prevention | Not a risk, since federation configuration actions are not message sending |                                             |
+
+#### (Public) Network actions
+
+##### User registration
+
+| STRIDE property | Requirement                                                                                             | Remark                 |
+| --------------- | ------------------------------------------------------------------------------------------------------- | ---------------------- |
+| Authentication  | Not a risk. Registration is publicly accessible                                                         |                        |
+| Integrity       | The homeserver must perform checks to ensure the user name entered is valid                             | TODO: Specify validity |
+| Non-repudiation | The user or its client must prove possession of authentication key material                             |                        |
+| Confidentiality | The homeserver must not store metadata other than the user's user name                                  |                        |
+| Availability    | User registration can be limited when the homeserver has limited resources                              |                        |
+| Authorization   | Not a risk. No authorization required for registration                                                  |                        |
+| Spam prevention | To mitigate spam attacks downstream of user registration, the homeserver can restrict user registration |                        |
+
+#### User actions
+
+##### Client management
+
+| STRIDE property | Requirement                                                                           | Remark                                        |
+| --------------- | ------------------------------------------------------------------------------------- | --------------------------------------------- |
+| Authentication  | Users can only manage their own clients                                               |                                               |
+| Integrity       | Not a risk. Users are responsible for the integrity of their own clients              | TODO: We might want to lock this down further |
+| Non-repudiation | Other clients of the user must be able to determine which client performed the action |                                               |
+| Confidentiality | Not a risk. A user's client management is considered public                           |                                               |
+| Availability    | Users should always be able to manage their own clients                               |                                               |
+| Authorization   | Not a risk. The user can manage clients through any of their clients                  | Client management policy can be added later   |
+| Spam prevention | Client management actions should be limited, as they can be message sending           |                                               |
+
+##### Account reset
+
+| STRIDE property | Requirement                                                                         | Remark                                |
+| --------------- | ----------------------------------------------------------------------------------- | ------------------------------------- |
+| Authentication  | Users can only reset their own accounts                                             |                                       |
+| Integrity       | Not a risk. A reset replaces all user data except the user name                     |                                       |
+| Non-repudiation | The users contacts must be notified of the user's account reset                     |                                       |
+| Confidentiality | Not a risk. No confidential user data is transmitted during an account reset        |                                       |
+| Availability    | Users should be able to reset their own account once every month                    | TODO: Is this the time frame we want? |
+| Authorization   | Not a risk. The user is the only entity that can perform this action                |                                       |
+| Spam prevention | The homeserver must limit the number of account resets, as they are message sending |                                       |
+
+##### User name change
+
+| STRIDE property | Requirement                                                                            | Remark                                |
+| --------------- | -------------------------------------------------------------------------------------- | ------------------------------------- |
+| Authentication  | Users can only change their own user name                                              |                                       |
+| Integrity       | The homeserver must ensure the new user name is valid                                  | (see user registration)               |
+| Non-repudiation | The users contacts must be notified of the user's user name change                     |                                       |
+| Confidentiality | The new user name must be communicated to contacts end-to-end encrypted                |                                       |
+| Availability    | Users should be able to change their user name once every month                        | TODO: Is this the time frame we want? |
+| Authorization   | Not a risk. The user is the only entity that can perform this action                   |                                       |
+| Spam prevention | The homeserver must limit the number of user name changes, as they are message sending |                                       |
+
+##### User discovery
+
+| STRIDE property | Requirement                                                                               | Remark |
+| --------------- | ----------------------------------------------------------------------------------------- | ------ |
+| Authentication  | All registered users should be able to discover other users by their full user name       |        |
+|                 | Users must be able to authenticate any user information in an end-to-end way              |        |
+| Integrity       | Not a risk. End-to-end authentication implies integrity of the data                       |        |
+| Non-repudiation | Not a risk. Users must be able to discover other users anonymously                        |        |
+| Confidentiality | The user must be able to perform discovery anonymously                                    |        |
+|                 | Users should only be able to discover a limited number of users every day                 |        |
+| Availability    | Users should always be able to discover users with the given confidentiality restrictions |        |
+| Authorization   | Not a risk. All users should be able to discover other users                              |        |
+| Spam prevention | Not a risk. Discovering a user should not be message sending                              |        |
+
+##### Connection establishment
+
+| STRIDE property | Requirement                                                                            | Remark |
+| --------------- | -------------------------------------------------------------------------------------- | ------ |
+| Authentication  | All registered users should be able to establish connections to other users            |        |
+|                 | The establishing user must be able to authenticate the target user                     |        |
+| Integrity       | Not a risk. Authentication implies integrity of the connection request                 |        |
+| Non-repudiation | Not a risk. Users must be able to establish connections anonymously                    |        |
+| Confidentiality | The user must be able to establish connections anonymously w.r.t. the homeserver       |        |
+| Availability    | Users should always be able to establish connections (limited by anti-spam measures)   |        |
+| Authorization   | Not a risk. All users should be able to establish connections                          |        |
+| Spam prevention | High spam risk. Connection establishments are message sending must be limited per user |        |
+
+##### Connection rejection
+
+| STRIDE property | Requirement                                                                          | Remark                                |
+| --------------- | ------------------------------------------------------------------------------------ | ------------------------------------- |
+| Authentication  | All registered users should be able to accept/reject incoming connections requests   |                                       |
+|                 | The accepting/rejecting user must be able to authenticate the requesting user        |                                       |
+| Integrity       | Not a risk. Authentication implies integrity of the connection request               |                                       |
+| Non-repudiation | Not a risk as long as connection requests can be authenticated by the receiving user |                                       |
+| Confidentiality | Not a risk as long as transport encryption and metadata minimalism are upheld        |                                       |
+| Availability    | Users should always be able to accept or reject connections                          |                                       |
+| Authorization   | Not a risk. All users should be able to accept/reject connections                    |                                       |
+| Spam prevention | Connection accepts/rejects are message sending and thus have to be limited           | TODO: Is this really message sending? |
+
+##### Connection management
+
+| STRIDE property | Requirement                                                                   | Remark                                |
+| --------------- | ----------------------------------------------------------------------------- | ------------------------------------- |
+| Authentication  | All registered users should be able to manage their existing connections      |                                       |
+|                 | Each user should only be able to manage their own connections                 |                                       |
+| Integrity       | Not a risk. Clients are responsible for their own list of connections         |                                       |
+| Non-repudiation | Not a risk. Connection management does not need to be logged                  |                                       |
+| Confidentiality | The homeserver should not learn which connections a user has                  |                                       |
+|                 | The homeserver should not learn which users a user has blocked                |                                       |
+| Availability    | Users should always be able to manage their own connections                   |                                       |
+| Authorization   | Not a risk. All users should be able to accept/reject (their own) connections |                                       |
+| Spam prevention | Connection management is message sending and thus has to be limited           | TODO: Is this really message sending? |
+
+##### Account deletion
+
+| STRIDE property | Requirement                                                                 | Remark                                                  |
+| --------------- | --------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Authentication  | All registered users should be able to delete their won account             |                                                         |
+|                 | Each user should only be able to delete their own account                   |                                                         |
+| Integrity       | Not a risk, as there should be no data left after deletion                  |                                                         |
+| Non-repudiation | Not a risk. Account deletion should not be logged                           | TODO: Should other users learn of a contact's deletion? |
+| Confidentiality | Not a risk as long as transport encryption and metadata mimimalism hold     |                                                         |
+|                 | In particular, all metadata regarding the deleted account should be deleted |                                                         |
+| Availability    | Users should always be able to delete their own account                     |                                                         |
+| Authorization   | Not a risk. All users should be able to delete (their own) account          |                                                         |
+| Spam prevention | Account deletion is message sending and thus has to be limited              | TODO: Is this really message sending?                   |
+
+#### Client actions
+
+##### Group creation
+
+| STRIDE property | Requirement                                                                             | Remark                                    |
+| --------------- | --------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Authentication  | Only clients of local users can create new groups                                       |                                           |
+|                 | The group creator has to be able to authenticate itself as the only member of the group |                                           |
+| Integrity       | The homeserver must perform checks to ensure the group state is valid                   | Only possible to a certain extent         |
+| Non-repudiation | Not a risk as long as the authentication requirements hold.                             |                                           |
+| Confidentiality | The homeserver must not learn the identity of the group creator                         | Authentication can be done pseudonymously |
+| Availability    | Users should always be able to create new groups (limited by anti-spam measures)        |                                           |
+| Authorization   | Not a risk. All users should be able to create groups                                   |                                           |
+| Spam prevention | The homeserver must limit the number of groups created by a given user                  |                                           |
+
+
+#### Message delivery
+
+| STRIDE property | Requirement                                                                             | Remark                                       |
+| --------------- | --------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Authentication  | Only local or federated clients can send messages                                       |                                              |
+|                 | Only members of a given group can send messages to that group                           |                                              |
+|                 | Members must not be able to send messages on behalf of other members                    |                                              |
+| Integrity       | The homeserver must perform checks to ensure the message is valid                       | Only possible to a certain extent            |
+| Non-repudiation | Group members must be able to identify the sender of a message                          |                                              |
+| Confidentiality | The homeserver must not learn the identity of the sender                                | Authentication can be done pseudonymously    |
+| Availability    | Users should always be able to send messages to groups that they are members of         |                                              |
+| Authorization   | Not a risk. All group members should be able to send messages                           | Group policy enforcement will be added later |
+| Spam prevention | The homeserver must limit the number of message deliveries, as they are message sending |                                              |
+
+TODO: Go over each action and add notes on resource consumption under "availability"
+TODO: We might want to go over everything from both an HS and a client perspective.
+TODO: Use the non-repudiation field to specify level of anonymity? Or the confidentiality field?
+TODO: Come up with basic questions that are good to ask for our own use case. (Rather than the ones from the book.)
 
 
 # Old content below

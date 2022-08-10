@@ -69,6 +69,7 @@ Users
 1. Connection establishment: MUST be able to initialize a connection with other users (via a two-user MLS group, implies retrieval of [KeyPackages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11) of all of the other user's clients)
 1. Connection rejection: MUST be able to accept or reject a connection initialized by another (local or federated) user
 1. Connection management: SHOULD be able to block other (local or federated) users s.t. they don't receive messages from that user anymore
+1. Account deletion: MUST be able to delete their account
 
 ### Functional Requirements for Clients
 
