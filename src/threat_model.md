@@ -247,10 +247,10 @@ Another general rule is that metadata that is not required to provide functional
 | Authorization   | Not a risk. All group members should be able to send messages                           | Group policy enforcement will be added later |
 | Spam prevention | The homeserver must limit the number of message deliveries, as they are message sending |                                              |
 
-TODO: Go over each action and add notes on resource consumption under "availability"
-TODO: We might want to go over everything from both an HS and a client perspective.
-TODO: Use the non-repudiation field to specify level of anonymity? Or the confidentiality field?
-TODO: Come up with basic questions that are good to ask for our own use case. (Rather than the ones from the book.)
+* TODO: Go over each action and add notes on resource consumption under "availability"
+* TODO: We might want to go over everything from both an HS and a client perspective.
+* TODO: Use the non-repudiation field to specify level of anonymity? Or the confidentiality field?
+* TODO: Come up with basic questions that are good to ask for our own use case. (Rather than the ones from the book.)
 
 
 # Old content below
