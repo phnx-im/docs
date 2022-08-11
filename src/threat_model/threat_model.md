@@ -4,11 +4,11 @@ This document contains a threat model for an MLS homeserver. For now, this threa
 
 ## Functional requirements
 
-The homeserver is expected to fulfill the functional requirements described [here](./functional_requirements.md) and is expected to interface with parties fulfilling the roles outlined in that document.
+The homeserver is expected to fulfill the functional requirements described [here](./functional_requirements.md) and to interface with parties fulfilling the roles outlined in that document.
 
-## Security requirements
+## MLS as underlying protocol
 
-First, note that the homeserver facilitates communication between clients via the Messaging Layer Security (MLS) protocol, which already provides a number of [security guarantees](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-intended-security-guarantee) which we do not describe here.
+The homeserver facilitates communication between clients via the Messaging Layer Security (MLS) protocol, which already provides a number of [security guarantees](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-intended-security-guarantee) which we do not describe here.
 
 ### Application assets
 
