@@ -44,59 +44,51 @@ Federated clients are clients which are run by federated users. They are regular
 
 ### Functional Requirements for Homeserver Operators
 
-Operators
-
-1. Homeserver management: MUST be able to configure the homeserver and manage its users locally
-1. Homedomain setup: MUST be able to set the home domain of the homeserver during setup
-1. Federation configuration: MUST be able to configure federation: Either by allowlisting other homeservers by their home domain, or by allowing open federation except for a blocklist of home domains for homeservers with which federation is not desired
+* Homeserver management: Operators MUST be able to configure the homeserver and manage its users locally.
+* Homedomain setup: Operators MUST be able to set the home domain of the homeserver during setup.
+* Federation configuration: Operators MUST be able to configure federation: Either by allowlisting other homeservers by their home domain, or by allowing open federation except for a blocklist of home domains for homeservers with which federation is not desired.
 
 ### Functional Requirements for the Network
 
-Entities able to access the homeserver via the network
-
-1. User registration: MUST be able to register a new user
+* User registration: Entities in the public network MUST be able to register a new user.
 
 ### Functional Requirements for Users
 
 The distinction between users and their clients is difficult because the user will perform most of their interactions with the homeserver through the client. The following is a list of operations performed through the client, which concern the user as their own entity and might thus also affect all of their clients.
 
-Users
-
-1. Client management: MUST be able to manage clients (this includes updates to client key material)
-1. Account reset: SHOULD be able to reset the account if the last client is lost
-1. User name change: MUST be able to change their user name
-1. User discovery: MUST be able to discover other users
-1. Connection establishment: MUST be able to initialize a connection with other users (via a two-user MLS group, implies retrieval of [KeyPackages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11) of all of the other user's clients)
-1. Connection rejection: MUST be able to accept or reject a connection initialized by another (local or federated) user
-1. Connection management: SHOULD be able to block other (local or federated) users s.t. they don't receive messages from that user anymore
-1. Account deletion: MUST be able to delete their account
+* Client management: Users MUST be able to manage clients (this includes updates to client key material).
+* Account reset: Users SHOULD be able to reset the account. Members of groups the user is in MUST be notified of the reset.
+* User name change: Users MUST be able to change their user name. Members of groups the user is in MUST be notified of the new name.
+* User discovery: Users MUST be able to discover other users.
+* Connection establishment: Users MUST be able to initialize a connection with other users (via a two-user MLS group, implies retrieval of [KeyPackages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11) of all of the other user's clients)
+* Connection rejection: Users MUST be able to accept or reject a connection initialized by another (local or federated) user. The sender of the connection request SHOULD be notified of the acceptance or rejection of the request.
+* Connection management: Users SHOULD be able to block other (local or federated) users s.t. they don't receive messages from that user anymore. Users SHOULD be able to unblock previously blocked users.
+* Account deletion: Users MUST be able to delete their account. Members of groups the user is in MUST be notified of the deletion.
 
 ### Functional Requirements for Clients
 
 MLS natively provides a number of group management mechanics such as membership management. The homeserver's task is thus to fulfill the role of an MLS [Delivery Service](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#section-4).
 
-Clients
-
-1. Group creation: MUST be able to initialize an MLS group
-1. Message delivery: MUST be able to asynchronously send [MLS messages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-7) to all members of an MLS group that it is a member of (this implies the "filtering server" role specified by the ["delivery of messages"](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#section-4.3) requirement of the MLS architecture document)
-1. KeyPackage retrieval: MUST be able to retrieve [KeyPackages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11) for clients of users with a previously established connection (this implies the ["key storage"](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-key-storage) requirement)
-1. Welcome message delivery: MUST be able to send [Welcome](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-13.4.3.1) messages to clients of users with a previously established connection
-1. Message retrieval: MUST be able to fetch their own messages
-1. Client authentication: MUST be able to verify the authenticity of MLS leaf [Credentials](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-credentials) of clients with which it shares a group (this implies at least partially fulfilling the [Authentication Service](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-authentication-service) role)
-1. KeyPackage publishing: jMUST be able to publish [KeyPackages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11) (this implies the ["key retrieval"](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-key-retrieval) requirement)
-1. Notification configuration: SHOULD be able to configure notification settings of groups of which it is a member
+* Group creation: Clients MUST be able to initialize an MLS group.
+* Message delivery: Clients MUST be able to asynchronously send [MLS messages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-7) to all members of an MLS group that it is a member of (this implies the "filtering server" role specified by the ["delivery of messages"](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#section-4.3) requirement of the MLS architecture document). If a given group member has provided the homeserver with a notification for this group, the homeserver MUST attach the notification policy to the message when delivering it. If a group member is a federated client, the homeserver MUST forward the message to the federated homeserver for delivery.
+* Message queuing: The homeserver MUST store messages sent to a client either by itself or forwarded by a federated homeserver while the client is offline.
+* Message notifications: Clients MAY provide the homeserver with a means to notify them when a new message is queued, as well as a default notification policy. If the client has provided the homeserver with such a means and corresponding policy, the homeserver MUST notify the client according to either the policy attached to the message, or, if none was attached, according to the default policy.
+* KeyPackage retrieval: Clients MUST be able to retrieve [KeyPackages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11) for clients of users with a previously established connection (this implies the ["key storage"](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-key-storage) requirement). As long as there is more than one KeyPackage, the server MUST delete the KeyPackage after it was provided to a (local or federated) client.
+* Welcome message delivery: Clients MUST be able to send [Welcome](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-13.4.3.1) messages to clients of users with a previously established connection. If the client has provided the homeserver with a means of notification (and default notification policy), the homeserver MUST notify the client according to the default policy.
+* Message retrieval: Clients MUST be able to fetch messages queued by the homeserver.
+* Client authentication: Clients MUST be able to verify the authenticity of MLS leaf [Credentials](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-credentials) of clients with which it shares a group (this implies at least partially fulfilling the [Authentication Service](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-authentication-service) role).
+* KeyPackage publishing: Clients MUST be able to publish [KeyPackages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11) (this implies the ["key retrieval"](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-key-retrieval) requirement). When a client publishes new KeyPackages, the homeserver MUST delete all remaining previously uploaded KeyPackages of that client.
+* Notification configuration: Clients SHOULD be able to configure notification settings of groups of which it is a member.
 
 ### Functional Requirements for Federated Homeservers
 
-Federated homeservers
-
-1. Federated message delivery: MUST be able to send messages for delivery to one of the homeserver's clients
+* Federated message delivery: Federated homeservers MUST be able to send messages for delivery to one of the homeserver's clients.
 
 ### Functional Requirements for Federated Users
 
-The functional requirements 4. and 5. for local users also apply for federated users.
+The functional requirements _user discovery_ and _connection establishment_ for local users also apply for federated users.
 
 
 ### Functional Requirements for Federated Clients
 
-The functional requirements 2., 3., 4., 6. and 8. for local clients also apply for federated clients.
+The functional requirements _message delivery_, _KeyPackage retrieval_, _welcome message delivery_, _client authentication_ and _notification configuration_ for local clients also apply for federated clients.
