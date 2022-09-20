@@ -1,4 +1,4 @@
-# Delivery service (DS)
+# Delivery Service (DS)
 
 The delivery service keeps track of groups and (pseudonymous) group membership.
 
