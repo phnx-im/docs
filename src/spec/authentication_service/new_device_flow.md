@@ -22,7 +22,7 @@ To register a new client, the user needs to be in possession of one of his exist
 * The new client downloads the Welcome and joins the group. It then requests anonymous tokens from the AS, authenticating the request with its client credential.
 * The AS repsonds with the tokens.
 * The new client contacts the QS to create its queues.
-* The existing client sends the client state to the new client via the all-client group. The new client state includes state-bundles for all groups that the user is in. These bundles include the group id, member EAR secrets and PublicGroupStates of each group.
+* The existing client sends the client state to the new client via the all-client group. The new client state includes state-bundles for all groups that the user is in. These bundles include the group ID, member EAR secrets and PublicGroupStates of each group.
 * The new client injects itself into all of the user's group using the state-bundles. It sends attached the two commits for the EID state.
 
 TODO: The new client needs to publish key packages.

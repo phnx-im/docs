@@ -8,13 +8,13 @@ TODO: For each operation below, include a 'validation' subsection that includes 
 
 ## DS state
 
-The DS has a database of groups indexed by their group id. Each group has the following pieces of data associated with it.
+The DS has a database of groups indexed by their group ID. Each group has the following pieces of data associated with it.
 
 TODO: The DS needs to keep old public trees around for new members.
 
 TODO: The DS has to keep track of indices in the user profile.
 
-TODO: Put domain into group id.
+TODO: Put domain into group ID.
 
 * **Public ratchet tree:** The public MLS ratchet tree of the group.
 * **MLS GroupInfo:** The [GroupInfo](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-adding-members-to-the-group) of this group.
@@ -26,7 +26,7 @@ TODO: Put domain into group id.
 * **Client profile:** For each client in the group, the DS keeps the following records.
   * **Intermediate Client Credentials:** The intermediate client credentials for each of the user's clients, encrypted using the group state encryption key.
   * **Queue information:** Information needed to deliver messages to the client's queue.
-    * **Encrypted Queue id:** The queue id of the client, encrypted by the client under the client's QS' [queue id encryption key](queuing_service.md#fetch-queue-id-encryption-key). For the HPKE encryption, the client has to use its own enqueue auth key to perform the HPKE in the asymmetrically authenticated mode. Also, the domain of the DS has to be in the AAD.
+    * **Encrypted Queue ID:** The queue ID of the client, encrypted by the client under the client's QS' [queue ID encryption key](queuing_service.md#fetch-queue-ID-encryption-key). For the HPKE encryption, the client has to use its own enqueue auth key to perform the HPKE in the asymmetrically authenticated mode. Also, the domain of the DS has to be in the AAD.
 
 ## Create group
 

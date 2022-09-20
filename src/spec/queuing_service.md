@@ -8,11 +8,11 @@ TODO: If we have a single unified pseudonym for queues, key package publication 
 
 ## QS state
 
-The QS keeps a database with queues, where each queue is indexed by a UUID, its queue id. Each queue is associated with the following pieces of data.
+The QS keeps a database with queues, where each queue is indexed by a UUID, its queue ID. Each queue is associated with the following pieces of data.
 
 * **Authentication keys:** Various parties are allowed to interact with a given queue in different ways. The QS thus holds a number of keys that act as authorization keys for different operations.
   * **Owner key:** Authorizes the holder to dequeue (i.e. fetch and delete) messages in the queue, as well as to change the queue configuration such as the authentication keys.
-  * **Enqueue public key:** HPKE key owned by the client and used to encrypt the queue id for use by a DS.
+  * **Enqueue public key:** HPKE key owned by the client and used to encrypt the queue ID for use by a DS.
   * **Deletion key:** Authorizes the holder to delete the queue.
 * **Queue encryption key material:** Key material to perform [queue encryption](./queuing_service/queue_encryption.md).
   * **Owner public key:** HPKE public key of the queue owner
@@ -23,28 +23,28 @@ The QS keeps a database with queues, where each queue is indexed by a UUID, its 
 
 Additionally, the QS keeps the following state:
 
-* **Queue id encryption keypair:** A public/private HPKE keypair that clients can encrypt their queue id under before providing it to a local or federated DS.
+* **Queue ID encryption keypair:** A public/private HPKE keypair that clients can encrypt their queue ID under before providing it to a local or federated DS.
 * **QS-to-QS queues:** A database of queues indexed by the remote QS' domain. Each queue has the same queue encryption key material attached as the client queues.
 
-## Fetch queue id encryption key
+## Fetch queue ID encryption key
 
-Clients can fetch the QS' queue id encryption key through this endpoint.
+Clients can fetch the QS' queue ID encryption key through this endpoint.
 
 ## Create queue
 
-Clients can their own queue by providing a set of authentication keys, their owner public key, a queue type, as well as a queue id. The QS then creates the queue with the provided information.
+Clients can their own queue by providing a set of authentication keys, their owner public key, a queue type, as well as a queue ID. The QS then creates the queue with the provided information.
 
 ## Delete queue
 
-Clients can delete a given queue by sending a request to the QS that includes the queue id and that is authenticated with the queue's deletion key. The QS then deletes the queue along with all remaining messages.
+Clients can delete a given queue by sending a request to the QS that includes the queue ID and that is authenticated with the queue's deletion key. The QS then deletes the queue along with all remaining messages.
 
 ## Enqueue message
 
-A local or federated DS can enqueue a message by providing the QS with an encrypted queue id, as well as a message to enqueue in the queue specified by the encrypted id. The request has to be authenticated with the queue's enqueue authorization key and the message has to fit the queue's [queue type](./queuing_service/queue_types.md).
+A local or federated DS can enqueue a message by providing the QS with an encrypted queue ID, as well as a message to enqueue in the queue specified by the encrypted ID. The request has to be authenticated with the queue's enqueue authorization key and the message has to fit the queue's [queue type](./queuing_service/queue_types.md).
 
 ## Dequeue message
 
-The client owning the queue can dequeue messages by providing the QS with a queue id and a sequence number. The message has to be authenticated using the queue's dequeue authorization key.
+The client owning the queue can dequeue messages by providing the QS with a queue ID and a sequence number. The message has to be authenticated using the queue's dequeue authorization key.
 
 ## Forward to federated queuing service
 
