@@ -1,4 +1,4 @@
-# Authentication service (AS)
+# Authentication Service (AS)
 
 In this chapter, we detail the different functionalitites of the authentication service. See the subchapter on [evolving identities (EIDs)](./authentication_service/evolving_identities.md) for more details on the evolving identities mechanism for client management and authentication.
 
