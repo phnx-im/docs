@@ -4,7 +4,7 @@ This section contains a draft of the MLS homeserver specification. It is current
 
 The specification is split into subsections according to the modular structure of the homeserver. In particular, the specification covers the following modules.
 
-## Authentication service (AS)
+## Authentication Service (AS)
 
 The authentication service deals with user account registration, as well as user account resets and allows registered users to manage their public user profile and their clients (via their evolving identity (EID)). The AS also publishes the EID and user profile of each of its users.
 
