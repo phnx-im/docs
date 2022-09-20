@@ -10,8 +10,7 @@ The AS is configurable by use of the following configuration variables:
 * **Default token allowance:** The default amount of anonymous authentication tokens issued to each user in the anonymous token timeframe.
 * **Identity provider:** Network address of the OpenID connect identity provider the authentication service delegates authentication to for account registration.
 
-TODO: Make both timeframe and allowance specific to individual endpoints.
-TODO: Technical details for OIDC provider (OIDC provider ID and secret)
+TODO: Be specific about technical details for OIDC provider (OIDC provider ID and secret)
 
 ## AS state
 
@@ -34,7 +33,7 @@ After registration of the data above, the user registers its first client. The c
 Finally, the client requests anonymous tokens so that it can create its queues at the queuing service and create its all-clients group.
 
 TODO: We probably want a bearer token to authenticate towards the AS for anonymous auth token retrieval, profile changes and other directly authenticated endpoints. I'm not sure, but I think we get this from the IdP.
-TODO: Add links to definition of credentials and information on how they are verified.
+TODO: Add links to definition of credentials and information on how they are verified, as well as to the token issuance section.
 
 ## User account deletion
 

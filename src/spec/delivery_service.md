@@ -2,7 +2,7 @@
 
 The delivery service keeps track of groups and (pseudonymous) group membership.
 
-TODO: For each operation below, include a 'validation' subsection that includes the validation steps performed by the DS.
+TODO: (future work, i.e. long term) For each operation below, include a 'validation' subsection that includes the validation steps performed by the DS.
 
 ## DS configuration options
 
@@ -13,8 +13,6 @@ The DS has a database of groups indexed by their group ID. Each group has the fo
 TODO: The DS needs to keep old public trees around for new members.
 
 TODO: The DS has to keep track of indices in the user profile.
-
-TODO: Put domain into group ID.
 
 * **Public ratchet tree:** The public MLS ratchet tree of the group.
 * **MLS GroupInfo:** The [GroupInfo](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-adding-members-to-the-group) of this group.
@@ -77,8 +75,6 @@ TODO: When adding a bunch of clients from different users, how does the adder si
 * Whenever an own client is removed, the user auth key needs to be cycled.
 * The new key is derived separately for each group. It is derived by combining the base user secret and an exported secret from the first epoch after the client was removed
 * Future work: Rotate the base user secret
-
-TODO: Create a documentation page that keeps track of all the state that clients need to sync and keep track of.
 
 ### Adding new own client
 

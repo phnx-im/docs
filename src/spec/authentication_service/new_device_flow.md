@@ -25,6 +25,7 @@ To register a new client, the user needs to be in possession of one of his exist
 * The existing client sends the client state to the new client via the all-client group. The new client state includes state-bundles for all groups that the user is in. These bundles include the group ID, member EAR secrets and PublicGroupStates of each group.
 * The new client injects itself into all of the user's group using the state-bundles. It sends attached the two commits for the EID state.
 
+TODO: Add section on client state and inter-client sync
 TODO: The new client needs to publish key packages.
 TODO: The new client needs to post an update to complete cross signing.
 TODO: Be more precise about what state is sync'ed to the new client.

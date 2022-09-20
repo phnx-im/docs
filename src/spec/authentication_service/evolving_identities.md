@@ -7,11 +7,10 @@ More concretely, this is implemented using an MLS group that includes all of a u
 Users update their EID by performing commits in the group using [MLS plaintexts](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-message-framing) as their framing.
 
 
-TODO:
-* keeping state up-to-date via messages to the AS and individual groups (DS needs a specific endpoint for this)
-* EID state has to be encrypted for pseudonymous groups
-* EID state requires client creds in leaves
-* EID "tickets"
+TODO: Add DS endpoint to receive EID and credential updates for a given group
+TODO: Link to description of EID and credential encryption in other section
+TODO: Create and link to section on credentials and add a note here that EID requires client credentials in leaves as opposed to leaf credentials
+TODO: Create future work section for AS tickets
 
 ## The EID state
 

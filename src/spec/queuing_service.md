@@ -1,8 +1,8 @@
 # Queuing Service (QS)
 
-The main purpose of the queuing service is to store-and-forward messages delivered by the [delivery service](./delivery_service.md). In this chapter we discuss the various concepts used by the QS to provide its functionalitites, as well as its individual endpoints.
+TODO: Since this service is also publishing KeyPackages now, it should get a new name.
 
-TODO: Add subsection on expiration of state and clean-up.
+The main purpose of the queuing service is to store-and-forward messages delivered by the [delivery service](./delivery_service.md). In this chapter we discuss the various concepts used by the QS to provide its functionalitites, as well as its individual endpoints.
 
 TODO: If we have a single unified pseudonym for queues, key package publication and more, we could use something like a maccaroon or a biscuit for authorization purposes, i.e. who can enqueue, delete a queue, read from a queue, upload key packages, etc.
 

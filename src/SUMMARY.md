@@ -9,6 +9,9 @@
 - [Threat Model](./threat_model.md)
 - [Cryptographic Primitives and Schemes](./cryptographic_primitives.md)
 - [Specification (Draft)](./spec.md)
+    - [General concepts](spec/general_concepts.md)
+        - [Anonymous tokens](spec/general_concepts/anonymous_tokens.md)
+        - [State expiration](spec/general_concepts/state_expiration.md)
     - [Authentication service](spec/authentication_service.md)
         - [Evolving Identities](spec/authentication_service/evolving_identities.md)
         - [Adding New Devices](spec/authentication_service/new_device_flow.md)
@@ -20,4 +23,5 @@
         - [Authorization and Queue ID encryption](spec/queuing_service/queue_id_encryption_and_authorization.md)
         - [KeyPackage publication](spec/queuing_service/keypackage_publication.md)
     - [Future work](spec/future_work.md)
+    - [Glossary]()
 
