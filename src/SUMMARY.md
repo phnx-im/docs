@@ -11,6 +11,7 @@
 - [Specification (Draft)](./spec.md)
     - [General concepts](spec/general_concepts.md)
         - [Anonymous tokens](spec/general_concepts/anonymous_tokens.md)
+        - [Credentials](spec/authentication_service/credentials.md)
         - [State expiration](spec/general_concepts/state_expiration.md)
     - [Authentication service](spec/authentication_service.md)
         - [Evolving Identities](spec/authentication_service/evolving_identities.md)
@@ -22,6 +23,8 @@
         - [Queue encryption](spec/queuing_service/queue_encryption.md)
         - [Authorization and Queue ID encryption](spec/queuing_service/queue_id_encryption_and_authorization.md)
         - [KeyPackage publication](spec/queuing_service/keypackage_publication.md)
+    - [Clients](spec/clients.md)
+        - [Client synchronization](spec/clients/client_sync.md)
     - [Future work](spec/future_work.md)
     - [Glossary]()
 

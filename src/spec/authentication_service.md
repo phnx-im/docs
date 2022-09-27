@@ -1,5 +1,7 @@
 # Authentication Service (AS)
 
+TODO: Move direct queue hosting to the AS
+
 In this chapter, we detail the different functionalitites of the authentication service. See the subchapter on [evolving identities (EIDs)](./authentication_service/evolving_identities.md) for more details on the evolving identities mechanism for client management and authentication.
 
 ## Configuration
@@ -20,6 +22,15 @@ The AS generally keeps the following state
   * **Evolving Identity:** The evolving identity state of the user.
   * **Token issuance records:** A record of how many tokens were issued to each of the clients of the user.
 
+* **Direct queues:** Indexed by user name, the direct queues contain the same sub-records as a fan-out queue (see above).
+  * **Owning client key:** Authorizes the holder to dequeue (i.e. fetch and delete) messages in the queue, as well as to change the queue configuration such as the authentication keys.
+  * **Queue deletion key:** Public signature key owned by the client and used to authorize deletion requests for this queue.
+  * **Queue encryption key material:** Key material to perform [queue encryption](./queuing_service/queue_encryption.md).
+    * **Owner HPKE key:** HPKE public key of the queue owner
+    * **Encryption ratchet key:** Symmetric key used to derive queue encryption keys.
+  * **Current sequence number:** The current message sequence number.
+  * **Queued messages:** A sequence of ciphertexts containing the messages in the queue. Each incoming message is [encrypted](./queuing_service/queue_encryption.md) and is assigned the current sequence number, after which the current sequence number is incremented..
+
 ## User account registration
 
 The user registration functionality delegates authentication to an OpenID connect-capable identity provider. In particular, it requests the scopes *openid* (for authentication).
@@ -28,12 +39,11 @@ The user registration functionality delegates authentication to an OpenID connec
 
 After the user authenticates to the IdP, the AS stores the user's IdP identity (`sub` in the openid claim) along with the user's user name.
 
-After registration of the data above, the user registers its first client. The client creates a credential submits it for signature by the AS (see [here](./authentication_service.md#credential-signature-requests-csrs)). The AS validates the credential, signs it and returns it to the client. The client then sends the initial EID state to the AS, which it again validates and stores.
+After registration of the data above, the user registers its first client. The client creates a [client credential signing request](authentication_service/credentials.md#client-credential-signing-requests) and submits it for signature by the AS (see [here](./authentication_service.md#credential-signature-requests-csrs)). The AS validates the credential, signs it and returns it to the client. The client then sends the initial EID state to the AS, which it again validates and stores.
 
 Finally, the client requests anonymous tokens so that it can create its queues at the queuing service and create its all-clients group.
 
 TODO: We probably want a bearer token to authenticate towards the AS for anonymous auth token retrieval, profile changes and other directly authenticated endpoints. I'm not sure, but I think we get this from the IdP.
-TODO: Add links to definition of credentials and information on how they are verified, as well as to the token issuance section.
 
 ## User account deletion
 
@@ -41,7 +51,7 @@ This functionality allows users to log in with an existing client and delete the
 
 ## User account reset/recovery
 
-TODO: Document account recovery, either via an exportable recovery key ("paper backup"), or just via login.
+TODO: Document account recovery, either via an exportable recovery key ("paper backup"), or just via login. Alternatively flag it as future work, document the difficulties, as well as approaches we have thought about.
 
 ## Evolving identities submissions
 

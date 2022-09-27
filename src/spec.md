@@ -1,5 +1,11 @@
 # Specification (Draft)
 
+TODO: Create a (sub?) chapter that contains a high-high level overview over how the homeserver generally works. The overview should be somewhat accessible to non-technical readers and ideally contain images explaining functionality and message flow.
+
+TODO: Not sure if we want to do this right away, but we might want to separate the protocol parts from the implementation-specific parts. For example, timestamps and expiration dates should probably be mostly implementation considerations.
+
+TODO: We need a name for this protocol.
+
 This section contains a draft of the MLS homeserver specification. It is currently a rough sketch, but the goal is for it to fulfill the [functional requirements](./functional_requirements.md) and be the target for analysis via the [threat model](./threat_model.md).
 
 The specification is split into subsections according to the modular structure of the homeserver. In particular, the specification covers the following modules.
