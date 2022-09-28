@@ -22,6 +22,11 @@ Parts of the group state are additionally encrypted such that they are only read
 * The key is fixed and is never rotated
 * Future work: The key should be rotated (see below)
 
+### Future work: Smarter EID and EID update encryption
+
+* Encrypt the end-to-end EID updates in such a way that the DS can read them and apply them to the stored EID state
+* This would allow clients to update the encrypted EID state on the server in an incremental fashion
+
 ## Future work: Key rotating encryption
 
 This scheme allows the simultaneous use of two secrets for decryption, such that two keys are always valid at a time. The use of two valid keys at a time allows the rotation of keys in a fixed interval.

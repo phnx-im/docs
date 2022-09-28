@@ -1,4 +1,4 @@
-# Evolving Identity (EID)
+# Future work: Evolving Identity (EID)
 
 On a high level, the evolving identity represents a user's identity, which in turn is composed of the cryptographic identities of all of the user's devices.
 

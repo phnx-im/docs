@@ -61,3 +61,6 @@ The EID submission functionality allows a client to submit an MLS message, which
 
 The EID look up functionality is provided to other clients, both local and federated. Given a user name, the AS will check if there exists an EID matching that user name. If that is the case, it will return the EID. If not, it will respond that the given user doesn't exist.
 
+## Future work: Evolving Identity
+
+For now, the AS relies on [client credential chains](glossary.md#client-credential-chain), but in the future, client authentication should be achieved using [evolving identity](authentication_service/evolving_identities.md).

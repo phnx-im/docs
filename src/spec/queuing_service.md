@@ -1,23 +1,18 @@
 # Queuing Service (QS)
 
-TODO: Since this service is also publishing KeyPackages now, it should get a new name.
-
 The main purpose of the queuing service is to store-and-forward messages delivered by the [delivery service](./delivery_service.md). In this chapter we discuss the various concepts used by the QS to provide its functionalitites, as well as its individual endpoints.
 
 ## QS state
 
 The QS keeps the following state.
 
-TODO: Include push tokens
-TODO: Add future work: SPAM/HAM management
-TODO: Endpoint for websocket negotiation
-
-* **Pseudonymous user records:** Indexed by a UUID, each record contains a number of sub fields.
+* **Pseudonymous user records:** Indexed by a [PUID](glossary.md#pseudonymous-user-id-puid), each record contains a number of sub fields.
   * **QS user auth key:** Public signature key used by a user to authenticate itself as the owner of this record.
   * **Friendship token:** Clients have to provide the friendship token to obtain a bundle of KeyPackages for a given user.
-  * **Client specific records:** For each of the user's clients, the QS keeps the following state. Indexed by a UUID.
-    * **KeyPackages:** Encrypted KeyPackages, each with an encrypted intermediate client credential attached. At least one KeyPackage has to be marked as KeyPackage of last resort.
+  * **Client specific records:** For each of the user's clients, the QS keeps the following state. Indexed by a [PCID](glossary.md#pseudonymous-client-id-pcid).
+    * **KeyPackages:** Encrypted KeyPackages, each with an encrypted [client credential chain](./glossary.md#client-credential-chain) attached. At least one KeyPackage has to be marked as KeyPackage of last resort.
     * **Owning client key:** Authenticates the owner of this client record and authorizes them to dequeue (i.e. fetch and delete) messages in the queue, as well as to change the queue configuration such as the authentication keys, or to add entries to the block list. Also authorizes the client to upload KeyPackages.
+    * **Optional push token:** The client's (optional) push token, stored encrypted at rest under the client's push token encryption key. Used by the QS to create a push notification for the client if a message is enqueued that includes the required encryption key.
     * **Fan-out queue:** A fan-out queue with a number of further record fields attached.
       * **Queue encryption key material:** Key material to perform [queue encryption](./queuing_service/queue_encryption.md).
         * **Owner HPKE key:** HPKE public key of the queue owner
@@ -41,6 +36,10 @@ Clients can fetch the QS' queue ID encryption key through this endpoint.
 ### Fetch QS signing key
 
 A DS or QS can fetch the QS' signing key through this endpoint.
+
+### Negotiate websocket connection
+
+Allows a client to create a websocket connection with the QS. If such a websocket connection exists then whenever the QS would send a push notification, it instead signals the client via the websocket connection.
 
 ## User record management endpoints
 
