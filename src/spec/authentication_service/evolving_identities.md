@@ -36,3 +36,5 @@ In a future iteration, users will be able to change their user name by terminati
 There is currently no way for other clients to judge how recent a given EID state is. Having a strict bound on how recent an EID is required to be is important to ensure prompt propagation of client removal. Adding a "ticket", i.e. a signed message from the AS containing a time stamp and the hash of the EID state could help with this.
 
 The protocol would then be extended by requiring clients to regularly upload a ticket attesting the validity and recency of the EID state currently uploaded to the group. Clients receving a message from another client could then always require that the client's AS ticket be recent (for a configurable definition of "recent").
+
+It's not clear yet, though, what exactly the AS should sign, since it doesn't know the ciphertext used in each group, so it can only sign the plaintext, which the DS can't check.

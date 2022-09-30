@@ -108,6 +108,19 @@ struct WelcomeAttributionInfo {
 }
 ```
 
+## WelcomeBundle
+
+A bundle allowing a client to join a new group.
+
+```rust
+struct WelcomeBundle {
+    welcome: Welcome,
+    welcome_attribution_info: WelcomeAttributionInfo,
+    encrypted_ear_key: Vec<u8>,
+    group_id: GroupId,
+}
+```
+
 ## User KeyPackage batch
 
 When a client retrieves KeyPackage from a QS for a given user, the QS responds with a UserKeyPackageBatch.
@@ -124,25 +137,17 @@ struct UserKeyPackageBatch {
 
 A set of keys known to contacts of a user.
 
-### Friendship base key
-
-Secret shared by a user with all of its friends.
-
 ### Friendship encryption key
 
-A key derived from the friendship base key with the following label
+A symmetric key used to encrypt the credential information attached to KeyPackages, as well as the WelcomeAttributionInfo. This key is never rotated.
 
-```rust
-"mls infra friendship encryption key"
-```
+#### Future work: Rotate friendship encryption key
+
+Rotating the friendship encryption key can lead to annoying race conditions (e.g. a Welcome sent short before the key was rotated). If we want to rotate it, we could use key ids (see [here](./delivery_service/group_state_encryption.md)) and a grace period before an old key is not accepted anymore.
 
 ### Friendship token
 
-A key derived from the friendship base key with the following label
-
-```rust
-"mls infra friendship friendship token"
-```
+A random byte string that is used by contacts of a user to retrieve the user's key packages. Can be rotated by the user by updating the value on its QS and broadcasting it to all of the user's (remaining) contacts.  
 
 ## Client credential chain
 

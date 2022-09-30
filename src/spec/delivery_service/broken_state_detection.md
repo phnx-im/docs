@@ -11,7 +11,7 @@ As a general rule, if an Admin breaks the group state in such a way that the DS 
 * Clients can send a valid-looking commit (from the DS' point of view), where the update path includes invalid (encrypted) path secrets for one or more subtrees of the committer's direct path.
     * Proposed mitigation: The affected clients can resync. It's not clear if it makes sense for affected clients to react differently depending on the role of the attacking client.
 * Clients can upload an encrypted, but broken client credential chain. This will be detected by all other clients. The two sections below propose a detection + reaction strategy, as well as a prevention strategy.
-
+* Clients can corrupt the user profile information of the DS when adding new clients, either by Welcome or by External commit(see the "Join group with new client" endpoint description)
 
 ## Future work (stage 1): Detection and removal of the offending user
 

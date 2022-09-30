@@ -18,6 +18,7 @@
         - [Adding New Devices](spec/authentication_service/new_device_flow.md)
     - [Delivery service](spec/delivery_service.md)
         - [Group state encryption](spec/delivery_service/group_state_encryption.md)
+        - [Broken state detection](spec/delivery_service/broken_state_detection.md)
     - [Queuing service](spec/queuing_service.md)
         - [Queue types](spec/queuing_service/queue_types.md)
         - [Queue encryption](spec/queuing_service/queue_encryption.md)
@@ -26,5 +27,5 @@
     - [Clients](spec/clients.md)
         - [Client synchronization](spec/clients/client_sync.md)
     - [Future work](spec/future_work.md)
-    - [Glossary]()
+    - [Glossary](./spec/glossary.md)
 

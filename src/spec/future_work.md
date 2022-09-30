@@ -13,3 +13,7 @@ Currently, all queue configs are [sealed](glossary.md#sealed-queue-config). This
 ## Improved spam management for fan-out queues
 
 Friends of a user can currently invite the user's clients to large, very active groups and thus create a large influx of messages for the user's clients. This can be used to spam the user and there is currently no mitigation other than the use of privacy pass tokens. It would be good to allow the QS to categorize incoming messages into SPAM/HAM messages, where in the background, clients only download HAM messages and wait until the application is in the foreground to retrieve SPAM messages as well. This would also allow other UX modes, where the user has to first actively accept joining a group before the client downloads the corresponding SPAM messages.
+
+#### Future work: Tighter authentication
+
+The AuthTokens required for client-side authentication by QS and DS prove that the client owns a signature key and are bound losely to the context in which they are used. However, having the signature cover the whole request would provide a tighter bind between authentication and context. One drawback is that we either have to re-serialize the request to sign/verify, or that we have to fix the general request serialization scheme to a deterministic one that accommodates signatures.
