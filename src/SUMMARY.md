@@ -8,3 +8,4 @@
 - [Performance Goals](./performance_goals.md)
 - [Threat Model](./threat_model.md)
 - [Cryptographic Primitives and Schemes](./cryptographic_primitives.md)
+- [Authentication in messaging applications](./authentication_systems.md)
