@@ -47,10 +47,6 @@ struct PseudonymousClientId {
 
 A public HPKE key owned by a homeserver's QS. It is used by the homeserver's clients to encrypt their [sealed queue configs](glossary.md#sealed-queue-config). The QS holds the private key so that it can decrypt the sealed queue configs when receiving messages.
 
-## Pseudonymous client record key
-
-A public HPKE key owned by a client and stored in the client's pseudonymous record on the client's QS. Used to authenticate the client as the owner of the record.
-
 ## Sealed queue config
 
 The sealed queue config is a struct that contains the information required by a DS to deliver messages to a client. In particular, the sealed queue config contains the following data.
@@ -67,7 +63,7 @@ struct QueueConfig {
 }
 ```
 
-The `SealedQueueConfig` is the client's `QueueConfig` encrypted using HPKE in the asymmetrically authenticated mode using the `QueueConfigEncryptionKey` of the client's QS and the client's own [pseudonymous client record key](glossary.md#pseudonymous-client-record-key).
+The `SealedQueueConfig` is the client's `QueueConfig` encrypted using HPKE in the asymmetrically authenticated mode using the `QueueConfigEncryptionKey` of the client's QS and the client's own [pseudonymous client record key](glossary.md#client-record-auth-key).
 
 ## RolesExtension
 
@@ -115,7 +111,7 @@ A bundle allowing a client to join a new group.
 ```rust
 struct WelcomeBundle {
     welcome: Welcome,
-    welcome_attribution_info: WelcomeAttributionInfo,
+    encrypted_welcome_attribution_info: Vec<u8>,
     encrypted_ear_key: Vec<u8>,
     group_id: GroupId,
 }
@@ -123,13 +119,24 @@ struct WelcomeBundle {
 
 ## User KeyPackage batch
 
-When a client retrieves KeyPackage from a QS for a given user, the QS responds with a UserKeyPackageBatch.
+When a client retrieves KeyPackages from a QS for a given user, the QS responds with the KeyPackages, the associated Intermediate Client credentials, as well as a UserKeyPackageBatch.
 
 ```rust
 struct UserKeyPackageBatch {
   key_package_refs: Vec<KeyPackageRef>,
   timestamp: Timestamp,
   signature: Signature,
+}
+```
+
+## KeyPackage Tuple
+
+A tuple consisting of a KeyPackage and the associated [Intermediate Client Credential](authentication_service/credentials.md#intermediate-client-credentials), where the latter is encrypted under the user's current [friendship encryption key](glossary.md#friendship-encryption-key).
+
+```rust
+struct KeyPackageTuple {
+    key_package: KeyPackage,
+    icc_ciphertext: Vec<u8>,
 }
 ```
 
@@ -147,8 +154,53 @@ Rotating the friendship encryption key can lead to annoying race conditions (e.g
 
 ### Friendship token
 
-A random byte string that is used by contacts of a user to retrieve the user's key packages. Can be rotated by the user by updating the value on its QS and broadcasting it to all of the user's (remaining) contacts.  
+A random byte string that is used by contacts of a user to retrieve the user's key packages. Can be rotated by the user by updating the value on its QS and broadcasting it to all of the user's (remaining) contacts.
 
 ## Client credential chain
 
 A tuple consisting of an intermediate client credential and a client credential. Used to authenticate individual clients in the context of an MLS group. Stored on the DS encrypted under the group's [credential encryption key](delivery_service/group_state_encryption.md).
+
+## Queue encryption key
+
+HPKE public key associated with a client's fan-out or direct queue and used to facilitate [at-rest encryption of messages in the queue](queuing_service/queue_encryption.md).
+
+## Client record auth key
+
+Signature public key associated with a pseudonymous client record. Used by the QS to authenticate the owning client.
+
+## User record auth key
+
+Signature public key associated with a pseudonymous user record. Used by the QS to authenticate the user's clients.
+
+## QS signing key
+
+Signature key used by federated QS' to authenticate the owning QS, as well as by a local or federated DS to verify signatures on [user KeyPackage batches](./glossary.md#user-keypackage-batch).
+
+## Fan out message
+
+Message sent from the DS to its local QS, either for forwarding to another QS or for enqueuing into a local queue.
+
+```rust
+enum FanOutMessage {
+    Commit(MlsMessage),
+    Application(MlsMessage),
+    WelcomeBundle(WelcomeBundle),
+}
+
+```
+
+## Last resort extension
+
+A KeyPackage extension that marks the given KeyPackage as a [KeyPackage of last resort](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-keypackage-reuse).
+
+## Push-token encryption key
+
+A symmetric encryption key that a client uses to encrypt its push-token on its pseudonymous client record. It is part of the client's encrypted [QueueConfig](glossary.md#sealed-queue-config).
+
+## QueueConfig extension
+
+A KeyPackage extension that contains a client's [ClientQueueConfig](glossary.md#sealed-queue-config). This extension is required for all KeyPackages uploaded to a QS.
+
+## ConnectionGroup extension
+
+A GroupContext extension that contains no data, but the presence of which in a group indicates that the group is a [connection group](authentication_service/connection_establishment.md).

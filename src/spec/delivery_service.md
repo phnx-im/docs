@@ -50,7 +50,7 @@ The plaintext group state contains the following data:
 ## Proposal store
 
 * Proposal store is emptied after each successful commit
-* Proposals are added to the store either through user self removals, 
+* Proposals are added to the store either through user self removals,
 * If the proposal store is non-empty, the next commit must be a client update that contains all proposals in the proposal store. The DS must reject all other operations containing commits.
 * For all requests containing non-update commits, or commits that do not contain all proposals in the store, the DS will return an error message indicating the the proposal store is non-empty.
 
@@ -268,6 +268,25 @@ struct AddClientParamsAad {
 ##### Authentication
 
 * SenderId: UserKeyHash
+
+
+#### Join connection group
+
+```rust
+struct JoinConnectionGroupParams {
+  external_commit: Commit,
+}
+
+struct JoinConnectionGroupParamsAad {
+  encrypted_credential_information: Vec<u8>,
+}
+```
+
+* The DS checks if the group contains the [connection group extension](glossary.md#connectiongroup-extension). This endpoint must only be used to join connection groups.
+
+##### Authentication
+
+No additional authentication is required for this endpoint. The knowledge of the group's EAR key effectively authenticates the joining client.
 
 #### Add own clients
 
