@@ -374,7 +374,6 @@ Endpoints that are accessible by other services of the local homeserver. There i
 
 Enqueue a message on the queue of a client corresponding to the given ClientQueueConfig.
 
-
 ```rust
 struct LocalEnqueueMessageParams {
   client_queue_config: ClientQueueConfig,
@@ -385,5 +384,14 @@ struct LocalEnqueueMessageParams {
 The QS checks the `client_homeserver_domain` in the `client_queue_config`. If it is the homeserver's own domain, the QS decrypts the ciphertext and checks if the group ID given in the message is in the queue's blocklist. If it isn't, it enqueues the message.
 
 If the domain is not the homerserver's own domain, the QS calls the [federated enqueue message](queuing_service.md#federated-enqueue-message) endpoint of the QS of the corresponding domain.
+
+If the QS learns that a message couldn't be delivered due to a missing queue, either because a local lookup has failed, or due to a response from a federated QS, it reports the `client_queue_config` and the group ID back to the DS, where the GroupId is taken from the message.
+
+```rust
+struct QueueDeleted {
+  client_queue_config: ClientQueueConfig,
+  group_id: GroupId,
+}
+```
 
 #### Future work: Persist and EAR encrypt federated messages

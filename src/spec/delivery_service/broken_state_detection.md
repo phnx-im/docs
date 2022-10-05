@@ -1,8 +1,8 @@
 # Future work: Broken state detection and reaction
 
-Clients can provision their own encrypted [ICC](../authentication_service/credentials.md#intermediate-client-credentials) on the DS, as well as the owning user's [EID state](../authentication_service/evolving_identities.md). If a client provides broken values in this way, users that join the group can't authenticate the client or user, thus effectively breaking group joining. Since the state is encrypted and the DS can't (and shouldn't) learn the plaintext as to not fully identity the user or client, it cannot verify the validity of the encrypted ICC or EID state.
+Clients can provision their own encrypted [credential chain](../authentication_service/credentials.md#intermediate-client-credentials) on the DS. If a client provides broken values in this way, users that join the group can't authenticate the client or user, thus effectively breaking group joining. Since the state is encrypted and the DS can't (and shouldn't) learn the plaintext as to not fully identity the user or client, it cannot verify the validity of the encrypted credential chain.
 
-However, other clients can detect broken ICC or EID states of other clients and prove to the DS that an encrypted value is indeed invalid. With such a proof, the DS can allow the removal of the offending user, even if the reporting client is not a client of an admin user.
+However, other clients can detect broken credential chains of other clients and prove to the DS that an encrypted value is indeed invalid. With such a proof, the DS can allow the removal of the offending user, even if the reporting client is not a client of an admin user.
 
 ## Broken states and hidden invalid updates
 
@@ -19,4 +19,4 @@ TODO: Read up on franking and describe the scheme here. It's non-trivial, but we
 
 ## Future work (stage 2): Prevention using Zero-Knowledge Proofs
 
-Better than the detection plus reaction step would be to allow the DS to verify the encrypted ICC and EID using ZKPs provided by the client.
+Better than the detection plus reaction step would be to allow the DS to verify the encrypted credential chain using ZKPs provided by the client.

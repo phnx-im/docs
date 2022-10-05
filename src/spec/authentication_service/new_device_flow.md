@@ -1,4 +1,4 @@
-# Registering a new device
+# Future work: Registering a new device when using Evolving Identity
 
 To register a new client, the user needs to be in possession of one of his existing clients. To properly perform the [evolving identity](evolving_identities.md) (EID) operation and securely transfer data from the existing client to the new client, this chapter defines a protocol between new client, the owning user's homeserver and an existing client. The protocol proceeds roughly in the following steps:
 

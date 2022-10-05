@@ -16,16 +16,11 @@ Parts of the group state are additionally encrypted such that they are only read
 ## Credential encryption
 
 * Clients hold a Credentials Encryption Base Key (only known to clients)
-* Used to encrypt and decrypt EID state and Intermediate Client Creds (ICC)
+* Used to encrypt and decrypt credential chains
 * The client creating the group samples the key freshly upon group creation
 * Clients joining the group receive the key encrypted via a group info extension (i.e. either via a Welcome or via an External Init package)
 * The key is fixed and is never rotated
 * Future work: The key should be rotated (see below)
-
-### Future work: Smarter EID and EID update encryption
-
-* Encrypt the end-to-end EID updates in such a way that the DS can read them and apply them to the stored EID state
-* This would allow clients to update the encrypted EID state on the server in an incremental fashion
 
 ## Future work: Key rotating encryption
 
