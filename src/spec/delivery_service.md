@@ -87,7 +87,13 @@ struct GroupInfoUpdate {
 
 ## Message delivery
 
-In a variety of endpoints, the DS will send messages on to the local QS to enqueue in a local client's queue or to forward to a federated QS. In these cases, if the QS returns to the DS the information that a queue doesn't exist, the DS will assume that the queue was deleted and propose the removal of the corresponding group member as specified [here](delivery_service.md#ds-induced-removals).
+In a variety of endpoints, the DS will send messages on to the local QS to enqueue in a local client's queue or to forward to a federated QS. For the message format see [here](glossary.md#fan-out-message).
+
+In these cases, where the QS returns to the DS the information that a queue doesn't exist, the DS will assume that the queue was deleted and propose the removal of the corresponding group member as specified [here](delivery_service.md#ds-induced-removals).
+
+## Activity time
+
+Whenever a client sends a commit as part of a query to an endpoint, the DS updates the *activity time* and *activity epoch* of the sender.
 
 ## Client endpoints
 
@@ -408,7 +414,7 @@ struct SelfRemoveParams {
 
 #### Future work: Batch remove proposals
 
-With multiple individual proposals all parties have to verify multiple signatures. Ideally, it would be possible to batch remove proposals such that multiple clients can be removed with one proposal.
+With multiple individual proposals all parties have to verify multiple signatures. Ideally, it would be possible to batch remove proposals such that multiple clients can be removed with one proposal. This would require a custom proposal type on the level of MLS.
 
 ### Send application message
 
@@ -424,6 +430,27 @@ struct ApplicationMessageParams {
 #### Authentication
 
 None.
+
+### Delete group
+
+```rust
+struct DeleteGroupParams {
+  commit: MlsMessage,
+  ear_key: EarKey,
+}
+```
+
+* The commit must contain Remove proposals for all group members except for the sending client
+* Finally, the DS sends the `commit` to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.
+* After sending out the commit, the DS deletes the group state.
+
+#### Authentication
+
+* SenderId: UserKeyHash
+
+#### Future work: More efficient group deletion
+
+It might be nice to just commit to a message that indicates deletion of the group. Alternatively, one could use a batch remove proposal as mentioned [here](delivery_service.md#future-work-batch-remove-proposals).
 
 ## DS-induced removals
 

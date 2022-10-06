@@ -15,7 +15,7 @@ As a general rule, if an Admin breaks the group state in such a way that the DS 
 
 ## Future work (stage 1): Detection and removal of the offending user
 
-TODO: Read up on franking and describe the scheme here. It's non-trivial, but we know how to do it.
+One way of dealing with bad updates is to use franking and allow users prove to the DS that a given update to the group state was broken. The DS can then allow ordinary members to remove the member. Note that it's proabably a reasonable trade-off that the identity of the offender is revealed to the DS in the reporting process. However, revealing group secrets is not.
 
 ## Future work (stage 2): Prevention using Zero-Knowledge Proofs
 

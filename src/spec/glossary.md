@@ -181,12 +181,16 @@ Signature key used by federated QS' to authenticate the owning QS, as well as by
 Message sent from the DS to its local QS, either for forwarding to another QS or for enqueuing into a local queue.
 
 ```rust
-enum FanOutMessage {
+enum MessageContent {
     Commit(MlsMessage),
     Application(MlsMessage),
     WelcomeBundle(WelcomeBundle),
 }
 
+struct FanOutMessage {
+    client_queue_configs: Vec<ClientQueueConfig>,
+    message_content: MessageContent,
+}
 ```
 
 ## Last resort extension

@@ -47,6 +47,8 @@ The QS keeps the following state.
 * Maximal client record age: Maximal age of an inactive client record.
   * Default: 90d
 * Maximal number of requested messages: Maximal number of messages that will be returned to a client requesting messages from a queue.
+  * Default: 500
+* Ratchet key rotation interval: Interval in which queue encryption ratchet keys are rotated. See [here](queuing_service/queue_encryption.md) for more details on queue encryption.
 
 
 ## Authentication
@@ -82,14 +84,18 @@ A DS or QS can fetch the [QS' signing key](./glossary.md#qs-signing-key) through
 
 ### Federated enqueue message
 
-A remote QS can enqueue a message by providing the QS with an encrypted pseudonymous client ID, as well as a message to enqueue in the queue specified by the encrypted ID. It decrypts the ciphertext and checks if the group ID given in the message is in the queue's blocklist. If it isn't, it enqueues the message.
+This endpoint allows a remote QS to enqueue a [fan-out message](glossary.md#fan-out-message).
+
+The (receiving) QS decrypts the ciphertext and checks if the client record exists. If it doesn't, it responds to the sending QS with the following message.
 
 ```rust
-struct FederatedEnqueueMessageParams {
+struct QueueDeleted {
   client_queue_config: ClientQueueConfig,
-  message: FanOutMessage,
+  group_id: GroupId,
 }
 ```
+
+If the client record exists, the QS checks if the group ID given in the message is in the blocklist of the associated queue. If it isn't, the QS enqueues the message.
 
 #### Inter-QS Authentication
 
@@ -372,26 +378,14 @@ Endpoints that are accessible by other services of the local homeserver. There i
 
 ### Local enqueue message
 
-Enqueue a message on the queue of a client corresponding to the given ClientQueueConfig.
-
-```rust
-struct LocalEnqueueMessageParams {
-  client_queue_config: ClientQueueConfig,
-  message: FanOutMessage,
-}
-```
+Receive a [fan-out-message](glossary.md#fan-out-message) to store-and-forward to local clients with the specified ClientQueueConfigs.
 
 The QS checks the `client_homeserver_domain` in the `client_queue_config`. If it is the homeserver's own domain, the QS decrypts the ciphertext and checks if the group ID given in the message is in the queue's blocklist. If it isn't, it enqueues the message.
 
 If the domain is not the homerserver's own domain, the QS calls the [federated enqueue message](queuing_service.md#federated-enqueue-message) endpoint of the QS of the corresponding domain.
 
-If the QS learns that a message couldn't be delivered due to a missing queue, either because a local lookup has failed, or due to a response from a federated QS, it reports the `client_queue_config` and the group ID back to the DS, where the GroupId is taken from the message.
-
-```rust
-struct QueueDeleted {
-  client_queue_config: ClientQueueConfig,
-  group_id: GroupId,
-}
-```
+If the QS learns that a message couldn't be delivered due to a missing queue, either because a local lookup has failed, or due to a response from a federated QS, it reports the `client_queue_config` and the group ID back to the DS via a [QueueDeleted](queuing_service.md#federated-enqueue-message) message.
 
 #### Future work: Persist and EAR encrypt federated messages
+
+We can't expect federated homeservers to be online all the time. Instead of sending the messages immediately, they should be stored-and-forwarded via a queue and encrypted-at-rest in the same way as with client queues.
