@@ -12,6 +12,10 @@ The AS is configurable by use of the following configuration variables:
 * **Maximal client record age:** Maximal age of an inactive client entry.
   * Default: 90d
 * **Maximal number of requested messages:** Maximal number of messages that will be returned to a client requesting messages from a direct queue.
+* **Identity provider (IdP):** Provider used for user authentication
+  * **Provider URL:** URL under which the provider (issuer) can be reached
+  * **Client ID:** ID of the AS as the IdP's client
+  * **Client secret:** Secret which the AS can use to authenticate itself towards the IdP
 
 ## AS state
 
@@ -23,6 +27,7 @@ The AS generally keeps the following state
     * **Client credential:** The [credential](authentication_service/credentials.md#client-credentials) of the client.
     * **Token issuance records:** A record of how many tokens were issued to the client.
     * **Activity time:** Timestamp indicating the last time a client has fetched messages from the queue.
+    * **Connection establishment KeyPackage:** A key package used to encrypt information in the [connection establishment process](authentication_service/connection_establishment.md).
     * **Direct queue:** A queue similar to the fan-out queues on the QS.
       * **Queue encryption key material:** Key material to perform [queue encryption](./queuing_service/queue_encryption.md).
         * **Queue encryption key:** HPKE public key of the queue owner
@@ -175,7 +180,7 @@ The AS deletes messages older than the given sequence number and returns message
 
 ## Enqueue message
 
-TODO
+Enqueue a message into a clien'ts direct queue.
 
 ## Get AS credentials
 

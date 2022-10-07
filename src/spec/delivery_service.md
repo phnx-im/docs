@@ -255,6 +255,7 @@ struct ClientUpdateParamsAad {
   * The commit must contain an update path, as well as all pending proposals
   * If the credential in the sender's KeyPackage has changed, there must be encrypted credential information in the AAD
 * If there is encrypted client credential information in the commit's AAD, the DS also updates its corresponding state
+* If a remove proposal is committed as part of the commit, the DS removes the associated client profile and updates the owning user's user profile. If the remove proposal removes the last client of a user, it also removes the associated user profile.
 * If the KeyPackageRef of the updating client (prior to applying the update) is in one of the *joining clients* vectors in the group's storage of old group states, the DS removes that KeyPackageRef from the vector. If this leaves te vector empty, the DS removes this particular copy of the group state.
 * Finally, the DS sends the `commit` to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.
 

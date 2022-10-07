@@ -1,6 +1,6 @@
 # Specification (Draft)
 
-This section contains a draft of the MLS homeserver specification. It is currently a rough sketch, but the goal is for it to fulfill the [functional requirements](./functional_requirements.md) and be the target for analysis via the [threat model](./threat_model.md).
+This section contains a draft of the MLS homeserver specification. It is currently in an early draft status, but the goal is for it to fulfill the [functional requirements](./functional_requirements.md) and be the target for analysis via the [threat model](./threat_model.md).
 
 The specification is split into subsections according to the modular structure of the homeserver. In particular, the specification covers the following modules.
 
@@ -16,7 +16,7 @@ The anonymous authentication module allows the operator of the homeserver to rat
 
 ## Queuing Service (QS)
 
-The queuing service stores queued messages for each client and forwards messages to remote queuing services. It also manages KeyPackages that allow users to add connected users to groups. After registration with the AS, clients can create a pseudonymous group message queue and upload KeyPackages. The homeserver's DS can deliver messages to individual queues and ask the QS to store-and-forward messages to remote QS'.
+The queuing service stores queued messages for each client and forwards messages to remote queuing services. It also stores MLS KeyPackages uploaded by clients that allow users to add connected users to groups. After registration with the AS, clients can create a pseudonymous group message queue and upload KeyPackages. The homeserver's DS can deliver messages to individual queues and ask the QS to store-and-forward messages to remote QS'.
 
 The queues and KeyPackages of a user's clients are organized on the QS in a pseudonymous user record. The record is not linked directly to the user's real identity on the AS and prevents the homeserver from gathering metadata of individual users. For more information see the homeserver's [threat model](threat_model.md).
 

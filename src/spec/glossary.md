@@ -117,6 +117,8 @@ struct WelcomeBundle {
 }
 ```
 
+The EAR key and the WelcomeAttributionInfo are encrypted under the joining client's friendship encryption key.
+
 ## User KeyPackage batch
 
 When a client retrieves KeyPackages from a QS for a given user, the QS responds with the KeyPackages, the associated Intermediate Client credentials, as well as a UserKeyPackageBatch.
@@ -142,7 +144,7 @@ struct KeyPackageTuple {
 
 ## Friendship keys
 
-A set of keys known to contacts of a user.
+A set of keys known to users that the owning user has a [connection](authentication_service/connection_establishment.md) with.
 
 ### Friendship encryption key
 
@@ -154,7 +156,7 @@ Rotating the friendship encryption key can lead to annoying race conditions (e.g
 
 ### Friendship token
 
-A random byte string that is used by contacts of a user to retrieve the user's key packages. Can be rotated by the user by updating the value on its QS and broadcasting it to all of the user's (remaining) contacts.
+A random byte string that is used by users to prove that they have a [connection](authentication_service/connection_establishment.md) with the owning user, which in turn allows them to fetch the user's key packages. Can be rotated by the owning user by updating the value on its QS and broadcasting it to all of the user's (remaining) connections.
 
 ## Client credential chain
 
