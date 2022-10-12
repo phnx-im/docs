@@ -6,6 +6,10 @@ Parts of the group state are additionally encrypted such that they are only read
 
 ## Encryption at rest (EAR)
 
+With each group operation request, clients include the group's EAR key, which allows the DS to decrypt the group state, perform the group operation and re-encrypt the group state afterwards.
+
+A group's EAR key is freshly sampled at the group's inception and is not rotated until the group is deleted.
+
 * Clients send the key to the server for each operation
 * The key is used to encrypt the whole group state
 * The client creating the group samples the key freshly upon group creation

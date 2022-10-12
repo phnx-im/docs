@@ -99,21 +99,35 @@ Whenever a client sends a commit as part of a query to an endpoint, the DS updat
 
 Endpoints meant to be used by clients registered with the homeserver.
 
+### Request group id
+
+Request a fresh group id for use with the [create group](delivery_service.md#create-group) endpoint. The DS samples a fresh group id, checks for collisions and, if none are found, enters the group id as a placeholder into the database. If a collision is found, the DS re-samples until there are no collisions.
+
+```rust
+struct RequestGroupIdResponse {
+  group_id: GroupId,
+}
+```
+
+#### Authentication
+
+* None
+
 ### Create group
 
 ```rust
 struct CreateGroupParams {
+  group_id: GroupId,
   key_package: KeyPackage,
   encrypted_credential_chain: Vec<u8>,
   creator_queue_config: ClientQueueConfig,
   creator_user_auth_key: UserAuthKey,
+  group_info: GroupInfo,
   initial_ear_key: EarKey,
 }
 ```
 
-* The DS samples a group ID, creates the group and returns the group ID.
-* The GroupInfo remains empty until the client updates for the first time.
-* Until then, the group cannot be used for external commit-style updates.
+* The DS checks if there is a placeholder in the group database for this id. If there is, it creates the group database entry.
 
 #### Authentication
 

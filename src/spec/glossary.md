@@ -22,23 +22,23 @@ struct ClientId {
 }
 ```
 
-## Pseudonymous User ID (PUID)
+## QS User ID (QsUid)
 
-The ID of a pseudonymous user record on the user's QS.
+The ID of a QS user record.
 
 ```rust
-struct PseudonymousUserId {
+struct QsUid {
     user_id: UUID,
 }
 ```
 
-## Pseudonymous Client ID (PCID)
+## QS client ID (QsCid)
 
-The ID representing a client in the owning user's pseudonymous user record on the client's QS.
+The ID representing a client in the owning user's QS user record.
 
 ```rust
 struct PseudonymousClientId {
-    puid: PseudonymousUserId,
+    qs_uid: QsUid,
     client_id: UUID,
 }
 ```
@@ -63,7 +63,7 @@ struct QueueConfig {
 }
 ```
 
-The `SealedQueueConfig` is the client's `QueueConfig` encrypted using HPKE in the asymmetrically authenticated mode using the `QueueConfigEncryptionKey` of the client's QS and the client's own [pseudonymous client record key](glossary.md#client-record-auth-key).
+The `SealedQueueConfig` is the client's `QueueConfig` encrypted using HPKE in the asymmetrically authenticated mode using the `QueueConfigEncryptionKey` of the client's QS and the client's own [QS QS client record key](glossary.md#qs-client-record-auth-key).
 
 ## RolesExtension
 
@@ -131,12 +131,12 @@ struct UserKeyPackageBatch {
 }
 ```
 
-## KeyPackage Tuple
+## AddPackage
 
-A tuple consisting of a KeyPackage and the associated [Intermediate Client Credential](authentication_service/credentials.md#intermediate-client-credentials), where the latter is encrypted under the user's current [friendship encryption key](glossary.md#friendship-encryption-key).
+A struct consisting of a KeyPackage and the associated [Intermediate Client Credential](authentication_service/credentials.md#intermediate-client-credentials), where the latter is encrypted under the user's current [friendship encryption key](glossary.md#friendship-encryption-key).
 
 ```rust
-struct KeyPackageTuple {
+struct AddPackage {
     key_package: KeyPackage,
     icc_ciphertext: Vec<u8>,
 }
@@ -166,13 +166,13 @@ A tuple consisting of an intermediate client credential and a client credential.
 
 HPKE public key associated with a client's fan-out or direct queue and used to facilitate [at-rest encryption of messages in the queue](queuing_service/queue_encryption.md).
 
-## Client record auth key
+## QS client record auth key
 
-Signature public key associated with a pseudonymous client record. Used by the QS to authenticate the owning client.
+Signature public key associated with a QS QS client record. Used by the QS to authenticate the owning client.
 
-## User record auth key
+## QS user record auth key
 
-Signature public key associated with a pseudonymous user record. Used by the QS to authenticate the user's clients.
+Signature public key associated with a QS user record. Used by the QS to authenticate the user's clients.
 
 ## QS signing key
 
@@ -201,7 +201,7 @@ A KeyPackage extension that marks the given KeyPackage as a [KeyPackage of last 
 
 ## Push-token encryption key
 
-A symmetric encryption key that a client uses to encrypt its push-token on its pseudonymous client record. It is part of the client's encrypted [QueueConfig](glossary.md#sealed-queue-config).
+A symmetric encryption key that a client uses to encrypt its push-token on its QS QS client record. It is part of the client's encrypted [QueueConfig](glossary.md#sealed-queue-config).
 
 ## QueueConfig extension
 

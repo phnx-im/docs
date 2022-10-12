@@ -2,7 +2,7 @@
 
 All pieces of state on the homeserver either have an explicit expiration date, or a timestamp that indicates the last time of use. For each type of state that is timestamped, the homeserver component has a configuration option detailing when the state expires and can be deleted.
 
-Since this rule also goes for user records, users (or at least one of their clients) have to be active periodically as not to be deleted from the homeserver.
+Since this rule also goes for QS user records, users (or at least one of their clients) have to be active periodically as not to be deleted from the homeserver.
 
 Similarly, key material with an expiration date (such as KeyPackages or [AS credentials](../authentication_service/credentials.md#as-credentials)) has to be rotated in time.
 

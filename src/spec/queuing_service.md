@@ -6,11 +6,11 @@ The main purpose of the queuing service is to store-and-forward messages deliver
 
 The store-and-forwards functionality of the QS is designed in such a way that the QS cannot link the state it maintains for each of the homeserver's users with the user's actual identity as maintained by the AS.
 
-To avoid a connection with the user's actual identity, each user has a pseudonymous user record with a sub-record for each of the user's clients. The records are created by the user's clients when they register with the AS.
+To avoid a connection with the user's actual identity, each user has a QS user record with a sub-record for each of the user's clients. The records are created by the user's clients when they register with the AS.
 
 After creation, the user's clients can publish KeyPackages and fetch messages from their queue, as well as rotate the key material used for authentication, or for at-rest encryption of queued messages.
 
-The user record also contains the user's [friendship token](glossary.md#friendship-token), which the QS uses to authenticate requests for batches of the user's KeyPackages.
+The QS user record also contains the user's [friendship token](glossary.md#friendship-token), which the QS uses to authenticate requests for batches of the user's KeyPackages.
 
 The client-specific records contain the client's fan-out queue (for messages received from a local or a federated DS), as well as the KeyPackages published by the client. See [here](queuing_service/keypackage_publication.md) for more information on KeyPackage publication and how unlinkability between a user's real identity and its pseudonym is maintained.
 
@@ -20,13 +20,13 @@ The fan-out queue in turn contains an optional push-token (encrypted at-rest und
 
 The QS keeps the following state.
 
-* **Pseudonymous user records:** Indexed by a [PUID](glossary.md#pseudonymous-user-id-puid), each record contains a number of sub fields.
-  * **User record auth key:** [Public signature key](glossary.md#user-record-auth-key) used by a user to authenticate itself as the owner of this record.
+* **QS user records:** Indexed by a [QsUid](glossary.md#qs-user-id-qsuid), each record contains a number of sub fields.
+  * **QS user record auth key:** [Public signature key](glossary.md#qs-user-record-auth-key) used by a user to authenticate itself as the owner of this record.
   * **Friendship token:** Clients have to provide the friendship token to obtain a bundle of KeyPackages for a given user.
-  * **Client specific records:** For each of the user's clients, the QS keeps the following state. Indexed by a [PCID](glossary.md#pseudonymous-client-id-pcid).
+  * **Client specific records:** For each of the user's clients, the QS keeps the following state. Indexed by a [PCID](glossary.md#qs-client-id-qscid).
     * **Activity time:** Timestamp indicating the last time a client has fetched messages from the queue.
     * **KeyPackages:** Encrypted KeyPackages, each with an encrypted [client credential chain](./glossary.md#client-credential-chain) attached. At least one KeyPackage has to be marked as KeyPackage of last resort.
-    * **Public client record key:** [Public signature key](glossary.md#client-record-auth-key). Authenticates the owner of this client record and authorizes them to dequeue (i.e. fetch and delete) messages in the queue, as well as to change the queue configuration such as the authentication keys, or to add entries to the block list. Also authorizes the client to upload KeyPackages.
+    * **Public QS client record key:** [Public signature key](glossary.md#qs-client-record-auth-key). Authenticates the owner of this QS client record and authorizes them to dequeue (i.e. fetch and delete) messages in the queue, as well as to change the queue configuration such as the authentication keys, or to add entries to the block list. Also authorizes the client to upload KeyPackages.
     * **Optional push token:** The client's (optional) push token, stored encrypted at rest under the client's push token encryption key. Used by the QS to create a push notification for the client if a message is enqueued that includes the required encryption key.
     * **Fan-out queue:** A fan-out queue with a number of further record fields attached.
       * **Queue encryption key material:** Key material to perform [queue encryption](./queuing_service/queue_encryption.md).
@@ -44,11 +44,13 @@ The QS keeps the following state.
 
 * Maximal InterQsAuthToken age: Maximal age of an [InterQsAuthToken](./queuing_service.md#inter-qs-authentication) presented to the QS for inter-QS authentication.
   * Default: 1h
-* Maximal client record age: Maximal age of an inactive client record.
+* Maximal QS client record age: Maximal age of an inactive QS client record.
   * Default: 90d
 * Maximal number of requested messages: Maximal number of messages that will be returned to a client requesting messages from a queue.
   * Default: 500
 * Ratchet key rotation interval: Interval in which queue encryption ratchet keys are rotated. See [here](queuing_service/queue_encryption.md) for more details on queue encryption.
+* Maximal number of QS client records per user
+  * Default: 10
 
 
 ## Authentication
@@ -57,7 +59,7 @@ Messages from the client to the QS are authenticated by the client by providing 
 
 ```rust
 enum QsSenderId {
-  Puid(Puid),
+  QsUid(QsUid),
   Pcid(Pcid),
 }
 
@@ -71,8 +73,8 @@ struct QsAuthToken {
 
 The verification key used to create the token depends on the sender_id:
 
-* Puid: [User record auth key](./glossary.md#user-record-auth-key)
-* Pcid: [Client record auth key](./glossary.md#client-record-auth-key)
+* QsUid: [QS user record auth key](./glossary.md#qs-user-record-auth-key)
+* Pcid: [QS QS client record auth key](./glossary.md#qs-client-record-auth-key)
 
 ## Federation endpoints
 
@@ -86,7 +88,7 @@ A DS or QS can fetch the [QS' signing key](./glossary.md#qs-signing-key) through
 
 This endpoint allows a remote QS to enqueue a [fan-out message](glossary.md#fan-out-message).
 
-The (receiving) QS decrypts the ciphertext and checks if the client record exists. If it doesn't, it responds to the sending QS with the following message.
+The (receiving) QS decrypts the ciphertext and checks if the QS client record exists. If it doesn't, it responds to the sending QS with the following message.
 
 ```rust
 struct QueueDeleted {
@@ -95,7 +97,7 @@ struct QueueDeleted {
 }
 ```
 
-If the client record exists, the QS checks if the group ID given in the message is in the blocklist of the associated queue. If it isn't, the QS enqueues the message.
+If the QS client record exists, the QS checks if the group ID given in the message is in the blocklist of the associated queue. If it isn't, the QS enqueues the message.
 
 #### Inter-QS Authentication
 
@@ -119,11 +121,11 @@ Clients can fetch the QS' [queue config encryption key](./glossary.md#queueconfi
 
 ### User record management endpoints
 
-Endpoints for management of pseudonymous and non-pseudonymous user records. Note that pseudonymous user record is deleted with its last client record.
+Endpoints for management of QS user records. Note that a QS user record is deleted with its last QS client record.
 
-#### Create new pseudonymous user record
+#### Create new QS user record
 
-Create a new pseudonymous user record, as well as a first client record.
+Create a new QS user record, as well as a first QS client record.
 
 ```rust
 struct CreateUserRecordParams {
@@ -134,15 +136,15 @@ struct CreateUserRecordParams {
 }
 ```
 
-The QS creates the user record and client record, indexed by a freshly sampled Puid and Pcid. The QS returns both Puid and Pcid.
+The QS creates the QS user record and QS client record, indexed by a freshly sampled QsUid and Pcid. The QS returns both QsUid and Pcid.
 
-#### Edit pseudonymous user record
+#### Edit QS user record
 
-Edit a given user record, overwriting the existing values with the one given in the message.
+Edit a given QS user record, overwriting the existing values with the one given in the message.
 
 ```rust
 struct EditUserRecordParams {
-  puid: Puid,
+  qs_uid: QsUid,
   user_record_auth_key: SignaturePublicKey,
   friendship_token: FriendshipToken,
 }
@@ -150,15 +152,15 @@ struct EditUserRecordParams {
 
 ##### Authentication
 
-* QSSenderId: Puid
+* QSSenderId: QsUid
 
-#### Get own pseudonymous user record
+#### Get own QS user record
 
-Get the data associated with a given user record that you own.
+Get the data associated with a given QS user record that you own.
 
 ```rust
 struct GetUserRecordParams {
-  puid: Puid,
+  qs_uid: QsUid,
 }
 ```
 
@@ -168,37 +170,37 @@ The QS returns the following.
 struct GetUserRecordResponse {
   user_record_auth_key: SignaturePublicKey,
   friendship_token: FriendshipToken,
-  client_record_ids: Vec<Pcid>,
+  client_records: Vec<GetClientRecordResponse>,
 }
 ```
 
 ##### Authentication
 
-* QSSenderId: Puid
+* QSSenderId: QsUid
 
-#### Delete pseudonymous user record
+#### Delete QS user record
 
-Delete the given user record including all associated client records.
+Delete the given QS user record including all associated QS client records.
 
 ```rust
 struct DeleteUserRecordParams {
-  puid: Puid,
+  qs_uid: QsUid,
 }
 ```
 
 ##### Authentication
 
-* QSSenderId: Puid
+* QSSenderId: QsUid
 
-##### Future work: MFA for user or client record deletion
+##### Future work: MFA for user or QS client record deletion
 
 User and client deletion are very destructive operations. We should probably require MFA for the associated operations.
 
 ### Client record management
 
-#### Create new client record
+#### Create new QS client record
 
-Create a new client record with the given data.
+Create a new QS client record with the given data.
 
 ```rust
 struct CreateClientRecordParams {
@@ -211,11 +213,11 @@ The QS creates the record indexed by a freshly sampled Pcid and returns the Pcid
 
 ##### Authentication
 
-* QSSenderId: Puid
+* QSSenderId: QsUid
 
-#### Edit client record
+#### Edit QS client record
 
-Overwrite the data of the client record with the given PCID with the given data.
+Overwrite the data of the QS client record with the given PCID with the given data.
 
 ```rust
 struct EditClientRecordParams {
@@ -230,9 +232,9 @@ struct EditClientRecordParams {
 
 * QSSenderId: Pcid
 
-#### Get client record
+#### Get QS client record
 
-Get the data associated with the client record with the given PCID.
+Get the data associated with the QS client record with the given PCID.
 
 ```rust
 struct GetClientRecordParams {
@@ -254,9 +256,9 @@ struct GetClientRecordResponse {
 
 * QSSenderId: Pcid
 
-#### Delete client record
+#### Delete QS client record
 
-Delete the client record with the given PCID. The last client in a user record can only be deleted by deleting the user record itself.
+Delete the QS client record with the given PCID. The last client in a QS user record can only be deleted by deleting the QS user record itself.
 
 ```rust
 struct DeleteClientRecordParams {
@@ -266,18 +268,18 @@ struct DeleteClientRecordParams {
 
 ##### Authentication
 
-* QSSenderId: Puid
+* QSSenderId: QsUid
 
 #### Publish KeyPackages
 
-Publish the given [KeyPackageTuple](glossary.md#keypackage-tuple) under the given PCID.
+Publish the given [AddPackage](glossary.md#addpackage) under the given PCID.
 
-All of the KeyPackages contained in the tuples have to contain a [QueueConfigExtension](glossary.md#queueconfig-extension) and at least one of the KeyPackageTuple has to contain a KeyPackage marked as [KeyPackage of last resort](glossary.md#last-resort-extension).
+All of the KeyPackages contained in the AddPackages have to contain a [QueueConfigExtension](glossary.md#queueconfig-extension) and at least one of the AddPackage has to contain a KeyPackage marked as [KeyPackage of last resort](glossary.md#last-resort-extension).
 
 ```rust
 struct PublishKeyPackagesParams {
   pcid: Pcid,
-  key_package_tuples: Vec<KeyPackageTuple>,
+  add_packages: Vec<AddPackage>,
 }
 ```
 
@@ -298,7 +300,7 @@ Using the same KeyPackage of last resort in multiple groups can allow a federate
 
 #### Get client KeyPackage
 
-Get the KeyPackage of the client with the given PCID. This allows clients of a user to fetch individual KeyPackagesTuples for other clients of the same user. These individual KeyPackageTuples are required to add new clients to existing groups.
+Get the KeyPackage of the client with the given PCID. This allows clients of a user to fetch individual AddPackages for other clients of the same user. These individual AddPackages are required to add new clients to existing groups.
 
 ```rust
 struct GetClientKeyPackageParams {
@@ -306,35 +308,34 @@ struct GetClientKeyPackageParams {
 }
 ```
 
-The QS returns one of the client's KeyPackageTuples and deletes the KeyPackageTuple afterwards (except if it contains a KeyPackage of last resort.)
+The QS returns one of the client's AddPackages and deletes the AddPackage afterwards (except if it contains a KeyPackage of last resort.)
 
 ##### Authentication
 
-* QSSenderId: Puid
+* QSSenderId: QsUid
 
 #### Get KeyPackage batch
 
-Get a [KeyPackageBatch](glossary.md#user-keypackage-batch) of the user with the given PUID.
+Get a [KeyPackageBatch](glossary.md#user-keypackage-batch) of the user with the given friendship token.
 
 ```rust
 struct GetKeyPackageBatchParams {
-  puid: Puid,
   friendship_token: FriendshipToken,
 }
 ```
 
-The QS checks the [FriendshipToken](glossary.md#friendship-token) and if correct returns a [KeyPackageTuple](glossary.md#keypackage-tuple) of each of the user's clients, along with a signed [KeyPackageBatch](glossary.md#user-keypackage-batch) that includes a current time stamp and the references of the returned KeyPackages.
+The QS checks if there is a QS user record with the given [FriendshipToken](glossary.md#friendship-token) and returns a [AddPackage](glossary.md#addpackage) of each of the matching user's clients, along with a signed [KeyPackageBatch](glossary.md#user-keypackage-batch) that includes a current time stamp and the references of the returned KeyPackages.
 
 ```rust
 struct GetKeyPackageBatchResponse {
-  key_package_tuples: Vec<KeyPackageTuple>,
+  add_packages: Vec<AddPackage>,
   key_package_batch: KeyPackageBatch,
 }
 ```
 
 ##### Authentication
 
-Instead of a QSAuthToken, the QS requires the client to provide a friendship token. If the token matches the one in the pseudonymous user record, the query is considered valid.
+Instead of a QSAuthToken, the QS requires the client to provide a friendship token. If the token matches the one in the QS user record, the query is considered valid.
 
 #### Dequeue messages
 

@@ -1,4 +1,4 @@
-# Authentication Service (AS)
+# Work in progress: Authentication Service (AS)
 
 In this chapter, we detail the different functionalitites of the authentication service. See the subchapter on [credentials](authentication_service/credentials.md) for more details on the credential types referenced in this chapter.
 
@@ -9,7 +9,7 @@ The AS is configurable by use of the following configuration variables:
 * **Anonymous token timeframe:** The amount of time which each client has to wait until it can obtain new anonymous authentication tokens.
 * **Default token allowance:** The default amount of anonymous authentication tokens issued to each user in the anonymous token timeframe.
 * **Identity provider:** Network address of the OpenID connect identity provider the authentication service delegates authentication to for account registration.
-* **Maximal client record age:** Maximal age of an inactive client entry.
+* **Maximal QS client record age:** Maximal age of an inactive client entry.
   * Default: 90d
 * **Maximal number of requested messages:** Maximal number of messages that will be returned to a client requesting messages from a direct queue.
 * **Identity provider (IdP):** Provider used for user authentication
@@ -38,10 +38,6 @@ The AS generally keeps the following state
 ## Authentication
 
 The AS uses the user's IdP to authenticate the user. Some endpoints require simple authentication, while for others, the AS requires MFA authentication via the IdP.
-
-TODO: Be more specific here. Which token, what scope, etc.
-TODO: We probably want a bearer token to authenticate towards the AS for anonymous auth token retrieval, profile changes and other directly authenticated endpoints. I'm not sure, but I think we get this from the IdP.
-TODO: Structure the following endpoints.
 
 ## User account registration
 

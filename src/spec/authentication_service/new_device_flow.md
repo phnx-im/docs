@@ -7,7 +7,7 @@ To register a new client, the user needs to be in possession of one of his exist
 * Use the secure channel to exchange the information required to add the new client to the user's EID
 * Add the new client to the user's EID
 * Transfer user-specific secrets from existing client to new client via the secure channel
-* Perform the remaining set-up of the new client using the user-specific secrets (client record creation at QS, KeyPackage publiction, etc)
+* Perform the remaining set-up of the new client using the user-specific secrets (QS client record creation at QS, KeyPackage publiction, etc)
 
 ## Rendez-vous service
 

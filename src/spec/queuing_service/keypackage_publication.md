@@ -2,7 +2,7 @@
 
 To prevent a homeserver from learning which groups a user is a member of, the user's information on the QS and DS are pseudonymous. However, other users must be able to authenticate the user when one of the user's clients joins a group. This would typically happen through the Credential in a client's KeyPackage. However, since the KeyPackages are published on the QS and the public trees to which the KeyPackages are added are observable by the DS.
 
-The goal of this mechanism is thus to protect the unlinkability between the user's pseudonymous identity (i.e. the pseudonymous user record on the QS and the user's user and client profiles on the local DS) and the user's actual identity against a malicious homeserver.
+The goal of this mechanism is thus to protect the unlinkability between the user's pseudonymous identity (i.e. the QS user record and the user's user and client profiles on the local DS) and the user's actual identity against a malicious homeserver.
 
 The mechanism outlined in this section does not protect against the use of traffic pattern analysis. However, it can be used in conjunction with an onion routing system or a mixnet.
 
@@ -12,9 +12,9 @@ When establishing a [connection with another user](../authentication_service/con
 
 Possession of a friendship token authorizes a client to add the original owner of the token to a group. Once added to a group, all group members must be able to authenticate the newly added user and its clients.
 
-However, the QS that stores the published KeyPackages that facilitate group member additions must not learn the user's identity. Thus, KeyPackages are always published as [KeyPackageTuples](../glossary.md#keypackage-tuple), where the KeyPackage only contains a pseudonymous [Leaf Credential](../authentication_service/credentials.md#leaf-credentials) and the [intermediate client credential](../authentication_service/credentials.md#intermediate-client-credentials) that links the pseudonymous credential with the client's [Client Credential](../authentication_service/credentials.md#client-credentials) is encrypted under the friendship encryption key.
+However, the QS that stores the published KeyPackages that facilitate group member additions must not learn the user's identity. Thus, KeyPackages are always published as [AddPackages](../glossary.md#addpackage), where the KeyPackage only contains a pseudonymous [Leaf Credential](../authentication_service/credentials.md#leaf-credentials) and the [intermediate client credential](../authentication_service/credentials.md#intermediate-client-credentials) that links the pseudonymous credential with the client's [Client Credential](../authentication_service/credentials.md#client-credentials) is encrypted under the friendship encryption key.
 
-After retrieving such a KeyPackageTuple (as part of a [KeyPackageBatch](../glossary.md#user-keypackage-batch)), the adding client first decrypts the encrypted intermediate client credential and verifies that the [credential chain](../glossary.md#client-credential-chain) is correct. If this is the case, the client re-encrypts the intermediate client credential under the target group's [credential encryption key](../delivery_service/group_state_encryption.md) before performing the actual addition.
+After retrieving such a AddPackage (as part of a [KeyPackageBatch](../glossary.md#user-keypackage-batch)), the adding client first decrypts the encrypted intermediate client credential and verifies that the [credential chain](../glossary.md#client-credential-chain) is correct. If this is the case, the client re-encrypts the intermediate client credential under the target group's [credential encryption key](../delivery_service/group_state_encryption.md) before performing the actual addition.
 
 Members of the group can now decrypt the intermediate client credential and authenticate the user.
 

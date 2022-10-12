@@ -15,7 +15,7 @@ The documentation of the individual endpoints describes most of the behaviour ex
 * Pseudonymous client id
 * Client record auth key
 * User record auth key
-* Own KeyPackageTuples (and private keys)
+* Own AddPackages (and private keys)
 * Connection establishment KeyPackage (and private keys)
 * For each group:
   * MLS group state
