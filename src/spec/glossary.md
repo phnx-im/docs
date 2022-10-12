@@ -58,7 +58,7 @@ struct ClientQueueConfig {
 }
 
 struct QueueConfig {
-    option_push_token_key: EarKey,
+    option_push_token_key: Option<EarKey>,
     pseudonymous_client_id: PseudonymousClientId
 }
 ```
@@ -112,12 +112,12 @@ A bundle allowing a client to join a new group.
 struct WelcomeBundle {
     welcome: Welcome,
     encrypted_welcome_attribution_info: Vec<u8>,
-    encrypted_ear_key: Vec<u8>,
+    encrypted_group_state_ear_key: Vec<u8>,
     group_id: GroupId,
 }
 ```
 
-The EAR key and the WelcomeAttributionInfo are encrypted under the joining client's friendship encryption key.
+The WelcomeAttributionInfo is encrypted under the joining client's friendship encryption key. The group state EAR key is by the DS under the recipient's init key (contained in the recipient's KeyPackage).
 
 ## User KeyPackage batch
 

@@ -1,10 +1,8 @@
-# Clients
+# Work in progress: Client state
 
 The documentation of the individual endpoints describes most of the behaviour expected by clients to interact with the homeserver. This chapter documents the state kept by each of a user's clients.
 
 ## Client state
-
-TODO: Key material should be monitored for expiration. If something expires, note what should happen.
 
 * Client credential (plus private key)
 * QS QueueConfig encryption key

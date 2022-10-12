@@ -1,4 +1,4 @@
-# Future work: Registering a new device when using Evolving Identity
+# Future work/Work in progress: Registering a new device when using Evolving Identity
 
 To register a new client, the user needs to be in possession of one of his existing clients. To properly perform the [evolving identity](evolving_identities.md) (EID) operation and securely transfer data from the existing client to the new client, this chapter defines a protocol between new client, the owning user's homeserver and an existing client. The protocol proceeds roughly in the following steps:
 
@@ -53,7 +53,6 @@ The existing client also sends group joining bundles for all of the user's group
 * Group state EAR base secret
 * Credential encryption base secret
 
-The Group ID
 
 
 * The new client contacts the AS and asks for a rendez-vous code.
@@ -78,10 +77,3 @@ The Group ID
 * The new client contacts the QS to create its queues.
 * The existing client sends the client state to the new client via the all-client group. The new client state includes state-bundles for all groups that the user is in. These bundles include the group ID, member EAR secrets and PublicGroupStates of each group.
 * The new client injects itself into all of the user's group using the state-bundles. It sends attached the two commits for the EID state.
-
-TODO: The new client needs to publish key packages.
-TODO: The new client needs to post an update to complete cross signing.
-TODO: Be more precise about what state is sync'ed to the new client.
-TODO: Be more precise about token requests and queue creation.
-TODO: The new client also needs the queue creation key early.
-TODO: Update using the swimlanes diagram: https://swimlanes.io/#nVTBbtswDL37K3jcgCbAetghhwFem8PQbSjqYjsWss0kWmxJE+l12dePku3Gcep42CGAI5Hv8ZFPZM0VruArPkNRaTQMubVM7JVz2mzBeVsgUZKEiJs2YvEB0mwFD/izQWLwaEr8s/hlG4LClpgkxrJgPu4QBlmkalchgYJ373PNUFmB98qUtgbhC2TyJxDWjglYshtCD2xB0uUjt7yLx2PCmBcvTtC0kdRwjL81cThpFS7hY0Bq/0QiAw79xvoasvv0bn0txCH8dS4CXUqi5sMEr0Q4RfRsfblMkq23jVvBN63O8XbKGKzGvV335bZHKyCn9nj9RMiNe6pp+6SNZq3Y+iQZBYf8I9orqR7JWSnB91M66YWxYgPpf8MYq+3ascdW6/AqnBXWbLSvFWtroBabqC3S8l/1DLP/T9YZwkBd1/d0nd6Kfwp/cIzlYLBRWlAxSxZdaFQ9ZezYNI+Ko7lvsof5DkjQEGxcQED07etqH0KaAemtid8twUzNmUSL3BHPZNF3eLhXxV7GB/IMIs36060YWu7n1byEDnDm5PXcgUpsVctCUGXZD2dA2L3hwBEsSE0usfIGX27SbL4d37ESEgwpAejL5wyiP67auhd5Y8qwm4J4VVXtyGMEXcHGC0hJO+0urbehqFCgGFN2YydtIKJt1AUpwhV/FzYu2z0a2clii5HQx+7mWKI5bvZxiQLWhPGHrdvklaZdd3EcY3jN04MslImgG+Rid2qjN8eXNuhfLPxtZJRpT4xaBrDoF1KcwXJCj7NV1RbcAURBEf2H1YYm0UY7+SxkNWuotDcJoXSUKfkL

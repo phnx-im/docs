@@ -152,9 +152,9 @@ struct EditUserRecordParams {
 
 * QSSenderId: Puid
 
-#### Get pseudonymous user record
+#### Get own pseudonymous user record
 
-Get the data associated with a given user record.
+Get the data associated with a given user record that you own.
 
 ```rust
 struct GetUserRecordParams {
@@ -168,7 +168,7 @@ The QS returns the following.
 struct GetUserRecordResponse {
   user_record_auth_key: SignaturePublicKey,
   friendship_token: FriendshipToken,
-  client_records: Vec<Pcid>,
+  client_record_ids: Vec<Pcid>,
 }
 ```
 

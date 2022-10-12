@@ -430,7 +430,7 @@ struct ApplicationMessageParams {
 
 #### Authentication
 
-None.
+* SenderId: LeafIndex
 
 ### Delete group
 
