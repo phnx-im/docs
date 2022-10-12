@@ -19,3 +19,4 @@
         - [Federated Users](./threat_model/security_requirements/federated_users.md)
         - [Federated Clients](./threat_model/security_requirements/federated_clients.md)
 - [Cryptographic Primitives and Schemes](./cryptographic_primitives.md)
+- [Authentication in messaging applications](./authentication_systems.md)
