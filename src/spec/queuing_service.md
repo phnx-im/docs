@@ -385,6 +385,8 @@ The QS deletes messages older than the given sequence number and returns message
 
 #### Negotiate websocket connection
 
+* Endpoint: `ENDPOINT_QS_WS`
+
 Allows a client to create a websocket connection with the QS. If such a websocket connection exists then whenever the QS would send a push notification, it instead signals the client via the websocket connection.
 
 ```rust
