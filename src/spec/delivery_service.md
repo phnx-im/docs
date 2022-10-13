@@ -97,9 +97,11 @@ Whenever a client sends a commit as part of a query to an endpoint, the DS updat
 
 ## Client endpoints
 
-Endpoints meant to be used by clients registered with the homeserver.
+Endpoints meant to be accessed by clients registered with the homeserver via HTTP requests.
 
 ### Request group id
+
+* Endpoint: `ENDPOINT_DS_GROUP_ID`
 
 Request a fresh group id for use with the [create group](delivery_service.md#create-group) endpoint. The DS samples a fresh group id, checks for collisions and, if none are found, enters the group id as a placeholder into the database. If a collision is found, the DS re-samples until there are no collisions.
 
@@ -114,6 +116,8 @@ struct RequestGroupIdResponse {
 * None
 
 ### Create group
+
+* Endpoint: `ENDPOINT_DS_CREATE_GROUP`
 
 ```rust
 struct CreateGroupParams {
@@ -140,6 +144,8 @@ struct CreateGroupParams {
 
 ### Update queue information
 
+* Endpoint: `ENDPOINT_UPDATE_QUEUE_INFO`
+
 ```rust
 struct UpdateQueueInfoParams {
   group_id: GroupId,
@@ -153,6 +159,8 @@ struct UpdateQueueInfoParams {
 * DsSenderId: LeafIndex
 
 ### Get Welcome information
+
+* Endpoint: `ENDPOINT_DS_WELCOME_INFO`
 
 ```rust
 struct GetWelcomeInfoParams {
@@ -172,6 +180,8 @@ struct GetWelcomeInfoResponse {
 * DSSenderId: KeyPackageRef
 
 ### Get External Commit information
+
+* Endpoint: `ENDPOINT_DS_EXTERNAL_COMMIT_INFO`
 
 ```rust
 struct GetExternalCommitInfoParams {
@@ -193,10 +203,12 @@ struct GetWelcomeInfoResponse {
 
 ### Adding new users to the group
 
+* Endpoint: `ENDPOINT_DS_ADD_USERS`
+
 Operation, where the commit contains one or more inline Add proposals containing clients of one or more new users. The sender has to additionally provide a signature of the user's QS to help the DS validate that the KeyPackages indeed all belong to one user, as well as a timestamp to prove that the KeyPackages were recently obtained.
 
 ```rust
-struct AddUserParams {
+struct AddUsersParams {
   commit: MlsMessage,
   ear_key: EarKey,
   group_info_update: GroupInfoUpdate,
@@ -205,7 +217,7 @@ struct AddUserParams {
   key_package_batches: Vec<KeyPackageBatch>,
 }
 
-struct AddUserParamsAad {
+struct AddUsersParamsAad {
   encrypted_credential_information: Vec<Vec<u8>>
 }
 ```
@@ -231,6 +243,8 @@ Finally, the DS sends the `commit` to the group members by sending them on to it
 
 ### Remove users
 
+* Endpoint: `ENDPOINT_DS_REMOVE_USERS`
+
 ```rust
 struct RemoveUserParams {
   commit: MlsMessage,
@@ -253,14 +267,16 @@ struct RemoveUserParams {
 
 ### Updating the sending client's own key material
 
+* Endpoint: `ENDPOINT_DS_UPDATE_CLIENT`
+
 ```rust
-struct ClientUpdateParams {
+struct UpdateClientParams {
   commit: MlsMessage,
   ear_key: EarKey,
   group_info_update: GroupInfoUpdate,
 }
 
-struct ClientUpdateParamsAad {
+struct UpdateClientParamsAad {
     option_encrypted_credential_information: Option<Vec<u8>>,
 }
 ```
@@ -284,14 +300,16 @@ struct ClientUpdateParamsAad {
 
 ### Join group with new client
 
+* Endpoint: `ENDPOINT_DS_JOIN_GROUP`
+
 ```rust
-struct JoinClientParams {
+struct JoinGroupParams {
   external_commit: MlsMessage,
   ear_key: EarKey,
   group_info_update: GroupInfoUpdate,
 }
 
-struct AddClientParamsAad {
+struct JoinGroupParamsAad {
   existing_user_clients: Vec<LeafIndex>,
   encrypted_credential_information: Vec<u8>,
 }
@@ -306,6 +324,8 @@ struct AddClientParamsAad {
 
 
 ### Join connection group
+
+* Endpoint: `ENDPOINT_DS_JOIN_CONNECTION_GROUP`
 
 ```rust
 struct JoinConnectionGroupParams {
@@ -326,6 +346,8 @@ struct JoinConnectionGroupParamsAad {
 No additional authentication is required for this endpoint. The knowledge of the group's EAR key effectively authenticates the joining client.
 
 ### Add own clients
+
+* Endpoint: `ENDPOINT_DS_ADD_CLIENTS`
 
 ```rust
 struct AddClientsParams {
@@ -352,8 +374,10 @@ struct AddClientsParamsAad {
 
 ### Remove own clients
 
+* Endpoint: `ENDPOINT_DS_REMOVE_CLIENTS`
+
 ```rust
-struct RemoveClientParams {
+struct RemoveClientsParams {
   commit: MlsMessage,
   ear_key: EarKey,
   group_info_update: GroupInfoUpdate,
@@ -393,6 +417,8 @@ struct ResyncClientParams {
 
 ### Client self remove
 
+* Endpoint: `ENDPOINT_DS_SELF_REMOVE_CLIENT`
+
 ```rust
 struct ClientSelfRemoveParams {
   remove_proposal: MlsMessage,
@@ -410,6 +436,8 @@ struct ClientSelfRemoveParams {
 * SenderId: UserKeyHash
 
 ### User self remove
+
+* Endpoint: `ENDPOINT_DS_SELF_REMOVE_USER`
 
 ```rust
 struct SelfRemoveParams {
@@ -433,6 +461,8 @@ With multiple individual proposals all parties have to verify multiple signature
 
 ### Send application message
 
+* Endpoint: `ENDPOINT_DS_SEND_MESSAGE`
+
 ```rust
 struct ApplicationMessageParams {
   application_message: MlsMessage,
@@ -447,6 +477,8 @@ struct ApplicationMessageParams {
 * SenderId: LeafIndex
 
 ### Delete group
+
+* Endpoint: `ENDPOINT_DS_DELETE_GROUP`
 
 ```rust
 struct DeleteGroupParams {

@@ -14,7 +14,7 @@ The documentation of the individual endpoints describes most of the behaviour ex
 * Queue encryption key (plus private key)
 * Pseudonymous client id
 * Client record auth key
-* User record auth key
+* QS User record auth key
 * Own AddPackages (and private keys)
 * Connection establishment KeyPackage (and private keys)
 * For each group:

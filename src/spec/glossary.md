@@ -24,7 +24,7 @@ struct ClientId {
 
 ## QS User ID (QsUid)
 
-The ID of a QS user record.
+The ID of a QS user record on the user's QS.
 
 ```rust
 struct QsUid {
