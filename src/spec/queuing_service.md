@@ -23,7 +23,7 @@ The QS keeps the following state.
 * **QS user records:** Indexed by a [QsUid](glossary.md#qs-user-id-qsuid), each record contains a number of sub fields.
   * **QS user record auth key:** [Public signature key](glossary.md#qs-user-record-auth-key) used by a user to authenticate itself as the owner of this record.
   * **Friendship token:** Clients have to provide the friendship token to obtain a bundle of KeyPackages for a given user.
-  * **Client specific records:** For each of the user's clients, the QS keeps the following state. Indexed by a [PCID](glossary.md#qs-client-id-qscid).
+  * **Client specific records:** For each of the user's clients, the QS keeps the following state. Indexed by a [QsCid](glossary.md#qs-client-id-qscid).
     * **Activity time:** Timestamp indicating the last time a client has fetched messages from the queue.
     * **KeyPackages:** Encrypted KeyPackages, each with an encrypted [client credential chain](./glossary.md#client-credential-chain) attached. At least one KeyPackage has to be marked as KeyPackage of last resort.
     * **Public QS client record key:** [Public signature key](glossary.md#qs-client-record-auth-key). Authenticates the owner of this QS client record and authorizes them to dequeue (i.e. fetch and delete) messages in the queue, as well as to change the queue configuration such as the authentication keys, or to add entries to the block list. Also authorizes the client to upload KeyPackages.
@@ -55,12 +55,12 @@ The QS keeps the following state.
 
 ## Authentication
 
-Messages from the client to the QS are authenticated by the client by providing an QSAuthToken, where the QSSenderId in the token depends on the endpoint the client is querying.
+Messages from the client to the QS are authenticated by the client by providing an QSAuthToken, where the QsSenderId in the token depends on the endpoint the client is querying.
 
 ```rust
 enum QsSenderId {
   QsUid(QsUid),
-  Pcid(Pcid),
+  QsCid(QsCid),
 }
 
 struct QsAuthToken {
@@ -74,9 +74,9 @@ struct QsAuthToken {
 The verification key used to create the token depends on the sender_id:
 
 * QsUid: [QS user record auth key](./glossary.md#qs-user-record-auth-key)
-* Pcid: [QS QS client record auth key](./glossary.md#qs-client-record-auth-key)
+* QsCid: [QS QS client record auth key](./glossary.md#qs-client-record-auth-key)
 
-## Federation endpoints
+## Work in progress: Federation endpoints
 
 Endpoints publicly accessible and meant to be accessed by federated homeservers.
 
@@ -113,9 +113,11 @@ struct InterQsAuthToken {
 
 ## Client endpoints
 
-Endpoints accessible to clients of the homeserver vaie HTTP requests.
+Endpoints accessible to clients of the homeserver via HTTP requests.
 
 ### Fetch queue config encryption key
+
+* Endpoint: `ENDPOINT_QS_QC_ENCRYPTION_KEY`
 
 Clients can fetch the QS' [queue config encryption key](./glossary.md#queueconfig-encryption-key) through this endpoint.
 
@@ -138,7 +140,14 @@ struct CreateUserRecordParams {
 }
 ```
 
-The QS creates the QS user record and QS client record, indexed by a freshly sampled QsUid and Pcid. The QS returns both QsUid and Pcid.
+The QS creates the QS user record and QS client record, indexed by a freshly sampled QsUid and QsCid. The QS returns the following:
+
+```rust
+struct CreateUserRecordResponse {
+  qs_uid: QsUid,
+  qs_cid: QsCid,
+}
+```
 
 #### Edit QS user record
 
@@ -156,7 +165,7 @@ struct EditUserRecordParams {
 
 ##### Authentication
 
-* QSSenderId: QsUid
+* QsSenderId: QsUid
 
 #### Get own QS user record
 
@@ -182,7 +191,7 @@ struct GetUserRecordResponse {
 
 ##### Authentication
 
-* QSSenderId: QsUid
+* QsSenderId: QsUid
 
 #### Delete QS user record
 
@@ -198,7 +207,7 @@ struct DeleteUserRecordParams {
 
 ##### Authentication
 
-* QSSenderId: QsUid
+* QsSenderId: QsUid
 
 ##### Future work: MFA for user or QS client record deletion
 
@@ -219,21 +228,27 @@ struct CreateClientRecordParams {
 }
 ```
 
-The QS creates the record indexed by a freshly sampled Pcid and returns the Pcid.
+The QS creates the record indexed by a freshly sampled QsCid and returns the following.
+
+```rust
+struct CreateClientRecordResponse {
+  qs_cid: QsCid,
+}
+```
 
 ##### Authentication
 
-* QSSenderId: QsUid
+* QsSenderId: QsUid
 
 #### Edit QS client record
 
 * Endpoint: `ENDPOINT_QS_UPDATE_CLIENT_RECORD`
 
-Overwrite the data of the QS client record with the given PCID with the given data.
+Overwrite the data of the QS client record with the given QsCid with the given data.
 
 ```rust
 struct EditClientRecordParams {
-  pcid: Pcid,
+  qs_cid: QsCid,
   client_record_auth_key: SignaturePublicKey,
   queue_encryption_key: HpkePublicKey,
   blocklist_entries: Vec<GroupId>,
@@ -242,17 +257,17 @@ struct EditClientRecordParams {
 
 ##### Authentication
 
-* QSSenderId: Pcid
+* QsSenderId: QsCid
 
 #### Get QS client record
 
 * Endpoint: `ENDPOINT_QS_CLIENT_RECORD`
 
-Get the data associated with the QS client record with the given PCID.
+Get the data associated with the QS client record with the given QsCid.
 
 ```rust
 struct GetClientRecordParams {
-  pcid: Pcid,
+  qs_cid: QsCid,
 }
 ```
 
@@ -268,35 +283,35 @@ struct GetClientRecordResponse {
 
 ##### Authentication
 
-* QSSenderId: Pcid
+* QsSenderId: QsCid
 
 #### Delete QS client record
 
 * Endpoint: `ENDPOINT_QS_DELETE_CLIENT_RECORD`
 
-Delete the QS client record with the given PCID. The last client in a QS user record can only be deleted by deleting the QS user record itself.
+Delete the QS client record with the given QsCid if it is not the user's last QS client record. The last client in a QS user record can only be deleted by deleting the QS user record itself.
 
 ```rust
 struct DeleteClientRecordParams {
-  pcid: Pcid,
+  qs_cid: QsCid,
 }
 ```
 
 ##### Authentication
 
-* QSSenderId: QsUid
+* QsSenderId: QsUid
 
 #### Publish KeyPackages
 
 * Endpoint: `ENDPOINT_QS_PUBLISH_KEY_PACKAGES`
 
-Publish the given [AddPackage](glossary.md#addpackage) under the given PCID.
+Publish the given [AddPackage](glossary.md#addpackage) under the given QsCid.
 
 All of the KeyPackages contained in the AddPackages have to contain a [QueueConfigExtension](glossary.md#queueconfig-extension) and at least one of the AddPackage has to contain a KeyPackage marked as [KeyPackage of last resort](glossary.md#last-resort-extension).
 
 ```rust
 struct PublishKeyPackagesParams {
-  pcid: Pcid,
+  qs_cid: QsCid,
   add_packages: Vec<AddPackage>,
 }
 ```
@@ -306,7 +321,7 @@ The QS deletes all existing KeyPackages before publishing the new ones.
 
 ##### Authentication
 
-* QSSenderId: Pcid
+* QsSenderId: QsCid
 
 ##### Future work: Allow more granular KeyPackage rotation
 
@@ -320,11 +335,11 @@ Using the same KeyPackage of last resort in multiple groups can allow a federate
 
 * Endpoint: `ENDPOINT_QS_CLIENT_KEY_PACKAGE`
 
-Get the KeyPackage of the client with the given PCID. This allows clients of a user to fetch individual AddPackages for other clients of the same user. These individual AddPackages are required to add new clients to existing groups.
+Get the KeyPackage of the client with the given QsCid. This allows clients of a user to fetch individual AddPackages for other clients of the same user. These individual AddPackages are required to add new clients to existing groups.
 
 ```rust
 struct GetClientKeyPackageParams {
-  pcid: Pcid,
+  qs_cid: QsCid,
 }
 ```
 
@@ -332,7 +347,7 @@ The QS returns one of the client's AddPackages and deletes the AddPackage afterw
 
 ##### Authentication
 
-* QSSenderId: QsUid
+* QsSenderId: QsUid
 
 #### Get KeyPackage batch
 
@@ -367,7 +382,7 @@ Dequeue messages from a queue, starting with the message with the given sequence
 
 ```rust
 struct DequeueMessagesParams {
-  pcid: Pcid,
+  qs_cid: QsCid,
   sequence_number_start: u64,
   max_message_number: u64,
 }
@@ -381,7 +396,7 @@ The QS deletes messages older than the given sequence number and returns message
 
 ##### Authentication
 
-* QSSenderId: Pcid
+* QsSenderId: QsCid
 
 #### Negotiate websocket connection
 
@@ -391,13 +406,13 @@ Allows a client to create a websocket connection with the QS. If such a websocke
 
 ```rust
 struct GetWebsocketConnection {
-  pcid: Pcid,
+  qs_cid: QsCid,
 }
 ```
 
 ##### Authentication
 
-* QSSenderId: Pcid
+* QsSenderId: QsCid
 
 ## Local homeserver endpoints
 

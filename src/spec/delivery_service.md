@@ -131,7 +131,7 @@ struct CreateGroupParams {
 }
 ```
 
-* The DS checks if there is a placeholder in the group database for this id. If there is, it creates the group database entry.
+* The DS checks if there is a placeholder in the group database for this group id. If there is, it creates the GroupStateDbEntry.
 
 #### Authentication
 
