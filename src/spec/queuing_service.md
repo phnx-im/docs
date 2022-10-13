@@ -113,7 +113,7 @@ struct InterQsAuthToken {
 
 ## Client endpoints
 
-Endpoints accessible to clients of the homeserver.
+Endpoints accessible to clients of the homeserver vaie HTTP requests.
 
 ### Fetch queue config encryption key
 
@@ -124,6 +124,8 @@ Clients can fetch the QS' [queue config encryption key](./glossary.md#queueconfi
 Endpoints for management of QS user records. Note that a QS user record is deleted with its last QS client record.
 
 #### Create new QS user record
+
+* Endpoint: `ENDPOINT_QS_CREATE_USER_RECORD`
 
 Create a new QS user record, as well as a first QS client record.
 
@@ -140,6 +142,8 @@ The QS creates the QS user record and QS client record, indexed by a freshly sam
 
 #### Edit QS user record
 
+* Endpoint: `ENDPOINT_QS_EDIT_USER_RECORD`
+
 Edit a given QS user record, overwriting the existing values with the one given in the message.
 
 ```rust
@@ -155,6 +159,8 @@ struct EditUserRecordParams {
 * QSSenderId: QsUid
 
 #### Get own QS user record
+
+* Endpoint: `ENDPOINT_QS_USER_RECORD`
 
 Get the data associated with a given QS user record that you own.
 
@@ -180,6 +186,8 @@ struct GetUserRecordResponse {
 
 #### Delete QS user record
 
+* Endpoint: `ENDPOINT_QS_DELETE_USER_RECORD`
+
 Delete the given QS user record including all associated QS client records.
 
 ```rust
@@ -200,6 +208,8 @@ User and client deletion are very destructive operations. We should probably req
 
 #### Create new QS client record
 
+* Endpoint: `ENDPOINT_QS_CREATE_CLIENT_RECORD`
+
 Create a new QS client record with the given data.
 
 ```rust
@@ -217,6 +227,8 @@ The QS creates the record indexed by a freshly sampled Pcid and returns the Pcid
 
 #### Edit QS client record
 
+* Endpoint: `ENDPOINT_QS_UPDATE_CLIENT_RECORD`
+
 Overwrite the data of the QS client record with the given PCID with the given data.
 
 ```rust
@@ -233,6 +245,8 @@ struct EditClientRecordParams {
 * QSSenderId: Pcid
 
 #### Get QS client record
+
+* Endpoint: `ENDPOINT_QS_CLIENT_RECORD`
 
 Get the data associated with the QS client record with the given PCID.
 
@@ -258,6 +272,8 @@ struct GetClientRecordResponse {
 
 #### Delete QS client record
 
+* Endpoint: `ENDPOINT_QS_DELETE_CLIENT_RECORD`
+
 Delete the QS client record with the given PCID. The last client in a QS user record can only be deleted by deleting the QS user record itself.
 
 ```rust
@@ -271,6 +287,8 @@ struct DeleteClientRecordParams {
 * QSSenderId: QsUid
 
 #### Publish KeyPackages
+
+* Endpoint: `ENDPOINT_QS_PUBLISH_KEY_PACKAGES`
 
 Publish the given [AddPackage](glossary.md#addpackage) under the given PCID.
 
@@ -300,6 +318,8 @@ Using the same KeyPackage of last resort in multiple groups can allow a federate
 
 #### Get client KeyPackage
 
+* Endpoint: `ENDPOINT_QS_CLIENT_KEY_PACKAGE`
+
 Get the KeyPackage of the client with the given PCID. This allows clients of a user to fetch individual AddPackages for other clients of the same user. These individual AddPackages are required to add new clients to existing groups.
 
 ```rust
@@ -315,6 +335,8 @@ The QS returns one of the client's AddPackages and deletes the AddPackage afterw
 * QSSenderId: QsUid
 
 #### Get KeyPackage batch
+
+* Endpoint: `ENDPOINT_QS_KEY_PACKAGE_BATCH`
 
 Get a [KeyPackageBatch](glossary.md#user-keypackage-batch) of the user with the given friendship token.
 
@@ -338,6 +360,8 @@ struct GetKeyPackageBatchResponse {
 Instead of a QSAuthToken, the QS requires the client to provide a friendship token. If the token matches the one in the QS user record, the query is considered valid.
 
 #### Dequeue messages
+
+* Endpoint: `ENDPOINT_QS_DEQUEUE_MESSAGES`
 
 Dequeue messages from a queue, starting with the message with the given sequence number.
 
