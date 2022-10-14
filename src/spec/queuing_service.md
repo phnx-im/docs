@@ -174,7 +174,7 @@ struct EditUserRecordParams {
 Get the data associated with a given QS user record that you own.
 
 ```rust
-struct GetUserRecordParams {
+struct UserRecordParams {
   qs_uid: QsUid,
 }
 ```
@@ -182,10 +182,10 @@ struct GetUserRecordParams {
 The QS returns the following.
 
 ```rust
-struct GetUserRecordResponse {
+struct UserRecordResponse {
   user_record_auth_key: SignaturePublicKey,
   friendship_token: FriendshipToken,
-  client_records: Vec<GetClientRecordResponse>,
+  client_records: Vec<ClientRecordResponse>,
 }
 ```
 
@@ -266,7 +266,7 @@ struct EditClientRecordParams {
 Get the data associated with the QS client record with the given QsCid.
 
 ```rust
-struct GetClientRecordParams {
+struct ClientRecordParams {
   qs_cid: QsCid,
 }
 ```
@@ -274,7 +274,7 @@ struct GetClientRecordParams {
 The QS returns the following data.
 
 ```rust
-struct GetClientRecordResponse {
+struct ClientRecordResponse {
   client_record_auth_key: SignaturePublicKey,
   queue_encryption_key: HpkePublicKey,
   blocklist_entries: Vec<GroupId>,
@@ -338,7 +338,7 @@ Using the same KeyPackage of last resort in multiple groups can allow a federate
 Get the KeyPackage of the client with the given QsCid. This allows clients of a user to fetch individual AddPackages for other clients of the same user. These individual AddPackages are required to add new clients to existing groups.
 
 ```rust
-struct GetClientKeyPackageParams {
+struct ClientKeyPackageParams {
   qs_cid: QsCid,
 }
 ```
@@ -356,7 +356,7 @@ The QS returns one of the client's AddPackages and deletes the AddPackage afterw
 Get a [KeyPackageBatch](glossary.md#user-keypackage-batch) of the user with the given friendship token.
 
 ```rust
-struct GetKeyPackageBatchParams {
+struct KeyPackageBatchParams {
   friendship_token: FriendshipToken,
 }
 ```
@@ -364,7 +364,7 @@ struct GetKeyPackageBatchParams {
 The QS checks if there is a QS user record with the given [FriendshipToken](glossary.md#friendship-token) and returns a [AddPackage](glossary.md#addpackage) of each of the matching user's clients, along with a signed [KeyPackageBatch](glossary.md#user-keypackage-batch) that includes a current time stamp and the references of the returned KeyPackages.
 
 ```rust
-struct GetKeyPackageBatchResponse {
+struct KeyPackageBatchResponse {
   add_packages: Vec<AddPackage>,
   key_package_batch: KeyPackageBatch,
 }
@@ -405,7 +405,7 @@ The QS deletes messages older than the given sequence number and returns message
 Allows a client to create a websocket connection with the QS. If such a websocket connection exists then whenever the QS would send a push notification, it instead signals the client via the websocket connection.
 
 ```rust
-struct GetWebsocketConnection {
+struct WsParams {
   qs_cid: QsCid,
 }
 ```
