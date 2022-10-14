@@ -175,13 +175,13 @@ struct UpdateQueueInfoParams {
 * Endpoint: `ENDPOINT_DS_WELCOME_INFO`
 
 ```rust
-struct GetWelcomeInfoParams {
+struct WelcomeInfoParams {
   group_id: GroupId,
   group_state_ear_key: GroupStateEarKey,
   epoch: Epoch,
 }
 
-struct GetWelcomeInfoResponse {
+struct WelcomeInfoResponse {
   public_tree: MlsRatchetTree,
   credential_chains: Vec<u8>,
 }
@@ -196,12 +196,12 @@ struct GetWelcomeInfoResponse {
 * Endpoint: `ENDPOINT_DS_EXTERNAL_COMMIT_INFO`
 
 ```rust
-struct GetExternalCommitInfoParams {
+struct ExternalCommitInfoParams {
   group_id: GroupId,
   group_state_ear_key: GroupStateEarKey,
 }
 
-struct GetWelcomeInfoResponse {
+struct WelcomeInfoResponse {
   group_info: GroupInfo,
   public_tree: MlsRatchetTree,
   credential_chains: Vec<u8>,
@@ -410,6 +410,8 @@ struct RemoveClientsParams {
 
 ### ReSync
 
+* Endpoint: `ENDPOINT_DS_RESYNC_CLIENT`
+
 ```rust
 struct ResyncClientParams {
   external_commit: MlsMessage,
@@ -432,7 +434,7 @@ struct ResyncClientParams {
 * Endpoint: `ENDPOINT_DS_SELF_REMOVE_CLIENT`
 
 ```rust
-struct ClientSelfRemoveParams {
+struct SelfRemoveClientParams {
   remove_proposal: MlsMessage,
   group_state_ear_key: GroupStateEarKey,
 }
@@ -452,7 +454,7 @@ struct ClientSelfRemoveParams {
 * Endpoint: `ENDPOINT_DS_SELF_REMOVE_USER`
 
 ```rust
-struct SelfRemoveParams {
+struct SelfRemoveUserParams {
   remove_proposals: Vec<MlsMessage>,
   group_state_ear_key: GroupStateEarKey,
 }
@@ -476,7 +478,7 @@ With multiple individual proposals all parties have to verify multiple signature
 * Endpoint: `ENDPOINT_DS_SEND_MESSAGE`
 
 ```rust
-struct ApplicationMessageParams {
+struct SendMessageParams {
   application_message: MlsMessage,
   group_state_ear_key: GroupStateEarKey,
 }
