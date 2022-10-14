@@ -87,9 +87,21 @@ struct GroupInfoUpdate {
 
 ## Message delivery
 
-In a variety of endpoints, the DS will send messages on to the local QS to enqueue in a local client's queue or to forward to a federated QS. For the message format see [here](glossary.md#fan-out-message).
+The majority of endpoints of the DS allow clients to send MLS messages to groups.
 
-In these cases, where the QS returns to the DS the information that a queue doesn't exist, the DS will assume that the queue was deleted and propose the removal of the corresponding group member as specified [here](delivery_service.md#ds-induced-removals).
+### Validation
+
+Whenever receiving an MLS message at any endpoint, the DS checks if a local group state with the message's GroupId exists. If it does, the DS locks the corresponding database entry to prevent concurrent access. The DS then takes the GroupStateEarKey that is part of every message delivery request and decrypts the group state. Finally, the DS performs the same validation steps a receiving MLS client would perform, as well as the endpoint-specific validation steps.
+
+The MLS client checks also includes checking that the epoch numbers match. In the case of commits, this comparison along with the lock on the database entry ensure that any conflicts between commits for the same epoch are resolved.
+
+If all validation steps pass, the DS performs the endpoint and message-specific changes to its local group state.
+
+### Message distribution
+
+To distribute MLS messages the DS sends messages on to the local QS to enqueue in a local client's queue or to forward to a federated QS. For the message format see [here](glossary.md#fan-out-message).
+
+In cases where the QS responds with a message indicating that a target queue doesn't exist, the DS assumes that the queue was deleted and proposes the removal of the corresponding group member as specified [here](delivery_service.md#ds-induced-removals).
 
 ## Activity time
 
