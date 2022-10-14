@@ -18,8 +18,8 @@ When discovering a user, the initiator fetches the connection establishment KeyP
 struct ConnectionEstablishmentPackage {
     sender_client_credential: ClientCredential,
     connection_group_id: GroupId,
-    connection_group_ear_key: EarKey,
-    connection_group_credential_key: EarKey,
+    connection_group_ear_key: GroupStateEarKey,
+    connection_group_credential_key: CredentialEarKey,
     // TBS: All information above signed by the ClientCredential.
     signature: Signature,
 }

@@ -127,7 +127,7 @@ struct CreateGroupParams {
   creator_queue_config: ClientQueueConfig,
   creator_user_auth_key: UserAuthKey,
   group_info: GroupInfo,
-  initial_ear_key: EarKey,
+  initial_ear_key: GroupStateEarKey,
 }
 ```
 
@@ -149,7 +149,7 @@ struct CreateGroupParams {
 ```rust
 struct UpdateQueueInfoParams {
   group_id: GroupId,
-  ear_key: EarKey,
+  group_state_ear_key: GroupStateEarKey,
   new_queue_config: ClientQueueConfig,
 }
 ```
@@ -165,7 +165,7 @@ struct UpdateQueueInfoParams {
 ```rust
 struct GetWelcomeInfoParams {
   group_id: GroupId,
-  ear_key: EarKey,
+  group_state_ear_key: GroupStateEarKey,
   epoch: Epoch,
 }
 
@@ -186,7 +186,7 @@ struct GetWelcomeInfoResponse {
 ```rust
 struct GetExternalCommitInfoParams {
   group_id: GroupId,
-  ear_key: EarKey,
+  group_state_ear_key: GroupStateEarKey,
 }
 
 struct GetWelcomeInfoResponse {
@@ -210,7 +210,7 @@ Operation, where the commit contains one or more inline Add proposals containing
 ```rust
 struct AddUsersParams {
   commit: MlsMessage,
-  ear_key: EarKey,
+  group_state_ear_key: GroupStateEarKey,
   group_info_update: GroupInfoUpdate,
   welcome: Welcome,
   welcome_attribution_info: Vec<WelcomeAttributionInfo>,
@@ -248,7 +248,7 @@ Finally, the DS sends the `commit` to the group members by sending them on to it
 ```rust
 struct RemoveUserParams {
   commit: MlsMessage,
-  ear_key: EarKey,
+  group_state_ear_key: GroupStateEarKey,
   group_info_update: GroupInfoUpdate,
 }
 ```
@@ -272,7 +272,7 @@ struct RemoveUserParams {
 ```rust
 struct UpdateClientParams {
   commit: MlsMessage,
-  ear_key: EarKey,
+  group_state_ear_key: GroupStateEarKey,
   group_info_update: GroupInfoUpdate,
 }
 
@@ -305,7 +305,7 @@ struct UpdateClientParamsAad {
 ```rust
 struct JoinGroupParams {
   external_commit: MlsMessage,
-  ear_key: EarKey,
+  group_state_ear_key: GroupStateEarKey,
   group_info_update: GroupInfoUpdate,
 }
 
@@ -330,7 +330,7 @@ struct JoinGroupParamsAad {
 ```rust
 struct JoinConnectionGroupParams {
   external_commit: MlsMessage,
-  ear_key: EarKey,
+  group_state_ear_key: GroupStateEarKey,
   group_info_update: GroupInfoUpdate,
 }
 
@@ -352,7 +352,7 @@ No additional authentication is required for this endpoint. The knowledge of the
 ```rust
 struct AddClientsParams {
   commit: MlsMessage,
-  ear_key: EarKey,
+  group_state_ear_key: GroupStateEarKey,
   group_info_update: GroupInfoUpdate,
   welcome: Welcome,
   welcome_attribution_info: WelcomeAttributionInfo,
@@ -379,9 +379,9 @@ struct AddClientsParamsAad {
 ```rust
 struct RemoveClientsParams {
   commit: MlsMessage,
-  ear_key: EarKey,
+  group_state_ear_key: GroupStateEarKey,
   group_info_update: GroupInfoUpdate,
-  user_auth key: UserAuthKey,
+  user_auth_key: UserAuthKey,
 }
 ```
 
@@ -401,7 +401,7 @@ struct RemoveClientsParams {
 ```rust
 struct ResyncClientParams {
   external_commit: MlsMessage,
-  ear_key: EarKey,
+  group_state_ear_key: GroupStateEarKey,
   group_info_update: GroupInfoUpdate,
 }
 ```
@@ -422,7 +422,7 @@ struct ResyncClientParams {
 ```rust
 struct ClientSelfRemoveParams {
   remove_proposal: MlsMessage,
-  ear_key: EarKey,
+  group_state_ear_key: GroupStateEarKey,
 }
 ```
 
@@ -442,7 +442,7 @@ struct ClientSelfRemoveParams {
 ```rust
 struct SelfRemoveParams {
   remove_proposals: Vec<MlsMessage>,
-  ear_key: EarKey,
+  group_state_ear_key: GroupStateEarKey,
 }
 ```
 
@@ -466,7 +466,7 @@ With multiple individual proposals all parties have to verify multiple signature
 ```rust
 struct ApplicationMessageParams {
   application_message: MlsMessage,
-  ear_key: EarKey,
+  group_state_ear_key: GroupStateEarKey,
 }
 ```
 
@@ -483,7 +483,7 @@ struct ApplicationMessageParams {
 ```rust
 struct DeleteGroupParams {
   commit: MlsMessage,
-  ear_key: EarKey,
+  group_state_ear_key: GroupStateEarKey,
 }
 ```
 

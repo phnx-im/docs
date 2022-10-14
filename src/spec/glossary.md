@@ -58,8 +58,8 @@ struct ClientQueueConfig {
 }
 
 struct QueueConfig {
-    option_push_token_key: Option<EarKey>,
-    pseudonymous_client_id: PseudonymousClientId
+    option_push_token_key: Option<PushTokenEarKey>,
+    pseudonymous_client_id: PseudonymousClientId,
 }
 ```
 
@@ -89,7 +89,7 @@ Encrypted under the recipient's friendship encryption key. The TBS has to be sig
 ```rust
 struct WelcomeAttributionInfoPayload {
     sender_client_id: ClientId,
-    group_credential_encryption_key: EarKey,
+    group_credential_encryption_key: GroupCredentialEarKey,
 }
 
 struct WelcomeAttributionInfoTbs {
