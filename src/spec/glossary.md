@@ -121,10 +121,10 @@ The WelcomeAttributionInfo is encrypted under the joining client's friendship en
 
 ## User KeyPackage batch
 
-When a client retrieves KeyPackages from a QS for a given user, the QS responds with the KeyPackages, the associated Intermediate Client credentials, as well as a UserKeyPackageBatch.
+When a client retrieves KeyPackages from a QS for a given user, the QS responds with the KeyPackages, the associated Intermediate Client credentials, as well as a KeyPackageBatch.
 
 ```rust
-struct UserKeyPackageBatch {
+struct KeyPackageBatch {
   key_package_refs: Vec<KeyPackageRef>,
   timestamp: Timestamp,
   signature: Signature,
