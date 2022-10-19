@@ -1,0 +1,278 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Users - Docs</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="../../status.html">Status</a></li><li class="chapter-item expanded "><a href="../../functional_requirements.html"><strong aria-hidden="true">1.</strong> Functional Requirements</a></li><li class="chapter-item expanded "><a href="../../modularization.html"><strong aria-hidden="true">2.</strong> Modularization</a></li><li class="chapter-item expanded "><a href="../../performance_goals.html"><strong aria-hidden="true">3.</strong> Performance Goals</a></li><li class="chapter-item expanded "><a href="../../threat_model.html"><strong aria-hidden="true">4.</strong> Threat Model</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../threat_model/methodology.html"><strong aria-hidden="true">4.1.</strong> Methodology</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_assumptions.html"><strong aria-hidden="true">4.2.</strong> Security Assumptions</a></li><li class="chapter-item expanded "><a href="../../threat_model/application_assets.html"><strong aria-hidden="true">4.3.</strong> Application Assets</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_requirements.html"><strong aria-hidden="true">4.4.</strong> Security Requirements</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../threat_model/security_requirements/operators.html"><strong aria-hidden="true">4.4.1.</strong> Operators</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_requirements/public.html"><strong aria-hidden="true">4.4.2.</strong> Public</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_requirements/users.html" class="active"><strong aria-hidden="true">4.4.3.</strong> Users</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_requirements/clients.html"><strong aria-hidden="true">4.4.4.</strong> Clients</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_requirements/federated_homeservers.html"><strong aria-hidden="true">4.4.5.</strong> Federated Homeservers</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_requirements/federated_users.html"><strong aria-hidden="true">4.4.6.</strong> Federated Users</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_requirements/federated_clients.html"><strong aria-hidden="true">4.4.7.</strong> Federated Clients</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../cryptographic_primitives.html"><strong aria-hidden="true">5.</strong> Cryptographic Primitives and Schemes</a></li><li class="chapter-item expanded "><a href="../../authentication_systems.html"><strong aria-hidden="true">6.</strong> Authentication in messaging applications</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Docs</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="users"><a class="header" href="#users">Users</a></h1>
+<p>TODO: Maybe note somewhere generally how notifications, or more generally client-to-client messages must be authenticated? This seems to repeat here and in the client's section.</p>
+<h2 id="client-management"><a class="header" href="#client-management">Client management</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>STRIDE property</th><th>Requirement</th><th>Remark</th></tr></thead><tbody>
+<tr><td>Authentication (C2S)</td><td>Users can only manage their own clients</td><td></td></tr>
+<tr><td>Authentication (C2C)</td><td>The user's contacts (local and federated) must be able to authenticate the user's actions end-to-end</td><td></td></tr>
+<tr><td>Authentication (S2S)</td><td>A federated homeserver forwarding a notification must be able to authenticate the users's homeserver as origin</td><td></td></tr>
+<tr><td>Integrity</td><td>Not a risk. Users are responsible for the integrity of their own clients</td><td></td></tr>
+<tr><td>Non-repudiation</td><td>Other clients of the user must be able to determine which client performed the action</td><td></td></tr>
+<tr><td></td><td>The user's contacts must be notified of the action</td><td></td></tr>
+<tr><td>Confidentiality</td><td>Not a risk. A user's client management is considered public</td><td></td></tr>
+<tr><td>Availability</td><td>Users should always be able to manage their own clients</td><td></td></tr>
+<tr><td>Authorization</td><td>Not a risk. The user can manage clients through any of their clients</td><td></td></tr>
+<tr><td>Spam prevention</td><td>Client management actions should be limited, as they are message sending</td><td></td></tr>
+</tbody></table>
+</div>
+<h2 id="account-reset"><a class="header" href="#account-reset">Account reset</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>STRIDE property</th><th>Requirement</th><th>Remark</th></tr></thead><tbody>
+<tr><td>Authentication</td><td>Users can only reset their own accounts</td><td></td></tr>
+<tr><td>Authentication (C2C)</td><td>The user's contacts (local and federated) must be able to authenticate the user's actions end-to-end</td><td></td></tr>
+<tr><td>Authentication (S2S)</td><td>A federated homeserver forwarding a notification must be able to authenticate the users's homeserver as origin</td><td></td></tr>
+<tr><td>Integrity</td><td>Not a risk. A reset replaces all user data except the user name</td><td></td></tr>
+<tr><td>Non-repudiation</td><td>The users contacts must be notified of the user's account reset</td><td></td></tr>
+<tr><td>Confidentiality</td><td>Not a risk. No confidential user data is transmitted during an account reset</td><td></td></tr>
+<tr><td>Availability</td><td>Users should be able to reset their own account once every month</td><td>TODO: Is this the time frame we want?</td></tr>
+<tr><td>Authorization</td><td>Not a risk. The user is the only entity that can perform this action</td><td></td></tr>
+<tr><td>Spam prevention</td><td>The homeserver must limit the number of account resets, as they are message sending</td><td></td></tr>
+</tbody></table>
+</div>
+<h2 id="user-name-change"><a class="header" href="#user-name-change">User name change</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>STRIDE property</th><th>Requirement</th><th>Remark</th></tr></thead><tbody>
+<tr><td>Authentication</td><td>Users can only change their own user name</td><td></td></tr>
+<tr><td>Integrity</td><td>The homeserver must ensure the new user name is valid</td><td>(see user registration)</td></tr>
+<tr><td>Non-repudiation</td><td>The users contacts must be notified of the user's user name change</td><td></td></tr>
+<tr><td>Confidentiality</td><td>The new user name must be communicated to contacts end-to-end encrypted</td><td></td></tr>
+<tr><td>Availability</td><td>Users should be able to change their user name once every month</td><td>TODO: Is this the time frame we want?</td></tr>
+<tr><td>Authorization</td><td>Not a risk. The user is the only entity that can perform this action</td><td></td></tr>
+<tr><td>Spam prevention</td><td>The homeserver must limit the number of user name changes, as they are message sending</td><td></td></tr>
+</tbody></table>
+</div>
+<h2 id="user-discovery"><a class="header" href="#user-discovery">User discovery</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>STRIDE property</th><th>Requirement</th><th>Remark</th></tr></thead><tbody>
+<tr><td>Authentication</td><td>All registered users should be able to discover other users by their full user name</td><td></td></tr>
+<tr><td></td><td>Users must be able to authenticate any user information in an end-to-end way</td><td></td></tr>
+<tr><td>Integrity</td><td>Not a risk. End-to-end authentication implies integrity of the data</td><td></td></tr>
+<tr><td>Non-repudiation</td><td>Not a risk. Users must be able to discover other users anonymously</td><td></td></tr>
+<tr><td>Confidentiality</td><td>The user must be able to perform discovery anonymously</td><td></td></tr>
+<tr><td></td><td>Users should only be able to discover a limited number of users every day</td><td></td></tr>
+<tr><td>Availability</td><td>Users should always be able to discover users with the given confidentiality restrictions</td><td></td></tr>
+<tr><td>Authorization</td><td>Not a risk. All users should be able to discover other users</td><td></td></tr>
+<tr><td>Spam prevention</td><td>Not a risk. Discovering a user should not be message sending</td><td></td></tr>
+</tbody></table>
+</div>
+<h2 id="connection-establishment"><a class="header" href="#connection-establishment">Connection establishment</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>STRIDE property</th><th>Requirement</th><th>Remark</th></tr></thead><tbody>
+<tr><td>Authentication</td><td>All registered users should be able to establish connections to other users</td><td></td></tr>
+<tr><td></td><td>The establishing user must be able to authenticate the target user</td><td></td></tr>
+<tr><td>Integrity</td><td>Not a risk. Authentication implies integrity of the connection request</td><td></td></tr>
+<tr><td>Non-repudiation</td><td>Not a risk. Users must be able to establish connections anonymously</td><td></td></tr>
+<tr><td>Confidentiality</td><td>The user must be able to establish connections anonymously w.r.t. the homeserver</td><td></td></tr>
+<tr><td>Availability</td><td>Users should always be able to establish connections (limited by anti-spam measures)</td><td></td></tr>
+<tr><td>Authorization</td><td>Not a risk. All users should be able to establish connections</td><td></td></tr>
+<tr><td>Spam prevention</td><td>High spam risk. Connection establishments are message sending must be limited per user</td><td></td></tr>
+</tbody></table>
+</div>
+<h2 id="connection-rejection"><a class="header" href="#connection-rejection">Connection rejection</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>STRIDE property</th><th>Requirement</th><th>Remark</th></tr></thead><tbody>
+<tr><td>Authentication</td><td>All registered users should be able to accept/reject incoming connections requests</td><td></td></tr>
+<tr><td></td><td>The accepting/rejecting user must be able to authenticate the requesting user</td><td></td></tr>
+<tr><td>Integrity</td><td>Not a risk. Authentication implies integrity of the connection request</td><td></td></tr>
+<tr><td>Non-repudiation</td><td>Not a risk as long as connection requests can be authenticated by the receiving user</td><td></td></tr>
+<tr><td>Confidentiality</td><td>Not a risk as long as transport encryption and metadata minimalism are upheld</td><td></td></tr>
+<tr><td>Availability</td><td>Users should always be able to accept or reject connections</td><td></td></tr>
+<tr><td>Authorization</td><td>Not a risk. All users should be able to accept/reject connections</td><td></td></tr>
+<tr><td>Spam prevention</td><td>Connection accepts/rejects are message sending and thus have to be limited</td><td>TODO: Is this really message sending?</td></tr>
+</tbody></table>
+</div>
+<h2 id="connection-management"><a class="header" href="#connection-management">Connection management</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>STRIDE property</th><th>Requirement</th><th>Remark</th></tr></thead><tbody>
+<tr><td>Authentication</td><td>All registered users should be able to manage their existing connections</td><td></td></tr>
+<tr><td></td><td>Each user should only be able to manage their own connections</td><td></td></tr>
+<tr><td>Integrity</td><td>Not a risk. Clients are responsible for their own list of connections</td><td></td></tr>
+<tr><td>Non-repudiation</td><td>Not a risk. Connection management does not need to be logged</td><td></td></tr>
+<tr><td>Confidentiality</td><td>The homeserver should not learn which connections a user has</td><td></td></tr>
+<tr><td></td><td>The homeserver should not learn which users a user has blocked</td><td></td></tr>
+<tr><td>Availability</td><td>Users should always be able to manage their own connections</td><td></td></tr>
+<tr><td>Authorization</td><td>Not a risk. All users should be able to accept/reject (their own) connections</td><td></td></tr>
+<tr><td>Spam prevention</td><td>Connection management is message sending and thus has to be limited</td><td>TODO: Is this really message sending?</td></tr>
+</tbody></table>
+</div>
+<h2 id="account-deletion"><a class="header" href="#account-deletion">Account deletion</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>STRIDE property</th><th>Requirement</th><th>Remark</th></tr></thead><tbody>
+<tr><td>Authentication</td><td>All registered users should be able to delete their won account</td><td></td></tr>
+<tr><td></td><td>Each user should only be able to delete their own account</td><td></td></tr>
+<tr><td>Integrity</td><td>Not a risk, as there should be no data left after deletion</td><td></td></tr>
+<tr><td>Non-repudiation</td><td>Not a risk. Account deletion should not be logged</td><td></td></tr>
+<tr><td>Confidentiality</td><td>Not a risk as long as transport encryption and metadata mimimalism hold</td><td></td></tr>
+<tr><td></td><td>In particular, all metadata regarding the deleted account should be deleted</td><td></td></tr>
+<tr><td>Availability</td><td>Users should always be able to delete their own account</td><td></td></tr>
+<tr><td>Authorization</td><td>Not a risk. All users should be able to delete (their own) account</td><td></td></tr>
+<tr><td>Spam prevention</td><td>Account deletion is message sending and thus has to be limited</td><td>TODO: Is this really message sending?</td></tr>
+</tbody></table>
+</div>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../threat_model/security_requirements/public.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../../threat_model/security_requirements/clients.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../threat_model/security_requirements/public.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../../threat_model/security_requirements/clients.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>
