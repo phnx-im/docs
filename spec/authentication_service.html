@@ -1,0 +1,363 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Work in progress: Authentication service - Docs</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="../status.html">Status</a></li><li class="chapter-item expanded "><a href="../functional_requirements.html"><strong aria-hidden="true">1.</strong> Functional Requirements</a></li><li class="chapter-item expanded "><a href="../modularization.html"><strong aria-hidden="true">2.</strong> Modularization</a></li><li class="chapter-item expanded "><a href="../performance_goals.html"><strong aria-hidden="true">3.</strong> Performance Goals</a></li><li class="chapter-item expanded "><a href="../threat_model.html"><strong aria-hidden="true">4.</strong> Threat Model</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../threat_model/methodology.html"><strong aria-hidden="true">4.1.</strong> Methodology</a></li><li class="chapter-item expanded "><a href="../threat_model/security_assumptions.html"><strong aria-hidden="true">4.2.</strong> Security Assumptions</a></li><li class="chapter-item expanded "><a href="../threat_model/application_assets.html"><strong aria-hidden="true">4.3.</strong> Application Assets</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements.html"><strong aria-hidden="true">4.4.</strong> Security Requirements</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../threat_model/security_requirements/operators.html"><strong aria-hidden="true">4.4.1.</strong> Operators</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/public.html"><strong aria-hidden="true">4.4.2.</strong> Public</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/users.html"><strong aria-hidden="true">4.4.3.</strong> Users</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/clients.html"><strong aria-hidden="true">4.4.4.</strong> Clients</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/federated_homeservers.html"><strong aria-hidden="true">4.4.5.</strong> Federated Homeservers</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/federated_users.html"><strong aria-hidden="true">4.4.6.</strong> Federated Users</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/federated_clients.html"><strong aria-hidden="true">4.4.7.</strong> Federated Clients</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../cryptographic_primitives.html"><strong aria-hidden="true">5.</strong> Cryptographic Primitives and Schemes</a></li><li class="chapter-item expanded "><a href="../spec.html"><strong aria-hidden="true">6.</strong> Specification (Draft)</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/authentication_service.html" class="active"><strong aria-hidden="true">6.1.</strong> Work in progress: Authentication service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/authentication_service/credentials.html"><strong aria-hidden="true">6.1.1.</strong> Credentials</a></li><li class="chapter-item expanded "><a href="../spec/authentication_service/evolving_identities.html"><strong aria-hidden="true">6.1.2.</strong> Evolving Identities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/authentication_service/new_device_flow.html"><strong aria-hidden="true">6.1.2.1.</strong> Adding new devices</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/authentication_service/connection_establishment.html"><strong aria-hidden="true">6.1.3.</strong> Discovery and connection esablishment</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/delivery_service.html"><strong aria-hidden="true">6.2.</strong> Delivery service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/delivery_service/group_state_encryption.html"><strong aria-hidden="true">6.2.1.</strong> Group state encryption</a></li><li class="chapter-item expanded "><a href="../spec/delivery_service/broken_state_detection.html"><strong aria-hidden="true">6.2.2.</strong> Broken state detection</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/queuing_service.html"><strong aria-hidden="true">6.3.</strong> Queuing service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/queuing_service/queue_encryption.html"><strong aria-hidden="true">6.3.1.</strong> Queue encryption</a></li><li class="chapter-item expanded "><a href="../spec/queuing_service/keypackage_publication.html"><strong aria-hidden="true">6.3.2.</strong> KeyPackage publication</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/clients.html"><strong aria-hidden="true">6.4.</strong> Work in progress: Clients</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/clients/client_sync.html"><strong aria-hidden="true">6.4.1.</strong> Client synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/future_work.html"><strong aria-hidden="true">6.5.</strong> Future work</a></li><li class="chapter-item expanded "><a href="../spec/glossary.html"><strong aria-hidden="true">6.6.</strong> Glossary</a></li></ol></li><li class="chapter-item expanded "><a href="../authentication_systems.html"><strong aria-hidden="true">7.</strong> Authentication in messaging applications</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Docs</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="work-in-progress-authentication-service-as"><a class="header" href="#work-in-progress-authentication-service-as">Work in progress: Authentication Service (AS)</a></h1>
+<p>In this chapter, we detail the different functionalitites of the authentication service. See the subchapter on <a href="authentication_service/credentials.html">credentials</a> for more details on the credential types referenced in this chapter.</p>
+<h2 id="configuration"><a class="header" href="#configuration">Configuration</a></h2>
+<p>The AS is configurable by use of the following configuration variables:</p>
+<ul>
+<li><strong>Anonymous token timeframe:</strong> The amount of time which each client has to wait until it can obtain new anonymous authentication tokens.</li>
+<li><strong>Default token allowance:</strong> The default amount of anonymous authentication tokens issued to each user in the anonymous token timeframe.</li>
+<li><strong>Identity provider:</strong> Network address of the OpenID connect identity provider the authentication service delegates authentication to for account registration.</li>
+<li><strong>Maximal QS client record age:</strong> Maximal age of an inactive client entry.
+<ul>
+<li>Default: 90d</li>
+</ul>
+</li>
+<li><strong>Maximal number of requested messages:</strong> Maximal number of messages that will be returned to a client requesting messages from a direct queue.</li>
+<li><strong>Identity provider (IdP):</strong> Provider used for user authentication
+<ul>
+<li><strong>Provider URL:</strong> URL under which the provider (issuer) can be reached</li>
+<li><strong>Client ID:</strong> ID of the AS as the IdP's client</li>
+<li><strong>Client secret:</strong> Secret which the AS can use to authenticate itself towards the IdP</li>
+</ul>
+</li>
+</ul>
+<h2 id="as-state"><a class="header" href="#as-state">AS state</a></h2>
+<p>The AS generally keeps the following state</p>
+<ul>
+<li><strong>User entries:</strong> A database with one entry for each user account. Each entry is indexed by the user's <a href="glossary.html#user-name-un">user name</a> and contains a number of sub-entries.
+<ul>
+<li><strong>User IdP identity:</strong> The user's identity at the user's IdP. Required for authentication with the IdP.</li>
+<li><strong>Client entries:</strong> Sub entries for each of the user's clients. Indexed by the clients' <a href="glossary.html#client-id-cid">client id</a>.
+<ul>
+<li><strong>Client credential:</strong> The <a href="authentication_service/credentials.html#client-credentials">credential</a> of the client.</li>
+<li><strong>Token issuance records:</strong> A record of how many tokens were issued to the client.</li>
+<li><strong>Activity time:</strong> Timestamp indicating the last time a client has fetched messages from the queue.</li>
+<li><strong>Connection establishment KeyPackage:</strong> A key package used to encrypt information in the <a href="authentication_service/connection_establishment.html">connection establishment process</a>.</li>
+<li><strong>Direct queue:</strong> A queue similar to the fan-out queues on the QS.
+<ul>
+<li><strong>Queue encryption key material:</strong> Key material to perform <a href="./queuing_service/queue_encryption.html">queue encryption</a>.
+<ul>
+<li><strong>Queue encryption key:</strong> HPKE public key of the queue owner</li>
+<li><strong>Encryption ratchet key:</strong> Symmetric key used to derive queue encryption keys.</li>
+</ul>
+</li>
+<li><strong>Current sequence number:</strong> The current message sequence number.</li>
+<li><strong>Queued messages:</strong> A sequence of ciphertexts containing the messages in the queue. Each incoming message is <a href="./queuing_service/queue_encryption.html">encrypted</a> and is assigned the current sequence number, after which the current sequence number is incremented.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="authentication"><a class="header" href="#authentication">Authentication</a></h2>
+<p>The AS uses the user's IdP to authenticate the user. Some endpoints require simple authentication, while for others, the AS requires MFA authentication via the IdP.</p>
+<h2 id="user-account-registration"><a class="header" href="#user-account-registration">User account registration</a></h2>
+<p>The user registration functionality delegates authentication to an OpenID connect-capable identity provider. Note, that the user's chosen user name is part of the <code>client_csr</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct CreateUserParams {
+  idp_identity: Vec&lt;u8&gt;,
+  client_csr: ClientCsr,
+  queue_encryption_key: HpkePublicKey,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The AS uses the given <code>idp_identity</code> to authenticate the user with the IdP and then creates the user entry and initial client entry. The AS then signs the CSR and returns it to the client.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct CreateUserResponse {
+  client_credential: ClientCredential,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="future-work-sybil-attack-protection"><a class="header" href="#future-work-sybil-attack-protection">Future work: Sybil attack protection</a></h3>
+<p>Being able to create arbitrarily many users can enable a number of DDoS attacks and effectively renders the anonymous token DDoS prevention strategy useless. Thus we need some form of restriction here, such as a CAPTCHA or other proof of personhood.</p>
+<h2 id="get-user-clients"><a class="header" href="#get-user-clients">Get user clients</a></h2>
+<p>Given a user name, get the <a href="authentication_service/credentials.html#client-credentials">client credentials</a> of all of the user's clients.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct GetClientCredentialsParams {
+  user_name: UserName,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The AS returns the following information.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct GetClientCredentialsResponse {
+  client_credentials: Vec&lt;ClientCredential&gt;,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="user-account-deletion"><a class="header" href="#user-account-deletion">User account deletion</a></h2>
+<p>Delete the user account with the given user name.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct DeleteUserParams {
+  user_name: UserName,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="authentication-1"><a class="header" href="#authentication-1">Authentication</a></h3>
+<p>Requires MFA authentication as the user's <code>idp_identity</code> with the IdP.</p>
+<h2 id="add-new-client"><a class="header" href="#add-new-client">Add new client</a></h2>
+<p>Add a new client entry to the user's user entry.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct CreateClientParams {
+  idp_identity: Vec&lt;u8&gt;,
+  client_csr: ClientCsr,
+  queue_encryption_key: HpkePublicKey,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The AS validates the CSR, creates the client entry, signs the CSR and returns it to the client.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct CreateClientResponse {
+  client_credential: ClientCredential,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="authentication-2"><a class="header" href="#authentication-2">Authentication</a></h3>
+<p>Requires MFA authentication as the user's <code>idp_identity</code> with the IdP.</p>
+<h2 id="delete-client"><a class="header" href="#delete-client">Delete client</a></h2>
+<p>Delete the client with the given client id. This endpoint can't be used to delete the last client entry in a given user entry.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct DeleteClientParams {
+  client_id: ClientId,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="authentication-3"><a class="header" href="#authentication-3">Authentication</a></h3>
+<p>Requires MFA authentication as the user's <code>idp_identity</code> with the IdP.</p>
+<h2 id="get-client-entry"><a class="header" href="#get-client-entry">Get client entry</a></h2>
+<p>Get the information contained in a client entry.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct GetClientEntryParams {
+  client_id: ClientId,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The AS responds with the following struct.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct GetClientEntryResponse {
+  client_credential: ClientCredential,
+  queue_encryption_key: HpkePublicKey,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="authentication-4"><a class="header" href="#authentication-4">Authentication</a></h3>
+<p>Requires authentication as the user's <code>ipd_identity</code> with the IdP.</p>
+<h2 id="dequeue-messages"><a class="header" href="#dequeue-messages">Dequeue messages</a></h2>
+<p>Dequeue messages from a client's direct queue, starting with the message with the given sequence number.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct DequeueMessagesParams {
+  client_id,
+  sequence_number_start: u64,
+  max_message_number: u64,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The AS deletes messages older than the given sequence number and returns messages starting with the given sequence number. The maximum number of messages returned this way is the smallest of the following values.</p>
+<ul>
+<li>The number of messages remaining in the queue</li>
+<li>The value of the <code>max_message_number</code> field in the request</li>
+<li>The AS configured maximum number of returned messages</li>
+</ul>
+<h2 id="enqueue-message"><a class="header" href="#enqueue-message">Enqueue message</a></h2>
+<p>Enqueue a message into a clien'ts direct queue.</p>
+<h2 id="get-as-credentials"><a class="header" href="#get-as-credentials">Get AS credentials</a></h2>
+<p>Get the currently valid <a href="authentication_service/credentials.html#as-credentials">AS credentials</a> and <a href="authentication_service/credentials.html#as-intermediate-credentials">AS intermediate credentials</a>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct GetCredentialsResponse {
+  as_credentials: Vec&lt;AsCredentials&gt;,
+  as_intermediate_credentials: Vec&lt;AsIntermediateCredential&gt;,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="future-work-revocation"><a class="header" href="#future-work-revocation">Future work: Revocation</a></h3>
+<p>For now, revocation happens by the AS stopping to publish a given cert. In the future, we might want a more sophisticated revocation story closer to what's happening in the WebPKI.</p>
+<h2 id="future-work-evolving-identity"><a class="header" href="#future-work-evolving-identity">Future work: Evolving Identity</a></h2>
+<p>For now, the AS relies on <a href="glossary.html#client-credential-chain">client credential chains</a>, but in the future, client authentication should be achieved using <a href="authentication_service/evolving_identities.html">evolving identity</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../spec.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../spec/authentication_service/credentials.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../spec.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../spec/authentication_service/credentials.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>
