@@ -1,5 +1,4 @@
-# Work in progress: Credentials
-
+# Credentials
 ## Credential Fingerprints
 
 Credentials can be referenced via their credential fingerprints. A credential fingerprint is simply the hash of the credential, where the hash is determined by the CredentialCiphersuite.
@@ -134,4 +133,3 @@ struct LeafCredentialPayload {
 		signer_fingerprint: CredentialFingerprint,
 }
 ```
-

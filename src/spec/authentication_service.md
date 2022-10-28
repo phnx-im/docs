@@ -140,13 +140,14 @@ struct DeleteUserParams {
 
 ### Authentication
 
-* Client 2FA
+* Client
 
 ## Initiate client addition
 
 Add a new client entry to the user's user entry.
 
 ```rust
+<<<<<<< HEAD
 struct InitiateClientAdditionParams {
   client_csr: ClientCsr,
   opaque_ke1: OpaqueKe1,
@@ -196,6 +197,26 @@ The AS performs the following actions:
 ### Authentication
 
 * Client 2FA (checking the signature via lookup in the ephemeral DB, see above)
+=======
+struct CreateClientParams {
+  idp_identity: Vec<u8>,
+  client_csr: ClientCsr,
+  queue_encryption_key: HpkePublicKey,
+}
+```
+
+The AS validates the CSR, creates the client entry, signs the CSR and returns it to the client.
+
+```rust
+struct CreateClientResponse {
+  client_credential: ClientCredential,
+}
+```
+
+### Authentication
+
+Requires MFA authentication as the user's `idp_identity` with the IdP.
+>>>>>>> main
 
 ## Delete client
 
@@ -209,7 +230,34 @@ struct DeleteClientParams {
 
 ### Authentication
 
+<<<<<<< HEAD
 * Client
+=======
+Requires MFA authentication as the user's `idp_identity` with the IdP.
+
+## Get client entry
+
+Get the information contained in a client entry.
+
+```rust
+struct GetClientEntryParams {
+  client_id: ClientId,
+}
+```
+
+The AS responds with the following struct.
+
+```rust
+struct GetClientEntryResponse {
+  client_credential: ClientCredential,
+  queue_encryption_key: HpkePublicKey,
+}
+```
+
+### Authentication
+
+Requires authentication as the user's `ipd_identity` with the IdP.
+>>>>>>> main
 
 ## Dequeue messages
 
@@ -217,7 +265,11 @@ Dequeue messages from a client's direct queue, starting with the message with th
 
 ```rust
 struct DequeueMessagesParams {
+<<<<<<< HEAD
   client_id: ClientId,
+=======
+  client_id,
+>>>>>>> main
   sequence_number_start: u64,
   max_message_number: u64,
 }
@@ -229,6 +281,7 @@ The AS deletes messages older than the given sequence number and returns message
 - The value of the `max_message_number` field in the request
 - The AS configured maximum number of returned messages
 
+<<<<<<< HEAD
 ### Authentication
 
 * Client
@@ -247,12 +300,18 @@ struct EnqueueMessageParams {
 ### Authentication
 
 * None
+=======
+## Enqueue message
+
+Enqueue a message into a clien'ts direct queue.
+>>>>>>> main
 
 ## Get AS credentials
 
 Get the currently valid [AS credentials](authentication_service/credentials.md#as-credentials) and [AS intermediate credentials](authentication_service/credentials.md#as-intermediate-credentials).
 
 ```rust
+<<<<<<< HEAD
 struct AsCredentialsResponse {
   as_credentials: Vec<AsCredentials>,
   as_intermediate_credentials: Vec<AsIntermediateCredential>,
@@ -260,6 +319,18 @@ struct AsCredentialsResponse {
 }
 ```
 
+=======
+struct GetCredentialsResponse {
+  as_credentials: Vec<AsCredentials>,
+  as_intermediate_credentials: Vec<AsIntermediateCredential>,
+}
+```
+
+### Future work: Revocation
+
+For now, revocation happens by the AS stopping to publish a given cert. In the future, we might want a more sophisticated revocation story closer to what's happening in the WebPKI.
+
+>>>>>>> main
 ## Future work: Evolving Identity
 
 For now, the AS relies on [client credential chains](glossary.md#client-credential-chain), but in the future, client authentication should be achieved using [evolving identity](authentication_service/evolving_identities.md).
