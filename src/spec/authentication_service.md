@@ -45,6 +45,40 @@ There are three modes of authentication for endpoints on the AS.
 * **Client Password:** An OPAQUE login flow.
 * **Client 2FA:** The same as **Client**, but additionally performing an [OPAQUE](https://datatracker.ietf.org/doc/draft-irtf-cfrg-opaque/) login flow
 
+## Initiate 2FA operation
+
+The client has to query this endpoint before they can query an endpoint that requires **Client 2FA** authentication. Note that this endpoint is not meant to be used with endpoints that require **Client Password** authentication such as the client addition endpoint. Similarly, this endpoint is not meant to be used to set up 2FA (see [here](./authentication_service.md#initialize-user-registration) instead).
+
+```rust
+struct Initiate2FaAuthenticationParams {
+  client_id: ClientId,
+  opaque_ke1: OpaqueKe1,
+}
+```
+
+The AS then performs the following steps:
+* perform the [first (server side) step in the OPAQUE online AKE handshake](https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-online-authenticated-key-exc)
+* store the resulting OPAQUE `server_state` in its ephemeral DB
+* return the OPAQUE response to the client
+
+```rust
+struct Initiate2FaAuthenticationResponse {
+  opaque_ke2: OpaqueKe2,
+}
+```
+
+### Future work: Client and query binding
+
+The query to initialize the 2FA operation should be tied to the query that actually requires 2FA. Also, the OPAQUE handshake should be bound to the client id and the 2FA endpoint.
+
+### Future work: Prevent client enumeration attacks
+
+As noted [in the OPAQUE RFC](https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-client-enumeration) the server should take measures against client enumeration attacks. We should implement them as described in the RFC.
+
+## Authentication
+
+* Client Credential
+
 ## Initialize user registration
 
 The user registration functionality requires the user to perform an [OPAQUE registration flow](https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-offline-registration) with the homeserver. Note, that the user's chosen user name is part of the `client_csr`.
@@ -135,19 +169,26 @@ Delete the user account with the given user name.
 ```rust
 struct DeleteUserParams {
   user_name: UserName,
+  opaque_ke3: OpaqueKe3,
 }
 ```
 
+The AS performs the following actions:
+* look up the OPAQUE `server_state` in the ephemeral DB based on the `client_id`
+* authenticate the request using the signature key in the ClientCredential
+* perform the `ServerFinish` step of the OPAQUE online AKE flow
+* delete the user entry
+* delete the entry in the ephemeral OPAQUE DB
+
 ### Authentication
 
-* Client
+* Client 2FA
 
 ## Initiate client addition
 
 Add a new client entry to the user's user entry.
 
 ```rust
-<<<<<<< HEAD
 struct InitiateClientAdditionParams {
   client_csr: ClientCsr,
   opaque_ke1: OpaqueKe1,
@@ -197,26 +238,6 @@ The AS performs the following actions:
 ### Authentication
 
 * Client 2FA (checking the signature via lookup in the ephemeral DB, see above)
-=======
-struct CreateClientParams {
-  idp_identity: Vec<u8>,
-  client_csr: ClientCsr,
-  queue_encryption_key: HpkePublicKey,
-}
-```
-
-The AS validates the CSR, creates the client entry, signs the CSR and returns it to the client.
-
-```rust
-struct CreateClientResponse {
-  client_credential: ClientCredential,
-}
-```
-
-### Authentication
-
-Requires MFA authentication as the user's `idp_identity` with the IdP.
->>>>>>> main
 
 ## Delete client
 
@@ -230,34 +251,7 @@ struct DeleteClientParams {
 
 ### Authentication
 
-<<<<<<< HEAD
 * Client
-=======
-Requires MFA authentication as the user's `idp_identity` with the IdP.
-
-## Get client entry
-
-Get the information contained in a client entry.
-
-```rust
-struct GetClientEntryParams {
-  client_id: ClientId,
-}
-```
-
-The AS responds with the following struct.
-
-```rust
-struct GetClientEntryResponse {
-  client_credential: ClientCredential,
-  queue_encryption_key: HpkePublicKey,
-}
-```
-
-### Authentication
-
-Requires authentication as the user's `ipd_identity` with the IdP.
->>>>>>> main
 
 ## Dequeue messages
 
@@ -265,11 +259,7 @@ Dequeue messages from a client's direct queue, starting with the message with th
 
 ```rust
 struct DequeueMessagesParams {
-<<<<<<< HEAD
   client_id: ClientId,
-=======
-  client_id,
->>>>>>> main
   sequence_number_start: u64,
   max_message_number: u64,
 }
@@ -281,7 +271,6 @@ The AS deletes messages older than the given sequence number and returns message
 - The value of the `max_message_number` field in the request
 - The AS configured maximum number of returned messages
 
-<<<<<<< HEAD
 ### Authentication
 
 * Client
@@ -300,18 +289,12 @@ struct EnqueueMessageParams {
 ### Authentication
 
 * None
-=======
-## Enqueue message
-
-Enqueue a message into a clien'ts direct queue.
->>>>>>> main
 
 ## Get AS credentials
 
 Get the currently valid [AS credentials](authentication_service/credentials.md#as-credentials) and [AS intermediate credentials](authentication_service/credentials.md#as-intermediate-credentials).
 
 ```rust
-<<<<<<< HEAD
 struct AsCredentialsResponse {
   as_credentials: Vec<AsCredentials>,
   as_intermediate_credentials: Vec<AsIntermediateCredential>,
@@ -319,18 +302,6 @@ struct AsCredentialsResponse {
 }
 ```
 
-=======
-struct GetCredentialsResponse {
-  as_credentials: Vec<AsCredentials>,
-  as_intermediate_credentials: Vec<AsIntermediateCredential>,
-}
-```
-
-### Future work: Revocation
-
-For now, revocation happens by the AS stopping to publish a given cert. In the future, we might want a more sophisticated revocation story closer to what's happening in the WebPKI.
-
->>>>>>> main
 ## Future work: Evolving Identity
 
 For now, the AS relies on [client credential chains](glossary.md#client-credential-chain), but in the future, client authentication should be achieved using [evolving identity](authentication_service/evolving_identities.md).

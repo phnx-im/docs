@@ -206,10 +206,3 @@ A symmetric encryption key that a client uses to encrypt its push-token on its Q
 ## QueueConfig extension
 
 A KeyPackage extension that contains a client's [ClientQueueConfig](glossary.md#sealed-queue-config). This extension is required for all KeyPackages uploaded to a QS.
-<<<<<<< HEAD
-=======
-
-## ConnectionGroup extension
-
-A GroupContext extension that contains no data, but the presence of which in a group indicates that the group is a [connection group](authentication_service/connection_establishment.md).
->>>>>>> main
