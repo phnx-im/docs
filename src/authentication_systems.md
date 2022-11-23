@@ -175,3 +175,22 @@ iMessage [purely relies on the TTP approach](https://support.apple.com/guide/sec
 ### Multi-client
 
 iMessage clients have their own cryptographic identity and Apple automatically distributes keys of new clients, as well as changes to a user’s client list to a user’s contacts.
+
+# Comparison of messaging applications
+
+Due to the diversity of approaches to authentication in general and multi-device in particular, it is hard to compare the individual applications directly. However, we can categorize them broadly. Note that none of the applications below support transparency via a verifiable datastructure or verification via a verification question.
+
+| Application | TTP | OOB Auth | Cross-signing |
+| ----------- | --- | -------- | ------------- |
+| Signal      | ✅   | ✅        | ❌[^1]         |
+| WhatsApp    | ✅   | ✅        | ✅             |
+| Keybase     | ✅   | ❌        | ✅             |
+| Threema     | ✅   | ✅        | ❌[^2]         |
+| PGP         | ❌   | ✅        | ✅[^3]         |
+| Element     | ✅   | ✅        | ✅             |
+| iMessage    | ✅   | ❌        | ❌             |
+
+
+[^1]: Signal uses the same cryptographic identity for all of a user's clients.
+[^2]: Threema only supports multi-client by routing all messages through a main client. Secondary clients thus don't have their own cryptographic identity.
+[^3]: Only if individual clients have their own key material.
