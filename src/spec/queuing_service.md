@@ -149,14 +149,14 @@ struct CreateUserRecordResponse {
 }
 ```
 
-#### Edit QS user record
+#### Update QS user record
 
-* Endpoint: `ENDPOINT_QS_EDIT_USER_RECORD`
+* Endpoint: `ENDPOINT_QS_UPDATE_USER_RECORD`
 
-Edit a given QS user record, overwriting the existing values with the one given in the message.
+Update a given QS user record, overwriting the existing values with the one given in the message.
 
 ```rust
-struct EditUserRecordParams {
+struct UpdateUserRecordParams {
   qs_uid: QsUid,
   user_record_auth_key: SignaturePublicKey,
   friendship_token: FriendshipToken,
@@ -240,14 +240,14 @@ struct CreateClientRecordResponse {
 
 * QsSenderId: QsUid
 
-#### Edit QS client record
+#### Update QS client record
 
 * Endpoint: `ENDPOINT_QS_UPDATE_CLIENT_RECORD`
 
-Overwrite the data of the QS client record with the given QsCid with the given data.
+Update the data of the QS client record with the given QsCid with the given data.
 
 ```rust
-struct EditClientRecordParams {
+struct UpdateClientRecordParams {
   qs_cid: QsCid,
   client_record_auth_key: SignaturePublicKey,
   queue_encryption_key: HpkePublicKey,

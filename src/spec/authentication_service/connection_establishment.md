@@ -27,9 +27,13 @@ struct ConnectionEstablishmentPackage {
 
 The `ConnectionEstablishmentPackage`s are then signed using the initiator's client credential and each encrypted under the init key of the connection establishment KeyPackage of the responder's individual clients.
 
-Receiving the `ConnectionEstablishmentPackage`, a responder's client must verify the signature on the package. It must also fetch the AS credential and AS intermediate credential and verify the signature chain from the initiator's client credential to the AS credential. The responder can then decide based on the sender's user name (contained in the client credential) if it wants to accept the connection.
+Receiving the `ConnectionEstablishmentPackage`, a responder's client first makes sure that its queue on the QS is empty. This is to ensure that the responding user hasn't already accepted the connection on another client. If there is a WelcomeBundle with the same GroupId as in the `ConnectionEstablishmentPackage`, the client uses the former to join the group and discards the `ConnectionEstablishmentPackage`.
 
-The responder accepts the connection by fetching the external commit information required to join the group from the initiator's DS and joins the group via the *join connection group* endpoint of said DS.
+If the queue is empty, the receiving client must verify the signature on the package. It must also fetch the AS credential and AS intermediate credential and verify the signature chain from the initiator's client credential to the AS credential. The responder can then decide based on the sender's user name (contained in the client credential) if it wants to accept the connection.
+
+The responder accepts the connection by fetching the external commit information required to join the group from the initiator's DS and joins the group via the *join connection group* endpoint of said DS. After joining, the client adds all other clients of the same user to the group.
+
+If joining via the *join connection group* endpoint fails, the new client must check its queue again to ensure that no other client has accepted the connection in the mean time. If the queue is still empty, the client discards the ConnectionEstablishmentPackage and aborts the process.
 
 ### Future work: Additional initiator information
 

@@ -351,7 +351,7 @@ struct JoinConnectionGroupParamsAad {
 }
 ```
 
-* The DS checks if the group contains the [connection group extension](glossary.md#connectiongroup-extension). This endpoint must only be used to join connection groups.
+* The DS checks if the group contains only a single user. Every single-user group can be joined as a connection group.
 
 #### Authentication
 
