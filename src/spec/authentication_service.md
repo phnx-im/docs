@@ -47,7 +47,7 @@ There are three modes of authentication for endpoints on the AS.
 
 ## Initiate 2FA operation
 
-The client has to query this endpoint before they can query an endpoint that requires **Client 2FA** authentication. Note that this endpoint is not meant to be used with endpoints that require **Client Password** authentication such as the client addition endpoint. Similarly, this endpoint is not meant to be used to set up 2FA (see [here](./authentication_service.md#initialize-user-registration) instead).
+The client has to query this endpoint before it can query an endpoint that requires **Client 2FA** authentication. Note that this endpoint is not meant to be used with endpoints that require **Client Password** authentication such as the client addition endpoint. Similarly, this endpoint is not meant to be used to set up 2FA (see [here](./authentication_service.md#initialize-user-registration) instead).
 
 ```rust
 struct Initiate2FaAuthenticationParams {
