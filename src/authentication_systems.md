@@ -112,7 +112,7 @@ In many cases the messaging provider informs other users if a new client is adde
 
 ### Revocation suppression
 
-Users need to be able to remove lost or potentially compromised devices from its composed identity. Here, the problem is often that a malicious messaging provider can (silently) drop messages performing such a revocation operation. This can not be prevented entirely, since the messaging provider can always decide to drop messages. [Identity gossiping](./authentication_systems.md#identity-gossiping) can help mitigate this problem, as it prevents the messaging provider from dropping messages selectively. Instead, the provider is forced to drop all of a users message, thus increasing the risk of detection.
+Users need to be able to remove lost or potentially compromised devices from their composed identity. Here, the problem is often that a malicious messaging provider can (silently) drop messages performing such a revocation operation. This can not be prevented entirely, since the messaging provider can always decide to drop messages. [Identity gossiping](./authentication_systems.md#identity-gossiping) can help mitigate this problem, as it prevents the messaging provider from dropping messages selectively. Instead, the provider is forced to drop all of a user's messages, thus significantly increasing the risk of detection.
 
 Such an attack is also detected if two affected users verify one-another's identities OOB.
 
