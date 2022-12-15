@@ -100,11 +100,27 @@ Similar to an OOB channel, the sender and receiver can use shared information to
 
 Different messaging applications make use of one or more of the authentication approaches, sometimes with small variations to the general concepts described above.
 
-### Multi-client or composed user identities
+## Multi-client or composed user identities
 
-Messaging applications often allow the use of multiple clients (e.g. on different devices) by a single user. However, since users are typically interested in authenticating users rather than individual clients, applications have to deal with the challenge of presenting a single user identity despite messages being sent potentially from more than one client.
+Messaging applications often allow the use of multiple clients (e.g. on different devices) by a single user. However, users typically authenticate other users rather than individual clients. The applications thus have to compose individual client identities into user identities.
 
-Multi-client authentication is not covered in the discussion of existing approaches above, because the individual messaging applications have found unique ways of dealing with this problem.
+Compared to simple, single-client user identities, composed user identities pose additional challenges.
+
+### Ghost clients
+
+In many cases the messaging provider informs other users if a new client is added for a given user. A compromised or malicious provider can thus insert one of its own clients into the conversation without the target user noticing. Techniques like cross-signing can prevent such an attack, since any client additions have to be performed by one of the user's existing clients. Alternatively, [identity gossiping](authentication_systems.md#identity-gossiping), as well as OOB verification help detect such an attack.
+
+### Revocation suppression
+
+Users need to be able to remove lost or potentially compromised devices from their composed identity. Here, the problem is often that a malicious messaging provider can (silently) drop messages performing such a revocation operation. This can not be prevented entirely, since the messaging provider can always decide to drop messages. [Identity gossiping](./authentication_systems.md#identity-gossiping) can help mitigate this problem, as it prevents the messaging provider from dropping messages selectively. Instead, the provider is forced to drop all of a user's messages, thus significantly increasing the risk of detection.
+
+Such an attack is also detected if two affected users verify one-another's identities OOB.
+
+### Identity Gossiping
+
+Some of the techniques discussed above (such as cross signing) help in ensuring that all participants of a given conversation agree on their respective identities. However, if the messaging protocol (cryptographically) includes the identity of a user in messages it sends, it can help mitigate the two attacks described above.
+
+If the authentication systems includes a [verifyable data structure](authentication_systems.md#verifiable-data-structures) that records fingerprints of client identities, clients can also gossip their view of the data structure.
 
 ## Signal
 
@@ -178,19 +194,20 @@ iMessage clients have their own cryptographic identity and Apple automatically d
 
 # Comparison of messaging applications
 
-Due to the diversity of approaches to authentication in general and multi-device in particular, it is hard to compare the individual applications directly. However, we can categorize them broadly. Note that none of the applications below support transparency via a verifiable datastructure or verification via a verification question.
+Due to the diversity of approaches to authentication in general and multi-device in particular, it is hard to compare the individual applications directly. However, we can categorize them broadly. Note that none of the applications below support transparency via a verifiable datastructure or verification via a verification question. The composed identity colum determines if the application exposes a fingerprint of the [composed user identity](authentication_systems.md#multi-client-or-composed-user-identities) (as opposed to the identities of the individual clients).
 
-| Application | TTP | OOB Auth | Cross-signing |
-| ----------- | --- | -------- | ------------- |
-| Signal      | ✅   | ✅        | ❌[^1]         |
-| WhatsApp    | ✅   | ✅        | ✅             |
-| Keybase     | ✅   | ❌        | ✅             |
-| Threema     | ✅   | ✅        | ❌[^2]         |
-| PGP         | ❌   | ✅        | ✅[^3]         |
-| Element     | ✅   | ✅        | ✅             |
-| iMessage    | ✅   | ❌        | ❌             |
+| Application | TTP | OOB Auth | Cross-signing | Transparency | Composed Identity |
+| ----------- | --- | -------- | ------------- | ------------ | ----------------- |
+| Signal      | ✅   | ✅        | ❌[^1]         | ❌            | ❌[^1]             |
+| WhatsApp    | ✅   | ✅        | ✅             | ❌            | ✅                 |
+| Keybase     | ✅   | ❌        | ✅             | ✅[^4]        | ✅                 |
+| Threema     | ✅   | ✅        | ❌[^2]         | ❌            | ❌                 |
+| PGP         | ❌   | ✅        | ✅[^3]         | ❌            | ❌                 |
+| Element     | ✅   | ✅        | ✅             | ❌            | ❌                 |
+| iMessage    | ✅   | ❌        | ❌             | ❌            | ❌                 |
 
 
 [^1]: Signal uses the same cryptographic identity for all of a user's clients.
 [^2]: Threema only supports multi-client by routing all messages through a main client. Secondary clients thus don't have their own cryptographic identity.
 [^3]: Only if individual clients have their own key material.
+[^4]: Keybase's signature chains are no [verifiable datastructure](https://transparency.dev/verifiable-data-structures/), but they do allow users to verify the consistency of another user's identity.
