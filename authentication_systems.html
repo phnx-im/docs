@@ -4,8 +4,10 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Authentication in messaging applications - Docs</title>
+
+
         <!-- Custom HTML head -->
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
@@ -16,25 +18,28 @@
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
         <link rel="stylesheet" href="css/print.css" media="print">
+
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
         <link rel="stylesheet" href="fonts/fonts.css">
+
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
         <link rel="stylesheet" href="tomorrow-night.css">
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+
     </head>
     <body>
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">
+        <script>
             var path_to_root = "";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
@@ -50,7 +55,7 @@
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
+        <script>
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
@@ -62,7 +67,7 @@
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
+        <script>
             var html = document.querySelector('html');
             var sidebar = 'hidden';
             if (document.body.clientWidth >= 1080) {
@@ -83,7 +88,7 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                <div id="menu-bar-hover-placeholder"></div>
+                                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -93,7 +98,7 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -110,6 +115,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+
                     </div>
                 </div>
 
@@ -123,8 +129,9 @@
                         </ul>
                     </div>
                 </div>
+
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -200,9 +207,17 @@
 <p><strong>Threat model:</strong> The adversary can control the network completely, as long as it doesn’t know the answer to the question.</p>
 <h1 id="approaches-used-in-messaging-applications"><a class="header" href="#approaches-used-in-messaging-applications">Approaches used in messaging applications</a></h1>
 <p>Different messaging applications make use of one or more of the authentication approaches, sometimes with small variations to the general concepts described above.</p>
-<h3 id="multi-client-or-composed-user-identities"><a class="header" href="#multi-client-or-composed-user-identities">Multi-client or composed user identities</a></h3>
-<p>Messaging applications often allow the use of multiple clients (e.g. on different devices) by a single user. However, since users are typically interested in authenticating users rather than individual clients, applications have to deal with the challenge of presenting a single user identity despite messages being sent potentially from more than one client.</p>
-<p>Multi-client authentication is not covered in the discussion of existing approaches above, because the individual messaging applications have found unique ways of dealing with this problem.</p>
+<h2 id="multi-client-or-composed-user-identities"><a class="header" href="#multi-client-or-composed-user-identities">Multi-client or composed user identities</a></h2>
+<p>Messaging applications often allow the use of multiple clients (e.g. on different devices) by a single user. However, users typically authenticate other users rather than individual clients. The applications thus have to compose individual client identities into user identities.</p>
+<p>Compared to simple, single-client user identities, composed user identities pose additional challenges.</p>
+<h3 id="ghost-clients"><a class="header" href="#ghost-clients">Ghost clients</a></h3>
+<p>In many cases the messaging provider informs other users if a new client is added for a given user. A compromised or malicious provider can thus insert one of its own clients into the conversation without the target user noticing. Techniques like cross-signing can prevent such an attack, since any client additions have to be performed by one of the user's existing clients. Alternatively, <a href="authentication_systems.html#identity-gossiping">identity gossiping</a>, as well as OOB verification help detect such an attack.</p>
+<h3 id="revocation-suppression"><a class="header" href="#revocation-suppression">Revocation suppression</a></h3>
+<p>Users need to be able to remove lost or potentially compromised devices from their composed identity. Here, the problem is often that a malicious messaging provider can (silently) drop messages performing such a revocation operation. This can not be prevented entirely, since the messaging provider can always decide to drop messages. <a href="./authentication_systems.html#identity-gossiping">Identity gossiping</a> can help mitigate this problem, as it prevents the messaging provider from dropping messages selectively. Instead, the provider is forced to drop all of a user's messages, thus significantly increasing the risk of detection.</p>
+<p>Such an attack is also detected if two affected users verify one-another's identities OOB.</p>
+<h3 id="identity-gossiping"><a class="header" href="#identity-gossiping">Identity Gossiping</a></h3>
+<p>Some of the techniques discussed above (such as cross signing) help in ensuring that all participants of a given conversation agree on their respective identities. However, if the messaging protocol (cryptographically) includes the identity of a user in messages it sends, it can help mitigate the two attacks described above.</p>
+<p>If the authentication systems includes a <a href="authentication_systems.html#verifiable-data-structures">verifyable data structure</a> that records fingerprints of client identities, clients can also gossip their view of the data structure.</p>
 <h2 id="signal"><a class="header" href="#signal">Signal</a></h2>
 <p>The Signal app takes the TTP approach to authentication with <a href="https://support.signal.org/hc/en-us/articles/360007060632-What-is-a-safety-number-and-why-do-I-see-that-it-changed-">optional OOB verification by the user</a>. Users can discover other users via the Signal servers. Once a connection is established with another user, the server provides both users with the cryptographic identities of their peers. The same is true if a user joins a group with other users with whom it doesn’t necessarily have a previous connection.</p>
 <p>Additionally, users can verify the identity of other users out-of-band, either by comparing a numerical code or by scanning a QR code. Notably, the code presented by the Signal app is not the cryptographic identity of a specific user, but instead a byte string specific to the connection between the users.</p>
@@ -238,6 +253,24 @@
 <p>iMessage <a href="https://support.apple.com/guide/security/how-imessage-sends-and-receives-messages-sec70e68c949/web">purely relies on the TTP approach</a>, where Apple distributes the cryptographic identities of individual parties to conversation partners. There is no way for parties to verify their peers’ public keys OOB.</p>
 <h3 id="multi-client-6"><a class="header" href="#multi-client-6">Multi-client</a></h3>
 <p>iMessage clients have their own cryptographic identity and Apple automatically distributes keys of new clients, as well as changes to a user’s client list to a user’s contacts.</p>
+<h1 id="comparison-of-messaging-applications"><a class="header" href="#comparison-of-messaging-applications">Comparison of messaging applications</a></h1>
+<p>Due to the diversity of approaches to authentication in general and multi-device in particular, it is hard to compare the individual applications directly. However, we can categorize them broadly. Note that none of the applications below support transparency via a verifiable datastructure or verification via a verification question. The composed identity colum determines if the application exposes a fingerprint of the <a href="authentication_systems.html#multi-client-or-composed-user-identities">composed user identity</a> (as opposed to the identities of the individual clients).</p>
+<div class="table-wrapper"><table><thead><tr><th>Application</th><th>TTP</th><th>OOB Auth</th><th>Cross-signing</th><th>Transparency</th><th>Composed Identity</th></tr></thead><tbody>
+<tr><td>Signal</td><td>✅</td><td>✅</td><td>❌<sup class="footnote-reference"><a href="#1">1</a></sup></td><td>❌</td><td>❌<sup class="footnote-reference"><a href="#1">1</a></sup></td></tr>
+<tr><td>WhatsApp</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td><td>✅</td></tr>
+<tr><td>Keybase</td><td>✅</td><td>❌</td><td>✅</td><td>✅<sup class="footnote-reference"><a href="#4">2</a></sup></td><td>✅</td></tr>
+<tr><td>Threema</td><td>✅</td><td>✅</td><td>❌<sup class="footnote-reference"><a href="#2">3</a></sup></td><td>❌</td><td>❌</td></tr>
+<tr><td>PGP</td><td>❌</td><td>✅</td><td>✅<sup class="footnote-reference"><a href="#3">4</a></sup></td><td>❌</td><td>❌</td></tr>
+<tr><td>Element</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td></tr>
+<tr><td>iMessage</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+</tbody></table>
+</div>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p>Signal uses the same cryptographic identity for all of a user's clients.
+<sup class="footnote-reference"><a href="#2">3</a></sup>: Threema only supports multi-client by routing all messages through a main client. Secondary clients thus don't have their own cryptographic identity.
+<sup class="footnote-reference"><a href="#3">4</a></sup>: Only if individual clients have their own key material.
+<sup class="footnote-reference"><a href="#4">2</a></sup>: Keybase's signature chains are no <a href="https://transparency.dev/verifiable-data-structures/">verifiable datastructure</a>, but they do allow users to verify the consistency of another user's identity.</p>
+</div>
 
                     </main>
 
@@ -246,6 +279,8 @@
                             <a rel="prev" href="spec/glossary.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
+
+
                         <div style="clear: both"></div>
                     </nav>
                 </div>
@@ -255,20 +290,29 @@
                     <a rel="prev" href="spec/glossary.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
+
             </nav>
 
         </div>
 
-        <script type="text/javascript">
+
+
+
+        <script>
             window.playground_copyable = true;
         </script>
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
+
+
     </body>
 </html>

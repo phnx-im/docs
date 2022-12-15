@@ -4,8 +4,10 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Delivery service - Docs</title>
+
+
         <!-- Custom HTML head -->
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
@@ -16,25 +18,28 @@
         <link rel="stylesheet" href="../css/general.css">
         <link rel="stylesheet" href="../css/chrome.css">
         <link rel="stylesheet" href="../css/print.css" media="print">
+
         <!-- Fonts -->
         <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
         <link rel="stylesheet" href="../fonts/fonts.css">
+
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="../highlight.css">
         <link rel="stylesheet" href="../tomorrow-night.css">
         <link rel="stylesheet" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+
     </head>
     <body>
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">
+        <script>
             var path_to_root = "../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
@@ -50,7 +55,7 @@
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
+        <script>
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
@@ -62,7 +67,7 @@
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
+        <script>
             var html = document.querySelector('html');
             var sidebar = 'hidden';
             if (document.body.clientWidth >= 1080) {
@@ -83,7 +88,7 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                <div id="menu-bar-hover-placeholder"></div>
+                                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -93,7 +98,7 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -110,6 +115,7 @@
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+
                     </div>
                 </div>
 
@@ -123,8 +129,9 @@
                         </ul>
                     </div>
                 </div>
+
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -163,8 +170,7 @@
   timestamp: Timestamp,
   deleted_queues: Vec&lt;SealedQueueConfig&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The plaintext group state contains the following data:</p>
 <ul>
 <li><strong>Public ratchet tree:</strong> The public MLS ratchet trees of the group.</li>
@@ -217,8 +223,7 @@ struct DsAuthToken {
   // TBS: group_id, timestamp and sender_id
   signature: Signature,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The verification key used to create the token depends on the <code>sender_id</code>:</p>
 <ul>
 <li>LeafIndex: Signature key in the leaf's credential</li>
@@ -232,8 +237,7 @@ struct DsAuthToken {
 </span>struct GroupInfoUpdate {
   signature: Signature,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h2 id="message-delivery"><a class="header" href="#message-delivery">Message delivery</a></h2>
 <p>The majority of endpoints of the DS allow clients to send MLS messages to groups.</p>
 <h3 id="validation"><a class="header" href="#validation">Validation</a></h3>
@@ -257,8 +261,7 @@ struct DsAuthToken {
 </span>struct RequestGroupIdResponse {
   group_id: GroupId,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h4 id="authentication-1"><a class="header" href="#authentication-1">Authentication</a></h4>
 <ul>
 <li>None</li>
@@ -278,8 +281,7 @@ struct DsAuthToken {
   group_info: GroupInfo,
   initial_ear_key: GroupStateEarKey,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The DS checks if there is a placeholder in the group database for this group id. If there is, it creates the GroupStateDbEntry.</li>
 </ul>
@@ -303,8 +305,7 @@ struct DsAuthToken {
   group_state_ear_key: GroupStateEarKey,
   new_queue_config: ClientQueueConfig,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h4 id="authentication-3"><a class="header" href="#authentication-3">Authentication</a></h4>
 <ul>
 <li>DsSenderId: LeafIndex</li>
@@ -325,8 +326,7 @@ struct WelcomeInfoResponse {
   public_tree: MlsRatchetTree,
   credential_chains: Vec&lt;u8&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h4 id="authentication-4"><a class="header" href="#authentication-4">Authentication</a></h4>
 <ul>
 <li>DSSenderId: KeyPackageRef</li>
@@ -347,8 +347,7 @@ struct WelcomeInfoResponse {
   public_tree: MlsRatchetTree,
   credential_chains: Vec&lt;u8&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h4 id="authentication-5"><a class="header" href="#authentication-5">Authentication</a></h4>
 <ul>
 <li>DSSenderId: UserKeyHash</li>
@@ -372,8 +371,7 @@ struct WelcomeInfoResponse {
 struct AddUsersParamsAad {
   encrypted_credential_information: Vec&lt;Vec&lt;u8&gt;&gt;
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The <code>commit</code> must include the <code>AddUserParamsAad</code> of all added users in the AAD of the MLSContent, where the ciphertexts in the <code>encrypted_credential_information</code> are sorted in the same way as the Add proposals in the <code>commit</code>.</p>
 <p>This operation can only be performed by clients of users marked as <em>admin</em> and all KeyPackages have to contain an extension that contains a <a href="./glossary.html#sealed-queue-config">ClientQueueConfig</a>.</p>
 <p>Upon reception, the DS hashes the KeyPackages in all Add proposals contained in the commit. The KeyPackageBatches indicate, which KeyPackages belong to which user. If there are KeyPackages for which there is no matching KeyPackageRef in any KeyPackageBatch, or if there is a KeyPackageRef in a batch that has no corresponding Add proposal, the commit is invalid. Otherwise, the DS creates a user proile for each batch with the leaf indices of the KeyPackages referenced within. The user auth key of the new user remains empty until the first update of one of the user's clients.</p>
@@ -399,8 +397,7 @@ struct AddUsersParamsAad {
   group_state_ear_key: GroupStateEarKey,
   group_info_update: GroupInfoUpdate,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The commit must exclusively contain Remove proposals</li>
 <li>The commit must contain Remove proposals for all clients of all evicted users</li>
@@ -429,8 +426,7 @@ struct AddUsersParamsAad {
 struct UpdateClientParamsAad {
     option_encrypted_credential_information: Option&lt;Vec&lt;u8&gt;&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>DS validates the commit and changes its public tree
 <ul>
@@ -468,8 +464,7 @@ struct JoinGroupParamsAad {
   existing_user_clients: Vec&lt;LeafIndex&gt;,
   encrypted_credential_information: Vec&lt;u8&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The DS verifies that the <code>existing_user_clients</code> correspond to the leaf indices in the user profile of the sending user (identified via the UserKeyHash used for authentication)</li>
 <li>An adversary could make the state of clients and DS diverge if it has two users in a group and sends the commit with a client of one user while using the user auth key of the other. The existing_user_clients allows other group members to verify that the adder didn't falsely claim to be another user towards the DS. If the adder did indeed misbehave, other group members can rectify the error as described <a href="./delivery_service/broken_state_detection.html">here</a>.</li>
@@ -493,10 +488,9 @@ struct JoinGroupParamsAad {
 struct JoinConnectionGroupParamsAad {
   encrypted_credential_information: Vec&lt;u8&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
-<li>The DS checks if the group contains the <a href="glossary.html#connectiongroup-extension">connection group extension</a>. This endpoint must only be used to join connection groups.</li>
+<li>The DS checks if the group contains only a single user. Every single-user group can be joined as a connection group.</li>
 </ul>
 <h4 id="authentication-10"><a class="header" href="#authentication-10">Authentication</a></h4>
 <p>No additional authentication is required for this endpoint. The knowledge of the group's EAR key effectively authenticates the joining client.</p>
@@ -517,8 +511,7 @@ struct JoinConnectionGroupParamsAad {
 struct AddClientsParamsAad {
   encrypted_credential_information: Vec&lt;u8&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The commit must contain exclusively Add proposals</li>
 <li>This endpoint brings the same potential to break the group state as the &quot;Join with new client&quot; endpoint. See there for more information.</li>
@@ -541,8 +534,7 @@ struct AddClientsParamsAad {
   group_info_update: GroupInfoUpdate,
   user_auth_key: UserAuthKey,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The commit must exclusively contain Remove proposals</li>
 <li>The DS validates the commit and updates its public tree</li>
@@ -566,8 +558,7 @@ struct AddClientsParamsAad {
   group_state_ear_key: GroupStateEarKey,
   group_info_update: GroupInfoUpdate,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The commit must contain exactly one Add and one Remove proposal referencing the same leaf</li>
 <li>The DS validates the commit and updates its public tree</li>
@@ -588,8 +579,7 @@ struct AddClientsParamsAad {
   remove_proposal: MlsMessage,
   group_state_ear_key: GroupStateEarKey,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The proposal must be a Remove proposal for the sending client</li>
 <li>The sending client must not be the last client of the user</li>
@@ -610,8 +600,7 @@ struct AddClientsParamsAad {
   remove_proposals: Vec&lt;MlsMessage&gt;,
   group_state_ear_key: GroupStateEarKey,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The proposals must be a Remove proposals for all clients of the user</li>
 <li>The DS validates the proposals and stores them in this epoch's proposal store</li>
@@ -634,8 +623,7 @@ struct AddClientsParamsAad {
   application_message: MlsMessage,
   group_state_ear_key: GroupStateEarKey,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The DS sends the <code>application_message</code> to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.</li>
 </ul>
@@ -653,8 +641,7 @@ struct AddClientsParamsAad {
   commit: MlsMessage,
   group_state_ear_key: GroupStateEarKey,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The commit must contain Remove proposals for all group members except for the sending client</li>
 <li>Finally, the DS sends the <code>commit</code> to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.</li>
@@ -674,16 +661,14 @@ struct AddClientsParamsAad {
 </span>struct ClientInactivityRemoval {
   proposals: Vec&lt;MlsMessage&gt;
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>Removed queues: If the <code>sealed_queue_configs</code> vector in the <code>GroupStateDbEntry</code> is non-empty, the DS searches the <code>ClientQueueConfig</code>s of all clients for matching <code>SealedQueueConfig</code>s and distributes the following to all group members for each match. It also puts the Proposals into the <code>proposal_store</code> of the group.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>struct QueueDeletionRemoval {
   proposals: Vec&lt;MlsMessage&gt;
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h3 id="future-work-removal-due-to-client-misbehaviour"><a class="header" href="#future-work-removal-due-to-client-misbehaviour">Future work: Removal due to client misbehaviour</a></h3>
 <p>See <a href="./delivery_service/broken_state_detection.html">here</a>.</p>
 
@@ -694,9 +679,11 @@ struct AddClientsParamsAad {
                             <a rel="prev" href="../spec/authentication_service/connection_establishment.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
+
                             <a rel="next" href="../spec/delivery_service/group_state_encryption.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
+
                         <div style="clear: both"></div>
                     </nav>
                 </div>
@@ -706,6 +693,7 @@ struct AddClientsParamsAad {
                     <a rel="prev" href="../spec/authentication_service/connection_establishment.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
+
                     <a rel="next" href="../spec/delivery_service/group_state_encryption.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -713,16 +701,24 @@ struct AddClientsParamsAad {
 
         </div>
 
-        <script type="text/javascript">
+
+
+
+        <script>
             window.playground_copyable = true;
         </script>
-        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
 
         <!-- Custom JS scripts -->
+
+
     </body>
 </html>

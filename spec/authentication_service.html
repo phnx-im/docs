@@ -4,8 +4,10 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Work in progress: Authentication service - Docs</title>
+
+
         <!-- Custom HTML head -->
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
@@ -16,25 +18,28 @@
         <link rel="stylesheet" href="../css/general.css">
         <link rel="stylesheet" href="../css/chrome.css">
         <link rel="stylesheet" href="../css/print.css" media="print">
+
         <!-- Fonts -->
         <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
         <link rel="stylesheet" href="../fonts/fonts.css">
+
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="../highlight.css">
         <link rel="stylesheet" href="../tomorrow-night.css">
         <link rel="stylesheet" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+
     </head>
     <body>
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">
+        <script>
             var path_to_root = "../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
@@ -50,7 +55,7 @@
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
+        <script>
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
@@ -62,7 +67,7 @@
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
+        <script>
             var html = document.querySelector('html');
             var sidebar = 'hidden';
             if (document.body.clientWidth >= 1080) {
@@ -83,7 +88,7 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                <div id="menu-bar-hover-placeholder"></div>
+                                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -93,7 +98,7 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -110,6 +115,7 @@
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+
                     </div>
                 </div>
 
@@ -123,8 +129,9 @@
                         </ul>
                     </div>
                 </div>
+
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -148,20 +155,13 @@
 </ul>
 </li>
 <li><strong>Maximal number of requested messages:</strong> Maximal number of messages that will be returned to a client requesting messages from a direct queue.</li>
-<li><strong>Identity provider (IdP):</strong> Provider used for user authentication
-<ul>
-<li><strong>Provider URL:</strong> URL under which the provider (issuer) can be reached</li>
-<li><strong>Client ID:</strong> ID of the AS as the IdP's client</li>
-<li><strong>Client secret:</strong> Secret which the AS can use to authenticate itself towards the IdP</li>
-</ul>
-</li>
 </ul>
 <h2 id="as-state"><a class="header" href="#as-state">AS state</a></h2>
 <p>The AS generally keeps the following state</p>
 <ul>
 <li><strong>User entries:</strong> A database with one entry for each user account. Each entry is indexed by the user's <a href="glossary.html#user-name-un">user name</a> and contains a number of sub-entries.
 <ul>
-<li><strong>User IdP identity:</strong> The user's identity at the user's IdP. Required for authentication with the IdP.</li>
+<li><strong>OPAQUE user record:</strong> The OPAQUE protocol artifact that allows the user to authenticate itself via its password in queries to the AS.</li>
 <li><strong>Client entries:</strong> Sub entries for each of the user's clients. Indexed by the clients' <a href="glossary.html#client-id-cid">client id</a>.
 <ul>
 <li><strong>Client credential:</strong> The <a href="authentication_service/credentials.html#client-credentials">credential</a> of the client.</li>
@@ -184,79 +184,201 @@
 </li>
 </ul>
 </li>
+<li><strong>Ephemeral OPAQUE DB:</strong> An in-memory database that stores user-name or client-id indexed entries
+<ul>
+<li><strong>Client credential:</strong> Credential of the client that is being added to an existing user entry, or the initial client of a new user entry.</li>
+<li><strong>Optional OPAQUE state:</strong> OPAQUE server state, only present in case of the OPAQUE online AKE flow, i.e. if a client performs 2FA, but not during an OPAQUE setup.</li>
+</ul>
+</li>
+<li><strong>AS credential key material:</strong> Credentials that can be retrieved by clients, as well as the private key material used by the AS to sign client <a href="authentication_service/credentials.html#client-credential-signing-requests">CSRs</a>.</li>
+<li><strong>AS OPAQUE key material:</strong> OPRF seed, server public key and server private key as required for the server to perform OPAQUE registration a login flows with clients.</li>
 </ul>
 <h2 id="authentication"><a class="header" href="#authentication">Authentication</a></h2>
-<p>The AS uses the user's IdP to authenticate the user. Some endpoints require simple authentication, while for others, the AS requires MFA authentication via the IdP.</p>
-<h2 id="user-account-registration"><a class="header" href="#user-account-registration">User account registration</a></h2>
-<p>The user registration functionality delegates authentication to an OpenID connect-capable identity provider. Note, that the user's chosen user name is part of the <code>client_csr</code>.</p>
+<p>There are three modes of authentication for endpoints on the AS.</p>
+<ul>
+<li><strong>None:</strong> For endpoints that are meant to be publicly accessible, e.g. user account registration</li>
+<li><strong>Client Credential:</strong> A signature over a time stamp using the signature key in the calling client's ClientCredential.</li>
+<li><strong>Client Password:</strong> An OPAQUE login flow.</li>
+<li><strong>Client 2FA:</strong> The same as <strong>Client</strong>, but additionally performing an <a href="https://datatracker.ietf.org/doc/draft-irtf-cfrg-opaque/">OPAQUE</a> login flow</li>
+</ul>
+<h2 id="initiate-2fa-operation"><a class="header" href="#initiate-2fa-operation">Initiate 2FA operation</a></h2>
+<p>The client has to query this endpoint before it can query an endpoint that requires <strong>Client 2FA</strong> authentication. Note that this endpoint is not meant to be used with endpoints that require <strong>Client Password</strong> authentication such as the client addition endpoint. Similarly, this endpoint is not meant to be used to set up 2FA (see <a href="./authentication_service.html#initialize-user-registration">here</a> instead).</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct CreateUserParams {
-  idp_identity: Vec&lt;u8&gt;,
+</span>struct Initiate2FaAuthenticationParams {
+  client_id: ClientId,
+  opaque_ke1: OpaqueKe1,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The AS then performs the following steps:</p>
+<ul>
+<li>perform the <a href="https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-online-authenticated-key-exc">first (server side) step in the OPAQUE online AKE handshake</a></li>
+<li>store the resulting OPAQUE <code>server_state</code> in its ephemeral DB</li>
+<li>return the OPAQUE response to the client</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct Initiate2FaAuthenticationResponse {
+  opaque_ke2: OpaqueKe2,
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="future-work-client-and-query-binding"><a class="header" href="#future-work-client-and-query-binding">Future work: Client and query binding</a></h3>
+<p>The query to initialize the 2FA operation should be tied to the query that actually requires 2FA. Also, the OPAQUE handshake should be bound to the client id and the 2FA endpoint.</p>
+<h3 id="future-work-prevent-client-enumeration-attacks"><a class="header" href="#future-work-prevent-client-enumeration-attacks">Future work: Prevent client enumeration attacks</a></h3>
+<p>As noted <a href="https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-client-enumeration">in the OPAQUE RFC</a> the server should take measures against client enumeration attacks. We should implement them as described in the RFC.</p>
+<h2 id="authentication-1"><a class="header" href="#authentication-1">Authentication</a></h2>
+<ul>
+<li>Client Credential</li>
+</ul>
+<h2 id="initialize-user-registration"><a class="header" href="#initialize-user-registration">Initialize user registration</a></h2>
+<p>The user registration functionality requires the user to perform an <a href="https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-offline-registration">OPAQUE registration flow</a> with the homeserver. Note, that the user's chosen user name is part of the <code>client_csr</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct InitUserRegistrationParams {
   client_csr: ClientCsr,
-  queue_encryption_key: HpkePublicKey,
+  opaque_registration_request: OpaqueRegistrationRequest,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<p>The AS uses the given <code>idp_identity</code> to authenticate the user with the IdP and then creates the user entry and initial client entry. The AS then signs the CSR and returns it to the client.</p>
+<span class="boring">}</span></code></pre></pre>
+<p>The AS then performs the following steps:</p>
+<ul>
+<li>check if a user entry with the name given in the <code>client_csr</code> already exists</li>
+<li>validate the <code>client_csr</code></li>
+<li>perform the <a href="https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-createregistrationrequest">first (server side) step in the OPAQUE registration handshake</a></li>
+<li>sign the CSR</li>
+<li>store the freshly signed ClientCredential in the ephemeral DB</li>
+<li>return the ClientCredential to the client along with the OPAQUE response.</li>
+</ul>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct CreateUserResponse {
+</span>struct InitUserRegistrationResponse {
   client_credential: ClientCredential,
+  opaque_registration_response: OpaqueRegistrationResponse,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
+<p>After receiving the response, the client must call the <a href="./authentication_service.html#finish-user-registration">finalize user registration endpoint</a>.</p>
+<h3 id="authentication-2"><a class="header" href="#authentication-2">Authentication</a></h3>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="finish-user-registration"><a class="header" href="#finish-user-registration">Finish user registration</a></h2>
+<p>This endpoint allows the user to finish its registration.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct InitUserRegistrationParams {
+  user_name: UserName,
+  queue_encryption_key: HpkePublicKey,
+  connection_key_package: KeyPackage,
+  opaque_registration_record: OpaqueRegistrationRecord,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The AS performs the following actions:</p>
+<ul>
+<li>look up the initial client's ClientCredential in the ephemeral DB based on the <code>user_name</code></li>
+<li>authenticate the request using the signature key in the ClientCredential</li>
+<li>check (again) if the user entry exists</li>
+<li>create the user entry with the information given in the request</li>
+<li>create the initial client entry</li>
+<li>delete the entry in the ephemeral OPAQUE DB</li>
+</ul>
+<h3 id="authentication-3"><a class="header" href="#authentication-3">Authentication</a></h3>
+<ul>
+<li>Client 2FA (the AS has to successfully complete the OPAQUE handshake and the client needs to provide Client Credential authentication using the signature key of the initial client)</li>
+</ul>
 <h3 id="future-work-sybil-attack-protection"><a class="header" href="#future-work-sybil-attack-protection">Future work: Sybil attack protection</a></h3>
 <p>Being able to create arbitrarily many users can enable a number of DDoS attacks and effectively renders the anonymous token DDoS prevention strategy useless. Thus we need some form of restriction here, such as a CAPTCHA or other proof of personhood.</p>
 <h2 id="get-user-clients"><a class="header" href="#get-user-clients">Get user clients</a></h2>
 <p>Given a user name, get the <a href="authentication_service/credentials.html#client-credentials">client credentials</a> of all of the user's clients.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct GetClientCredentialsParams {
+</span>struct UserClientsParams {
   user_name: UserName,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The AS returns the following information.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct GetClientCredentialsResponse {
-  client_credentials: Vec&lt;ClientCredential&gt;,
+</span>struct UserClientsResponse {
+  client_credentials: Vec&lt;KeyPackage&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
+<h3 id="authentication-4"><a class="header" href="#authentication-4">Authentication</a></h3>
+<ul>
+<li>None</li>
+</ul>
 <h2 id="user-account-deletion"><a class="header" href="#user-account-deletion">User account deletion</a></h2>
 <p>Delete the user account with the given user name.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>struct DeleteUserParams {
   user_name: UserName,
+  opaque_ke3: OpaqueKe3,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h3 id="authentication-1"><a class="header" href="#authentication-1">Authentication</a></h3>
-<p>Requires MFA authentication as the user's <code>idp_identity</code> with the IdP.</p>
-<h2 id="add-new-client"><a class="header" href="#add-new-client">Add new client</a></h2>
+<span class="boring">}</span></code></pre></pre>
+<p>The AS performs the following actions:</p>
+<ul>
+<li>look up the OPAQUE <code>server_state</code> in the ephemeral DB based on the <code>client_id</code></li>
+<li>authenticate the request using the signature key in the ClientCredential</li>
+<li>perform the <code>ServerFinish</code> step of the OPAQUE online AKE flow</li>
+<li>delete the user entry</li>
+<li>delete the entry in the ephemeral OPAQUE DB</li>
+</ul>
+<h3 id="authentication-5"><a class="header" href="#authentication-5">Authentication</a></h3>
+<ul>
+<li>Client 2FA</li>
+</ul>
+<h2 id="initiate-client-addition"><a class="header" href="#initiate-client-addition">Initiate client addition</a></h2>
 <p>Add a new client entry to the user's user entry.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct CreateClientParams {
-  idp_identity: Vec&lt;u8&gt;,
+</span>struct InitiateClientAdditionParams {
   client_csr: ClientCsr,
-  queue_encryption_key: HpkePublicKey,
+  opaque_ke1: OpaqueKe1,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<p>The AS validates the CSR, creates the client entry, signs the CSR and returns it to the client.</p>
+<span class="boring">}</span></code></pre></pre>
+<p>The AS then performs the following steps:</p>
+<ul>
+<li>check if a client entry with the name given in the <code>client_csr</code> already exists for the user</li>
+<li>validate the <code>client_csr</code></li>
+<li>perform the <a href="https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-online-authenticated-key-exc">first (server side) step in the OPAQUE online AKE handshake</a></li>
+<li>sign the CSR</li>
+<li>store the resulting OPAQUE <code>server_state</code> in its ephemeral DB (along with the freshly signed ClientCredential)</li>
+<li>return the ClientCredential to the client along with the OPAQUE response.</li>
+</ul>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct CreateClientResponse {
+</span>struct InitiateClientAdditionResponse {
   client_credential: ClientCredential,
+  opaque_ke2: OpaqueKe2,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h3 id="authentication-2"><a class="header" href="#authentication-2">Authentication</a></h3>
-<p>Requires MFA authentication as the user's <code>idp_identity</code> with the IdP.</p>
+<span class="boring">}</span></code></pre></pre>
+<p>After calling this endpoint, the client must call the <a href="./authentication_service.html#finish-client-addition">&quot;finish client addition endpoint&quot;</a> to finish the client addition.</p>
+<h3 id="authentication-6"><a class="header" href="#authentication-6">Authentication</a></h3>
+<ul>
+<li>Client Password</li>
+</ul>
+<h2 id="finish-client-addition"><a class="header" href="#finish-client-addition">Finish client addition</a></h2>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct FinishClientAdditionParams {
+  client_id: ClientId,
+  queue_encryption_key: HpkePublicKey,
+  connection_key_package: KeyPackage,
+  opaque_ke3: OpaqueKe3,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The AS performs the following actions:</p>
+<ul>
+<li>look up the new client's ClientCredential, as well as the OPAQUE <code>server_state</code> in the ephemeral DB based on the <code>client_id</code></li>
+<li>authenticate the request using the signature key in the ClientCredential</li>
+<li>perform the <code>ServerFinish</code> step of the OPAQUE online AKE flow</li>
+<li>check (again) if the client entry exists in the DB</li>
+<li>create the new client entry</li>
+<li>delete the entry in the ephemeral OPAQUE DB</li>
+</ul>
+<h3 id="authentication-7"><a class="header" href="#authentication-7">Authentication</a></h3>
+<ul>
+<li>Client 2FA (checking the signature via lookup in the ephemeral DB, see above)</li>
+</ul>
 <h2 id="delete-client"><a class="header" href="#delete-client">Delete client</a></h2>
 <p>Delete the client with the given client id. This endpoint can't be used to delete the last client entry in a given user entry.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -264,61 +386,54 @@
 </span>struct DeleteClientParams {
   client_id: ClientId,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h3 id="authentication-3"><a class="header" href="#authentication-3">Authentication</a></h3>
-<p>Requires MFA authentication as the user's <code>idp_identity</code> with the IdP.</p>
-<h2 id="get-client-entry"><a class="header" href="#get-client-entry">Get client entry</a></h2>
-<p>Get the information contained in a client entry.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>struct GetClientEntryParams {
-  client_id: ClientId,
-}
-<span class="boring">}
-</span></code></pre></pre>
-<p>The AS responds with the following struct.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>struct GetClientEntryResponse {
-  client_credential: ClientCredential,
-  queue_encryption_key: HpkePublicKey,
-}
-<span class="boring">}
-</span></code></pre></pre>
-<h3 id="authentication-4"><a class="header" href="#authentication-4">Authentication</a></h3>
-<p>Requires authentication as the user's <code>ipd_identity</code> with the IdP.</p>
+<span class="boring">}</span></code></pre></pre>
+<h3 id="authentication-8"><a class="header" href="#authentication-8">Authentication</a></h3>
+<ul>
+<li>Client</li>
+</ul>
 <h2 id="dequeue-messages"><a class="header" href="#dequeue-messages">Dequeue messages</a></h2>
 <p>Dequeue messages from a client's direct queue, starting with the message with the given sequence number.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>struct DequeueMessagesParams {
-  client_id,
+  client_id: ClientId,
   sequence_number_start: u64,
   max_message_number: u64,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The AS deletes messages older than the given sequence number and returns messages starting with the given sequence number. The maximum number of messages returned this way is the smallest of the following values.</p>
 <ul>
 <li>The number of messages remaining in the queue</li>
 <li>The value of the <code>max_message_number</code> field in the request</li>
 <li>The AS configured maximum number of returned messages</li>
 </ul>
+<h3 id="authentication-9"><a class="header" href="#authentication-9">Authentication</a></h3>
+<ul>
+<li>Client</li>
+</ul>
 <h2 id="enqueue-message"><a class="header" href="#enqueue-message">Enqueue message</a></h2>
-<p>Enqueue a message into a clien'ts direct queue.</p>
+<p>Enqueue a message into a client's direct queue.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct EnqueueMessageParams {
+  client_id: ClientId,
+  connection_establishment_ctxt: Vec&lt;u8&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="authentication-10"><a class="header" href="#authentication-10">Authentication</a></h3>
+<ul>
+<li>None</li>
+</ul>
 <h2 id="get-as-credentials"><a class="header" href="#get-as-credentials">Get AS credentials</a></h2>
 <p>Get the currently valid <a href="authentication_service/credentials.html#as-credentials">AS credentials</a> and <a href="authentication_service/credentials.html#as-intermediate-credentials">AS intermediate credentials</a>.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct GetCredentialsResponse {
+</span>struct AsCredentialsResponse {
   as_credentials: Vec&lt;AsCredentials&gt;,
   as_intermediate_credentials: Vec&lt;AsIntermediateCredential&gt;,
+  revoked_certs: Vec&lt;Fingerprint&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h3 id="future-work-revocation"><a class="header" href="#future-work-revocation">Future work: Revocation</a></h3>
-<p>For now, revocation happens by the AS stopping to publish a given cert. In the future, we might want a more sophisticated revocation story closer to what's happening in the WebPKI.</p>
+<span class="boring">}</span></code></pre></pre>
 <h2 id="future-work-evolving-identity"><a class="header" href="#future-work-evolving-identity">Future work: Evolving Identity</a></h2>
 <p>For now, the AS relies on <a href="glossary.html#client-credential-chain">client credential chains</a>, but in the future, client authentication should be achieved using <a href="authentication_service/evolving_identities.html">evolving identity</a>.</p>
 
@@ -329,9 +444,11 @@
                             <a rel="prev" href="../spec.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
+
                             <a rel="next" href="../spec/authentication_service/credentials.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
+
                         <div style="clear: both"></div>
                     </nav>
                 </div>
@@ -341,6 +458,7 @@
                     <a rel="prev" href="../spec.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
+
                     <a rel="next" href="../spec/authentication_service/credentials.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -348,16 +466,24 @@
 
         </div>
 
-        <script type="text/javascript">
+
+
+
+        <script>
             window.playground_copyable = true;
         </script>
-        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
 
         <!-- Custom JS scripts -->
+
+
     </body>
 </html>

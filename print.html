@@ -5,8 +5,10 @@
         <meta charset="UTF-8">
         <title>Docs</title>
         <meta name="robots" content="noindex" />
+
+
         <!-- Custom HTML head -->
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
@@ -17,25 +19,28 @@
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
         <link rel="stylesheet" href="css/print.css" media="print">
+
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
         <link rel="stylesheet" href="fonts/fonts.css">
+
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
         <link rel="stylesheet" href="tomorrow-night.css">
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+
     </head>
     <body>
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">
+        <script>
             var path_to_root = "";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
@@ -51,7 +56,7 @@
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
+        <script>
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
@@ -63,7 +68,7 @@
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
+        <script>
             var html = document.querySelector('html');
             var sidebar = 'hidden';
             if (document.body.clientWidth >= 1080) {
@@ -84,7 +89,7 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                <div id="menu-bar-hover-placeholder"></div>
+                                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -94,7 +99,7 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -111,6 +116,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+
                     </div>
                 </div>
 
@@ -124,8 +130,9 @@
                         </ul>
                     </div>
                 </div>
+
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -575,20 +582,13 @@ TODO: Restructure with C2S, S2S and C2C authentication in mind.</p>
 </ul>
 </li>
 <li><strong>Maximal number of requested messages:</strong> Maximal number of messages that will be returned to a client requesting messages from a direct queue.</li>
-<li><strong>Identity provider (IdP):</strong> Provider used for user authentication
-<ul>
-<li><strong>Provider URL:</strong> URL under which the provider (issuer) can be reached</li>
-<li><strong>Client ID:</strong> ID of the AS as the IdP's client</li>
-<li><strong>Client secret:</strong> Secret which the AS can use to authenticate itself towards the IdP</li>
-</ul>
-</li>
 </ul>
 <h2 id="as-state"><a class="header" href="#as-state">AS state</a></h2>
 <p>The AS generally keeps the following state</p>
 <ul>
 <li><strong>User entries:</strong> A database with one entry for each user account. Each entry is indexed by the user's <a href="spec/glossary.html#user-name-un">user name</a> and contains a number of sub-entries.
 <ul>
-<li><strong>User IdP identity:</strong> The user's identity at the user's IdP. Required for authentication with the IdP.</li>
+<li><strong>OPAQUE user record:</strong> The OPAQUE protocol artifact that allows the user to authenticate itself via its password in queries to the AS.</li>
 <li><strong>Client entries:</strong> Sub entries for each of the user's clients. Indexed by the clients' <a href="spec/glossary.html#client-id-cid">client id</a>.
 <ul>
 <li><strong>Client credential:</strong> The <a href="spec/authentication_service/credentials.html#client-credentials">credential</a> of the client.</li>
@@ -611,79 +611,201 @@ TODO: Restructure with C2S, S2S and C2C authentication in mind.</p>
 </li>
 </ul>
 </li>
+<li><strong>Ephemeral OPAQUE DB:</strong> An in-memory database that stores user-name or client-id indexed entries
+<ul>
+<li><strong>Client credential:</strong> Credential of the client that is being added to an existing user entry, or the initial client of a new user entry.</li>
+<li><strong>Optional OPAQUE state:</strong> OPAQUE server state, only present in case of the OPAQUE online AKE flow, i.e. if a client performs 2FA, but not during an OPAQUE setup.</li>
+</ul>
+</li>
+<li><strong>AS credential key material:</strong> Credentials that can be retrieved by clients, as well as the private key material used by the AS to sign client <a href="spec/authentication_service/credentials.html#client-credential-signing-requests">CSRs</a>.</li>
+<li><strong>AS OPAQUE key material:</strong> OPRF seed, server public key and server private key as required for the server to perform OPAQUE registration a login flows with clients.</li>
 </ul>
 <h2 id="authentication-1"><a class="header" href="#authentication-1">Authentication</a></h2>
-<p>The AS uses the user's IdP to authenticate the user. Some endpoints require simple authentication, while for others, the AS requires MFA authentication via the IdP.</p>
-<h2 id="user-account-registration"><a class="header" href="#user-account-registration">User account registration</a></h2>
-<p>The user registration functionality delegates authentication to an OpenID connect-capable identity provider. Note, that the user's chosen user name is part of the <code>client_csr</code>.</p>
+<p>There are three modes of authentication for endpoints on the AS.</p>
+<ul>
+<li><strong>None:</strong> For endpoints that are meant to be publicly accessible, e.g. user account registration</li>
+<li><strong>Client Credential:</strong> A signature over a time stamp using the signature key in the calling client's ClientCredential.</li>
+<li><strong>Client Password:</strong> An OPAQUE login flow.</li>
+<li><strong>Client 2FA:</strong> The same as <strong>Client</strong>, but additionally performing an <a href="https://datatracker.ietf.org/doc/draft-irtf-cfrg-opaque/">OPAQUE</a> login flow</li>
+</ul>
+<h2 id="initiate-2fa-operation"><a class="header" href="#initiate-2fa-operation">Initiate 2FA operation</a></h2>
+<p>The client has to query this endpoint before it can query an endpoint that requires <strong>Client 2FA</strong> authentication. Note that this endpoint is not meant to be used with endpoints that require <strong>Client Password</strong> authentication such as the client addition endpoint. Similarly, this endpoint is not meant to be used to set up 2FA (see <a href="spec/./authentication_service.html#initialize-user-registration">here</a> instead).</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct CreateUserParams {
-  idp_identity: Vec&lt;u8&gt;,
+</span>struct Initiate2FaAuthenticationParams {
+  client_id: ClientId,
+  opaque_ke1: OpaqueKe1,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The AS then performs the following steps:</p>
+<ul>
+<li>perform the <a href="https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-online-authenticated-key-exc">first (server side) step in the OPAQUE online AKE handshake</a></li>
+<li>store the resulting OPAQUE <code>server_state</code> in its ephemeral DB</li>
+<li>return the OPAQUE response to the client</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct Initiate2FaAuthenticationResponse {
+  opaque_ke2: OpaqueKe2,
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="future-work-client-and-query-binding"><a class="header" href="#future-work-client-and-query-binding">Future work: Client and query binding</a></h3>
+<p>The query to initialize the 2FA operation should be tied to the query that actually requires 2FA. Also, the OPAQUE handshake should be bound to the client id and the 2FA endpoint.</p>
+<h3 id="future-work-prevent-client-enumeration-attacks"><a class="header" href="#future-work-prevent-client-enumeration-attacks">Future work: Prevent client enumeration attacks</a></h3>
+<p>As noted <a href="https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-client-enumeration">in the OPAQUE RFC</a> the server should take measures against client enumeration attacks. We should implement them as described in the RFC.</p>
+<h2 id="authentication-2"><a class="header" href="#authentication-2">Authentication</a></h2>
+<ul>
+<li>Client Credential</li>
+</ul>
+<h2 id="initialize-user-registration"><a class="header" href="#initialize-user-registration">Initialize user registration</a></h2>
+<p>The user registration functionality requires the user to perform an <a href="https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-offline-registration">OPAQUE registration flow</a> with the homeserver. Note, that the user's chosen user name is part of the <code>client_csr</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct InitUserRegistrationParams {
   client_csr: ClientCsr,
-  queue_encryption_key: HpkePublicKey,
+  opaque_registration_request: OpaqueRegistrationRequest,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<p>The AS uses the given <code>idp_identity</code> to authenticate the user with the IdP and then creates the user entry and initial client entry. The AS then signs the CSR and returns it to the client.</p>
+<span class="boring">}</span></code></pre></pre>
+<p>The AS then performs the following steps:</p>
+<ul>
+<li>check if a user entry with the name given in the <code>client_csr</code> already exists</li>
+<li>validate the <code>client_csr</code></li>
+<li>perform the <a href="https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-createregistrationrequest">first (server side) step in the OPAQUE registration handshake</a></li>
+<li>sign the CSR</li>
+<li>store the freshly signed ClientCredential in the ephemeral DB</li>
+<li>return the ClientCredential to the client along with the OPAQUE response.</li>
+</ul>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct CreateUserResponse {
+</span>struct InitUserRegistrationResponse {
   client_credential: ClientCredential,
+  opaque_registration_response: OpaqueRegistrationResponse,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
+<p>After receiving the response, the client must call the <a href="spec/./authentication_service.html#finish-user-registration">finalize user registration endpoint</a>.</p>
+<h3 id="authentication-3"><a class="header" href="#authentication-3">Authentication</a></h3>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="finish-user-registration"><a class="header" href="#finish-user-registration">Finish user registration</a></h2>
+<p>This endpoint allows the user to finish its registration.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct InitUserRegistrationParams {
+  user_name: UserName,
+  queue_encryption_key: HpkePublicKey,
+  connection_key_package: KeyPackage,
+  opaque_registration_record: OpaqueRegistrationRecord,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The AS performs the following actions:</p>
+<ul>
+<li>look up the initial client's ClientCredential in the ephemeral DB based on the <code>user_name</code></li>
+<li>authenticate the request using the signature key in the ClientCredential</li>
+<li>check (again) if the user entry exists</li>
+<li>create the user entry with the information given in the request</li>
+<li>create the initial client entry</li>
+<li>delete the entry in the ephemeral OPAQUE DB</li>
+</ul>
+<h3 id="authentication-4"><a class="header" href="#authentication-4">Authentication</a></h3>
+<ul>
+<li>Client 2FA (the AS has to successfully complete the OPAQUE handshake and the client needs to provide Client Credential authentication using the signature key of the initial client)</li>
+</ul>
 <h3 id="future-work-sybil-attack-protection"><a class="header" href="#future-work-sybil-attack-protection">Future work: Sybil attack protection</a></h3>
 <p>Being able to create arbitrarily many users can enable a number of DDoS attacks and effectively renders the anonymous token DDoS prevention strategy useless. Thus we need some form of restriction here, such as a CAPTCHA or other proof of personhood.</p>
 <h2 id="get-user-clients"><a class="header" href="#get-user-clients">Get user clients</a></h2>
 <p>Given a user name, get the <a href="spec/authentication_service/credentials.html#client-credentials">client credentials</a> of all of the user's clients.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct GetClientCredentialsParams {
+</span>struct UserClientsParams {
   user_name: UserName,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The AS returns the following information.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct GetClientCredentialsResponse {
-  client_credentials: Vec&lt;ClientCredential&gt;,
+</span>struct UserClientsResponse {
+  client_credentials: Vec&lt;KeyPackage&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
+<h3 id="authentication-5"><a class="header" href="#authentication-5">Authentication</a></h3>
+<ul>
+<li>None</li>
+</ul>
 <h2 id="user-account-deletion"><a class="header" href="#user-account-deletion">User account deletion</a></h2>
 <p>Delete the user account with the given user name.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>struct DeleteUserParams {
   user_name: UserName,
+  opaque_ke3: OpaqueKe3,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h3 id="authentication-2"><a class="header" href="#authentication-2">Authentication</a></h3>
-<p>Requires MFA authentication as the user's <code>idp_identity</code> with the IdP.</p>
-<h2 id="add-new-client"><a class="header" href="#add-new-client">Add new client</a></h2>
+<span class="boring">}</span></code></pre></pre>
+<p>The AS performs the following actions:</p>
+<ul>
+<li>look up the OPAQUE <code>server_state</code> in the ephemeral DB based on the <code>client_id</code></li>
+<li>authenticate the request using the signature key in the ClientCredential</li>
+<li>perform the <code>ServerFinish</code> step of the OPAQUE online AKE flow</li>
+<li>delete the user entry</li>
+<li>delete the entry in the ephemeral OPAQUE DB</li>
+</ul>
+<h3 id="authentication-6"><a class="header" href="#authentication-6">Authentication</a></h3>
+<ul>
+<li>Client 2FA</li>
+</ul>
+<h2 id="initiate-client-addition"><a class="header" href="#initiate-client-addition">Initiate client addition</a></h2>
 <p>Add a new client entry to the user's user entry.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct CreateClientParams {
-  idp_identity: Vec&lt;u8&gt;,
+</span>struct InitiateClientAdditionParams {
   client_csr: ClientCsr,
-  queue_encryption_key: HpkePublicKey,
+  opaque_ke1: OpaqueKe1,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<p>The AS validates the CSR, creates the client entry, signs the CSR and returns it to the client.</p>
+<span class="boring">}</span></code></pre></pre>
+<p>The AS then performs the following steps:</p>
+<ul>
+<li>check if a client entry with the name given in the <code>client_csr</code> already exists for the user</li>
+<li>validate the <code>client_csr</code></li>
+<li>perform the <a href="https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-online-authenticated-key-exc">first (server side) step in the OPAQUE online AKE handshake</a></li>
+<li>sign the CSR</li>
+<li>store the resulting OPAQUE <code>server_state</code> in its ephemeral DB (along with the freshly signed ClientCredential)</li>
+<li>return the ClientCredential to the client along with the OPAQUE response.</li>
+</ul>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct CreateClientResponse {
+</span>struct InitiateClientAdditionResponse {
   client_credential: ClientCredential,
+  opaque_ke2: OpaqueKe2,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h3 id="authentication-3"><a class="header" href="#authentication-3">Authentication</a></h3>
-<p>Requires MFA authentication as the user's <code>idp_identity</code> with the IdP.</p>
+<span class="boring">}</span></code></pre></pre>
+<p>After calling this endpoint, the client must call the <a href="spec/./authentication_service.html#finish-client-addition">&quot;finish client addition endpoint&quot;</a> to finish the client addition.</p>
+<h3 id="authentication-7"><a class="header" href="#authentication-7">Authentication</a></h3>
+<ul>
+<li>Client Password</li>
+</ul>
+<h2 id="finish-client-addition"><a class="header" href="#finish-client-addition">Finish client addition</a></h2>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct FinishClientAdditionParams {
+  client_id: ClientId,
+  queue_encryption_key: HpkePublicKey,
+  connection_key_package: KeyPackage,
+  opaque_ke3: OpaqueKe3,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The AS performs the following actions:</p>
+<ul>
+<li>look up the new client's ClientCredential, as well as the OPAQUE <code>server_state</code> in the ephemeral DB based on the <code>client_id</code></li>
+<li>authenticate the request using the signature key in the ClientCredential</li>
+<li>perform the <code>ServerFinish</code> step of the OPAQUE online AKE flow</li>
+<li>check (again) if the client entry exists in the DB</li>
+<li>create the new client entry</li>
+<li>delete the entry in the ephemeral OPAQUE DB</li>
+</ul>
+<h3 id="authentication-8"><a class="header" href="#authentication-8">Authentication</a></h3>
+<ul>
+<li>Client 2FA (checking the signature via lookup in the ephemeral DB, see above)</li>
+</ul>
 <h2 id="delete-client"><a class="header" href="#delete-client">Delete client</a></h2>
 <p>Delete the client with the given client id. This endpoint can't be used to delete the last client entry in a given user entry.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -691,70 +813,178 @@ TODO: Restructure with C2S, S2S and C2C authentication in mind.</p>
 </span>struct DeleteClientParams {
   client_id: ClientId,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h3 id="authentication-4"><a class="header" href="#authentication-4">Authentication</a></h3>
-<p>Requires MFA authentication as the user's <code>idp_identity</code> with the IdP.</p>
-<h2 id="get-client-entry"><a class="header" href="#get-client-entry">Get client entry</a></h2>
-<p>Get the information contained in a client entry.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>struct GetClientEntryParams {
-  client_id: ClientId,
-}
-<span class="boring">}
-</span></code></pre></pre>
-<p>The AS responds with the following struct.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>struct GetClientEntryResponse {
-  client_credential: ClientCredential,
-  queue_encryption_key: HpkePublicKey,
-}
-<span class="boring">}
-</span></code></pre></pre>
-<h3 id="authentication-5"><a class="header" href="#authentication-5">Authentication</a></h3>
-<p>Requires authentication as the user's <code>ipd_identity</code> with the IdP.</p>
+<span class="boring">}</span></code></pre></pre>
+<h3 id="authentication-9"><a class="header" href="#authentication-9">Authentication</a></h3>
+<ul>
+<li>Client</li>
+</ul>
 <h2 id="dequeue-messages"><a class="header" href="#dequeue-messages">Dequeue messages</a></h2>
 <p>Dequeue messages from a client's direct queue, starting with the message with the given sequence number.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>struct DequeueMessagesParams {
-  client_id,
+  client_id: ClientId,
   sequence_number_start: u64,
   max_message_number: u64,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The AS deletes messages older than the given sequence number and returns messages starting with the given sequence number. The maximum number of messages returned this way is the smallest of the following values.</p>
 <ul>
 <li>The number of messages remaining in the queue</li>
 <li>The value of the <code>max_message_number</code> field in the request</li>
 <li>The AS configured maximum number of returned messages</li>
 </ul>
+<h3 id="authentication-10"><a class="header" href="#authentication-10">Authentication</a></h3>
+<ul>
+<li>Client</li>
+</ul>
 <h2 id="enqueue-message"><a class="header" href="#enqueue-message">Enqueue message</a></h2>
-<p>Enqueue a message into a clien'ts direct queue.</p>
+<p>Enqueue a message into a client's direct queue.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct EnqueueMessageParams {
+  client_id: ClientId,
+  connection_establishment_ctxt: Vec&lt;u8&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="authentication-11"><a class="header" href="#authentication-11">Authentication</a></h3>
+<ul>
+<li>None</li>
+</ul>
 <h2 id="get-as-credentials"><a class="header" href="#get-as-credentials">Get AS credentials</a></h2>
 <p>Get the currently valid <a href="spec/authentication_service/credentials.html#as-credentials">AS credentials</a> and <a href="spec/authentication_service/credentials.html#as-intermediate-credentials">AS intermediate credentials</a>.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct GetCredentialsResponse {
+</span>struct AsCredentialsResponse {
   as_credentials: Vec&lt;AsCredentials&gt;,
   as_intermediate_credentials: Vec&lt;AsIntermediateCredential&gt;,
+  revoked_certs: Vec&lt;Fingerprint&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h3 id="future-work-revocation"><a class="header" href="#future-work-revocation">Future work: Revocation</a></h3>
-<p>For now, revocation happens by the AS stopping to publish a given cert. In the future, we might want a more sophisticated revocation story closer to what's happening in the WebPKI.</p>
+<span class="boring">}</span></code></pre></pre>
 <h2 id="future-work-evolving-identity"><a class="header" href="#future-work-evolving-identity">Future work: Evolving Identity</a></h2>
 <p>For now, the AS relies on <a href="spec/glossary.html#client-credential-chain">client credential chains</a>, but in the future, client authentication should be achieved using <a href="spec/authentication_service/evolving_identities.html">evolving identity</a>.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="work-in-progress-credentials"><a class="header" href="#work-in-progress-credentials">Work in progress: Credentials</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="credentials"><a class="header" href="#credentials">Credentials</a></h1>
+<h2 id="credential-fingerprints"><a class="header" href="#credential-fingerprints">Credential Fingerprints</a></h2>
+<p>Credentials can be referenced via their credential fingerprints. A credential fingerprint is simply the hash of the credential, where the hash is determined by the CredentialCiphersuite.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct CredentialCiphersuite {
+	hash: Hash,
+	signature_scheme: SignatureScheme,
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="credential-expiration"><a class="header" href="#credential-expiration">Credential Expiration</a></h2>
+<p>All credentials expire after a certain amount of time. The validity period of a credential is indicated by its ExpirationData. Credentials may only sign credentials where the validity period of the signed credential is within the validity period of the signing credential.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct ExpirationData {
+		not_before: u64,
+		not_after: u64,
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="credential-signing-and-self-signatures"><a class="header" href="#credential-signing-and-self-signatures">Credential Signing and Self-Signatures</a></h2>
+<p>All credentials must include a signature over themselves to prove possession of the signature key. The credential structs thus have the following structure.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct CredentialPayload {
+		// ... credential data
+}
+
+struct CredentialSelfSignedPayload {
+		payload: CredentialPayload,
+		// SignWithLabel(., &quot;CredentialPayload&quot;, CredentialPayload)
+		self_signature: Signature,
+}
+
+struct Credential {
+		signed_payload: CredentialSelfSignedPayload,
+		// SignWithLabel(., &quot;CredentialSelfSignedPayload&quot;, CredentialSelfSignedPayload)
+		signature: Signature,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Note that the types of the individual credential types below must have their own distinct names so that the resulting signatures are specific to a credential type and cannot be used for a confusion attack.</p>
+<p>In the following sections, we only describe the CredentialPayload struct for each credential.</p>
 <h2 id="as-credentials"><a class="header" href="#as-credentials">AS credentials</a></h2>
+<ul>
+<li>Used to sign intermediate AS credentials.</li>
+<li>The AS keeps those offline or in an HSM.</li>
+<li>They should be valid for a long time, e.g. 10 years.</li>
+<li>Rotation MUST be possible despite the long validity period.</li>
+<li>The controller of domain should still be able to “rotate” by simply publishing a new cert via the <em>get AS credentials</em> endpoint.</li>
+<li>There is no higher-level credential, so this is self-signed only.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct AsCredential {
+		as_domain: Fqdn,
+		expiration_data: ExpirationData,
+		credential_ciphersuite: CredentialCiphersuite,
+		public_key: SignaturePublicKey,
+}
+<span class="boring">}</span></code></pre></pre>
 <h2 id="as-intermediate-credentials"><a class="header" href="#as-intermediate-credentials">AS intermediate credentials</a></h2>
-<h2 id="client-credentials"><a class="header" href="#client-credentials">Client credentials</a></h2>
+<ul>
+<li>Used to sign client credentials.</li>
+<li>Should be published in the same way as the AS credential.</li>
+<li>Signed by an AS credential</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct IntermediateAsCredential {
+		expiration_data: ExpirationData,
+		credential_ciphersuite: CredentialCiphersuite,
+		public_key: SignaturePublicKey, // PK used to sign client credentials
+		signer_fingerprint: CredentialFingerprint, // fingerprint of the signing AsCredential
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="client-credentials"><a class="header" href="#client-credentials">Client Credentials</a></h2>
+<ul>
+<li>Used by clients to sign IntermediateClientCredentials, as well as some other messages such as the <a href="spec/authentication_service/../glossary.html#welcome-attribution-info">WelcomeAttributionInfo</a> and the Connection KeyPackages.</li>
+<li>Should be stored by clients in their device’s secure enclave if possible.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct ClientCredential {
+		client_id: ClientId,
+		expiration_data: ExpirationData,
+		credential_ciphersuite: CredentialCiphersuite,
+		public_key: PublicSignatureKey,
+		signer_fingerprint: CredentialFingerprint,
+}
+<span class="boring">}</span></code></pre></pre>
 <h3 id="client-credential-signing-requests"><a class="header" href="#client-credential-signing-requests">Client credential signing requests</a></h3>
+<p>When a client requests that its credential be signed by an AS, it sends the CredentialSelfSignedPayload as defined <a href="spec/authentication_service/./credentials.html#credential-signing-and-self-signatures">here</a>.</p>
 <h2 id="intermediate-client-credentials"><a class="header" href="#intermediate-client-credentials">Intermediate client credentials</a></h2>
+<p>TODO: Instead of intermediate client credentials, we want a salt that can be stored encrypted on the server side, although this would only work with signature schemes that don't leak the public key in the signature. Generally, we should check carefully if a given security scheme actually has the property we want here.</p>
+<ul>
+<li>Per-group credential.</li>
+<li>To be used by the client to sign LeafCredentials for the associated group.</li>
+<li>Should be stored on the DS encrypted on the group’s group key (the key not accessible to the DS, but given to new joiners).</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct IntermediateClientCredential {
+		expiration_data: ExpirationData,
+		credential_ciphersuite: CredentialCiphersuite,
+		public_key: PublicSignatureKey,
+		signer_fingerprint: CredentialFingerprint,
+}
+<span class="boring">}</span></code></pre></pre>
 <h2 id="leaf-credentials"><a class="header" href="#leaf-credentials">Leaf credentials</a></h2>
+<ul>
+<li>per-group credential</li>
+<li>to identify a client, the identifying client should follow the chain via the intermediate client cert to the client cert.</li>
+<li>To be used in leaves in an MLS group.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct LeafCredentialPayload {
+		expiration_data: ExpirationData,
+		credential_ciphersuite: CredentialCiphersuite,
+		public_key: PublicSignatureKey,
+		signer_fingerprint: CredentialFingerprint,
+}
+<span class="boring">}</span></code></pre></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="future-work-evolving-identity-eid"><a class="header" href="#future-work-evolving-identity-eid">Future work: Evolving Identity (EID)</a></h1>
 <p>On a high level, the evolving identity represents a user's identity, which in turn is composed of the cryptographic identities of all of the user's devices.</p>
 <p>More concretely, this is implemented using an MLS group that includes all of a user's clients, with the group's <a href="https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-ratchet-tree-concepts">ratcheting tree</a> representing the user's EID state.</p>
@@ -903,11 +1133,12 @@ TODO: Restructure with C2S, S2S and C2C authentication in mind.</p>
     // TBS: All information above signed by the ClientCredential.
     signature: Signature,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The <code>ConnectionEstablishmentPackage</code>s are then signed using the initiator's client credential and each encrypted under the init key of the connection establishment KeyPackage of the responder's individual clients.</p>
-<p>Receiving the <code>ConnectionEstablishmentPackage</code>, a responder's client must verify the signature on the package. It must also fetch the AS credential and AS intermediate credential and verify the signature chain from the initiator's client credential to the AS credential. The responder can then decide based on the sender's user name (contained in the client credential) if it wants to accept the connection.</p>
-<p>The responder accepts the connection by fetching the external commit information required to join the group from the initiator's DS and joins the group via the <em>join connection group</em> endpoint of said DS.</p>
+<p>Receiving the <code>ConnectionEstablishmentPackage</code>, a responder's client first makes sure that its queue on the QS is empty. This is to ensure that the responding user hasn't already accepted the connection on another client. If there is a WelcomeBundle with the same GroupId as in the <code>ConnectionEstablishmentPackage</code>, the client uses the former to join the group and discards the <code>ConnectionEstablishmentPackage</code>.</p>
+<p>If the queue is empty, the receiving client must verify the signature on the package. It must also fetch the AS credential and AS intermediate credential and verify the signature chain from the initiator's client credential to the AS credential. The responder can then decide based on the sender's user name (contained in the client credential) if it wants to accept the connection.</p>
+<p>The responder accepts the connection by fetching the external commit information required to join the group from the initiator's DS and joins the group via the <em>join connection group</em> endpoint of said DS. After joining, the client adds all other clients of the same user to the group.</p>
+<p>If joining via the <em>join connection group</em> endpoint fails, the new client must check its queue again to ensure that no other client has accepted the connection in the mean time. If the queue is still empty, the client discards the ConnectionEstablishmentPackage and aborts the process.</p>
 <h3 id="future-work-additional-initiator-information"><a class="header" href="#future-work-additional-initiator-information">Future work: Additional initiator information</a></h3>
 <p>In some cases, the responder might want to get additional information to validate the responder, such as a display name or a profile picture. The responder should not get this information delivered immediately, but instead it should be downloaded upon active request by the responder.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="delivery-service-ds-1"><a class="header" href="#delivery-service-ds-1">Delivery Service (DS)</a></h1>
@@ -939,8 +1170,7 @@ TODO: Restructure with C2S, S2S and C2C authentication in mind.</p>
   timestamp: Timestamp,
   deleted_queues: Vec&lt;SealedQueueConfig&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The plaintext group state contains the following data:</p>
 <ul>
 <li><strong>Public ratchet tree:</strong> The public MLS ratchet trees of the group.</li>
@@ -976,7 +1206,7 @@ TODO: Restructure with C2S, S2S and C2C authentication in mind.</p>
 <li>If the proposal store is non-empty, the next commit must be a client update that contains all proposals in the proposal store. The DS must reject all other operations containing commits.</li>
 <li>For all requests containing non-update commits, or commits that do not contain all proposals in the store, the DS will return an error message indicating the the proposal store is non-empty.</li>
 </ul>
-<h2 id="authentication-6"><a class="header" href="#authentication-6">Authentication</a></h2>
+<h2 id="authentication-12"><a class="header" href="#authentication-12">Authentication</a></h2>
 <p>Messages from the client to the DS are authenticated by the client by providing a <code>DsAuthToken</code>, where the <code>DsSenderId</code> in the token depends on the endpoint the client is querying.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -993,8 +1223,7 @@ struct DsAuthToken {
   // TBS: group_id, timestamp and sender_id
   signature: Signature,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The verification key used to create the token depends on the <code>sender_id</code>:</p>
 <ul>
 <li>LeafIndex: Signature key in the leaf's credential</li>
@@ -1008,8 +1237,7 @@ struct DsAuthToken {
 </span>struct GroupInfoUpdate {
   signature: Signature,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h2 id="message-delivery-1"><a class="header" href="#message-delivery-1">Message delivery</a></h2>
 <p>The majority of endpoints of the DS allow clients to send MLS messages to groups.</p>
 <h3 id="validation"><a class="header" href="#validation">Validation</a></h3>
@@ -1033,9 +1261,8 @@ struct DsAuthToken {
 </span>struct RequestGroupIdResponse {
   group_id: GroupId,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h4 id="authentication-7"><a class="header" href="#authentication-7">Authentication</a></h4>
+<span class="boring">}</span></code></pre></pre>
+<h4 id="authentication-13"><a class="header" href="#authentication-13">Authentication</a></h4>
 <ul>
 <li>None</li>
 </ul>
@@ -1054,12 +1281,11 @@ struct DsAuthToken {
   group_info: GroupInfo,
   initial_ear_key: GroupStateEarKey,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The DS checks if there is a placeholder in the group database for this group id. If there is, it creates the GroupStateDbEntry.</li>
 </ul>
-<h4 id="authentication-8"><a class="header" href="#authentication-8">Authentication</a></h4>
+<h4 id="authentication-14"><a class="header" href="#authentication-14">Authentication</a></h4>
 <ul>
 <li>DsSenderId: UserKeyHash</li>
 </ul>
@@ -1079,9 +1305,8 @@ struct DsAuthToken {
   group_state_ear_key: GroupStateEarKey,
   new_queue_config: ClientQueueConfig,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h4 id="authentication-9"><a class="header" href="#authentication-9">Authentication</a></h4>
+<span class="boring">}</span></code></pre></pre>
+<h4 id="authentication-15"><a class="header" href="#authentication-15">Authentication</a></h4>
 <ul>
 <li>DsSenderId: LeafIndex</li>
 </ul>
@@ -1101,9 +1326,8 @@ struct WelcomeInfoResponse {
   public_tree: MlsRatchetTree,
   credential_chains: Vec&lt;u8&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h4 id="authentication-10"><a class="header" href="#authentication-10">Authentication</a></h4>
+<span class="boring">}</span></code></pre></pre>
+<h4 id="authentication-16"><a class="header" href="#authentication-16">Authentication</a></h4>
 <ul>
 <li>DSSenderId: KeyPackageRef</li>
 </ul>
@@ -1123,9 +1347,8 @@ struct WelcomeInfoResponse {
   public_tree: MlsRatchetTree,
   credential_chains: Vec&lt;u8&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h4 id="authentication-11"><a class="header" href="#authentication-11">Authentication</a></h4>
+<span class="boring">}</span></code></pre></pre>
+<h4 id="authentication-17"><a class="header" href="#authentication-17">Authentication</a></h4>
 <ul>
 <li>DSSenderId: UserKeyHash</li>
 </ul>
@@ -1148,14 +1371,13 @@ struct WelcomeInfoResponse {
 struct AddUsersParamsAad {
   encrypted_credential_information: Vec&lt;Vec&lt;u8&gt;&gt;
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The <code>commit</code> must include the <code>AddUserParamsAad</code> of all added users in the AAD of the MLSContent, where the ciphertexts in the <code>encrypted_credential_information</code> are sorted in the same way as the Add proposals in the <code>commit</code>.</p>
 <p>This operation can only be performed by clients of users marked as <em>admin</em> and all KeyPackages have to contain an extension that contains a <a href="spec/./glossary.html#sealed-queue-config">ClientQueueConfig</a>.</p>
 <p>Upon reception, the DS hashes the KeyPackages in all Add proposals contained in the commit. The KeyPackageBatches indicate, which KeyPackages belong to which user. If there are KeyPackages for which there is no matching KeyPackageRef in any KeyPackageBatch, or if there is a KeyPackageRef in a batch that has no corresponding Add proposal, the commit is invalid. Otherwise, the DS creates a user proile for each batch with the leaf indices of the KeyPackages referenced within. The user auth key of the new user remains empty until the first update of one of the user's clients.</p>
 <p>The DS also has to verify that the timestamp is not older than the DS' configured maximal KeyPackageBatch age.</p>
 <p>Finally, the DS sends the <code>commit</code> to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue. It also sends <a href="spec/./glossary.html#welcomebundle">WelcomeBundles</a> to the newly added clients.</p>
-<h4 id="authentication-12"><a class="header" href="#authentication-12">Authentication</a></h4>
+<h4 id="authentication-18"><a class="header" href="#authentication-18">Authentication</a></h4>
 <ul>
 <li>DsSenderId: UserKeyHash</li>
 </ul>
@@ -1175,8 +1397,7 @@ struct AddUsersParamsAad {
   group_state_ear_key: GroupStateEarKey,
   group_info_update: GroupInfoUpdate,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The commit must exclusively contain Remove proposals</li>
 <li>The commit must contain Remove proposals for all clients of all evicted users</li>
@@ -1186,7 +1407,7 @@ struct AddUsersParamsAad {
 <li>Note, that a user can't remove itself due to MLS constraints</li>
 <li>Finally, the DS sends the <code>commit</code> to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.</li>
 </ul>
-<h4 id="authentication-13"><a class="header" href="#authentication-13">Authentication</a></h4>
+<h4 id="authentication-19"><a class="header" href="#authentication-19">Authentication</a></h4>
 <ul>
 <li>DsSenderId: UserKeyHash</li>
 </ul>
@@ -1205,8 +1426,7 @@ struct AddUsersParamsAad {
 struct UpdateClientParamsAad {
     option_encrypted_credential_information: Option&lt;Vec&lt;u8&gt;&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>DS validates the commit and changes its public tree
 <ul>
@@ -1219,7 +1439,7 @@ struct UpdateClientParamsAad {
 <li>If the KeyPackageRef of the updating client (prior to applying the update) is in one of the <em>joining clients</em> vectors in the group's storage of old group states, the DS removes that KeyPackageRef from the vector. If this leaves te vector empty, the DS removes this particular copy of the group state.</li>
 <li>Finally, the DS sends the <code>commit</code> to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.</li>
 </ul>
-<h4 id="authentication-14"><a class="header" href="#authentication-14">Authentication</a></h4>
+<h4 id="authentication-20"><a class="header" href="#authentication-20">Authentication</a></h4>
 <ul>
 <li>SenderId: UserKeyHash</li>
 </ul>
@@ -1244,13 +1464,12 @@ struct JoinGroupParamsAad {
   existing_user_clients: Vec&lt;LeafIndex&gt;,
   encrypted_credential_information: Vec&lt;u8&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The DS verifies that the <code>existing_user_clients</code> correspond to the leaf indices in the user profile of the sending user (identified via the UserKeyHash used for authentication)</li>
 <li>An adversary could make the state of clients and DS diverge if it has two users in a group and sends the commit with a client of one user while using the user auth key of the other. The existing_user_clients allows other group members to verify that the adder didn't falsely claim to be another user towards the DS. If the adder did indeed misbehave, other group members can rectify the error as described <a href="spec/./delivery_service/broken_state_detection.html">here</a>.</li>
 </ul>
-<h4 id="authentication-15"><a class="header" href="#authentication-15">Authentication</a></h4>
+<h4 id="authentication-21"><a class="header" href="#authentication-21">Authentication</a></h4>
 <ul>
 <li>SenderId: UserKeyHash</li>
 </ul>
@@ -1269,12 +1488,11 @@ struct JoinGroupParamsAad {
 struct JoinConnectionGroupParamsAad {
   encrypted_credential_information: Vec&lt;u8&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
-<li>The DS checks if the group contains the <a href="spec/glossary.html#connectiongroup-extension">connection group extension</a>. This endpoint must only be used to join connection groups.</li>
+<li>The DS checks if the group contains only a single user. Every single-user group can be joined as a connection group.</li>
 </ul>
-<h4 id="authentication-16"><a class="header" href="#authentication-16">Authentication</a></h4>
+<h4 id="authentication-22"><a class="header" href="#authentication-22">Authentication</a></h4>
 <p>No additional authentication is required for this endpoint. The knowledge of the group's EAR key effectively authenticates the joining client.</p>
 <h3 id="add-own-clients"><a class="header" href="#add-own-clients">Add own clients</a></h3>
 <ul>
@@ -1293,15 +1511,14 @@ struct JoinConnectionGroupParamsAad {
 struct AddClientsParamsAad {
   encrypted_credential_information: Vec&lt;u8&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The commit must contain exclusively Add proposals</li>
 <li>This endpoint brings the same potential to break the group state as the &quot;Join with new client&quot; endpoint. See there for more information.</li>
 <li>Finally, the DS sends the <code>commit</code> to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.</li>
 <li>It also sends <a href="spec/./glossary.html#welcomebundle">WelcomeBundles</a> to the newly added clients.</li>
 </ul>
-<h4 id="authentication-17"><a class="header" href="#authentication-17">Authentication</a></h4>
+<h4 id="authentication-23"><a class="header" href="#authentication-23">Authentication</a></h4>
 <ul>
 <li>SenderId: UserKeyHash</li>
 </ul>
@@ -1317,8 +1534,7 @@ struct AddClientsParamsAad {
   group_info_update: GroupInfoUpdate,
   user_auth_key: UserAuthKey,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The commit must exclusively contain Remove proposals</li>
 <li>The DS validates the commit and updates its public tree</li>
@@ -1327,7 +1543,7 @@ struct AddClientsParamsAad {
 <li>The DS replaces the user auth key of the sender's user profile with the <code>user_auth_key</code></li>
 <li>Finally, the DS sends the <code>commit</code> to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.</li>
 </ul>
-<h4 id="authentication-18"><a class="header" href="#authentication-18">Authentication</a></h4>
+<h4 id="authentication-24"><a class="header" href="#authentication-24">Authentication</a></h4>
 <ul>
 <li>SenderId: UserKeyHash</li>
 </ul>
@@ -1342,15 +1558,14 @@ struct AddClientsParamsAad {
   group_state_ear_key: GroupStateEarKey,
   group_info_update: GroupInfoUpdate,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The commit must contain exactly one Add and one Remove proposal referencing the same leaf</li>
 <li>The DS validates the commit and updates its public tree</li>
 <li>The leaf credential of the resynced client must remain the same</li>
 <li>Finally, the DS sends the <code>commit</code> to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.</li>
 </ul>
-<h4 id="authentication-19"><a class="header" href="#authentication-19">Authentication</a></h4>
+<h4 id="authentication-25"><a class="header" href="#authentication-25">Authentication</a></h4>
 <ul>
 <li>SenderId: UserKeyHash</li>
 </ul>
@@ -1364,15 +1579,14 @@ struct AddClientsParamsAad {
   remove_proposal: MlsMessage,
   group_state_ear_key: GroupStateEarKey,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The proposal must be a Remove proposal for the sending client</li>
 <li>The sending client must not be the last client of the user</li>
 <li>The DS validates the proposal and stores it in this epoch's proposal store</li>
 <li>Finally, the DS sends the <code>remove_proposal</code> to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.</li>
 </ul>
-<h4 id="authentication-20"><a class="header" href="#authentication-20">Authentication</a></h4>
+<h4 id="authentication-26"><a class="header" href="#authentication-26">Authentication</a></h4>
 <ul>
 <li>SenderId: UserKeyHash</li>
 </ul>
@@ -1386,15 +1600,14 @@ struct AddClientsParamsAad {
   remove_proposals: Vec&lt;MlsMessage&gt;,
   group_state_ear_key: GroupStateEarKey,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The proposals must be a Remove proposals for all clients of the user</li>
 <li>The DS validates the proposals and stores them in this epoch's proposal store</li>
 <li>Finally, the DS sends the <code>remove_proposals</code> to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.</li>
 <li>Once the proposals are committed, the DS performs the same clean up as for the Remove User endpoint</li>
 </ul>
-<h4 id="authentication-21"><a class="header" href="#authentication-21">Authentication</a></h4>
+<h4 id="authentication-27"><a class="header" href="#authentication-27">Authentication</a></h4>
 <ul>
 <li>SenderId: UserKeyHash</li>
 </ul>
@@ -1410,12 +1623,11 @@ struct AddClientsParamsAad {
   application_message: MlsMessage,
   group_state_ear_key: GroupStateEarKey,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The DS sends the <code>application_message</code> to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.</li>
 </ul>
-<h4 id="authentication-22"><a class="header" href="#authentication-22">Authentication</a></h4>
+<h4 id="authentication-28"><a class="header" href="#authentication-28">Authentication</a></h4>
 <ul>
 <li>SenderId: LeafIndex</li>
 </ul>
@@ -1429,14 +1641,13 @@ struct AddClientsParamsAad {
   commit: MlsMessage,
   group_state_ear_key: GroupStateEarKey,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The commit must contain Remove proposals for all group members except for the sending client</li>
 <li>Finally, the DS sends the <code>commit</code> to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.</li>
 <li>After sending out the commit, the DS deletes the group state.</li>
 </ul>
-<h4 id="authentication-23"><a class="header" href="#authentication-23">Authentication</a></h4>
+<h4 id="authentication-29"><a class="header" href="#authentication-29">Authentication</a></h4>
 <ul>
 <li>SenderId: UserKeyHash</li>
 </ul>
@@ -1450,16 +1661,14 @@ struct AddClientsParamsAad {
 </span>struct ClientInactivityRemoval {
   proposals: Vec&lt;MlsMessage&gt;
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>Removed queues: If the <code>sealed_queue_configs</code> vector in the <code>GroupStateDbEntry</code> is non-empty, the DS searches the <code>ClientQueueConfig</code>s of all clients for matching <code>SealedQueueConfig</code>s and distributes the following to all group members for each match. It also puts the Proposals into the <code>proposal_store</code> of the group.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>struct QueueDeletionRemoval {
   proposals: Vec&lt;MlsMessage&gt;
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h3 id="future-work-removal-due-to-client-misbehaviour"><a class="header" href="#future-work-removal-due-to-client-misbehaviour">Future work: Removal due to client misbehaviour</a></h3>
 <p>See <a href="spec/./delivery_service/broken_state_detection.html">here</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="group-state-encryption"><a class="header" href="#group-state-encryption">Group state encryption</a></h1>
@@ -1582,7 +1791,7 @@ struct AddClientsParamsAad {
 </ul>
 </li>
 </ul>
-<h2 id="authentication-24"><a class="header" href="#authentication-24">Authentication</a></h2>
+<h2 id="authentication-30"><a class="header" href="#authentication-30">Authentication</a></h2>
 <p>Messages from the client to the QS are authenticated by the client by providing an QSAuthToken, where the QsSenderId in the token depends on the endpoint the client is querying.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1597,8 +1806,7 @@ struct QsAuthToken {
   // TBS: sender_id and timestamp
   signature: Signature,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The verification key used to create the token depends on the sender_id:</p>
 <ul>
 <li>QsUid: <a href="spec/./glossary.html#qs-user-record-auth-key">QS user record auth key</a></li>
@@ -1617,8 +1825,7 @@ struct QsAuthToken {
   client_queue_config: ClientQueueConfig,
   group_id: GroupId,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>If the QS client record exists, the QS checks if the group ID given in the message is in the blocklist of the associated queue. If it isn't, the QS enqueues the message.</p>
 <h4 id="inter-qs-authentication"><a class="header" href="#inter-qs-authentication">Inter-QS Authentication</a></h4>
 <p>For each query the sending QS has to provide an InterQsAuthToken signed with its QS signing key.</p>
@@ -1629,8 +1836,7 @@ struct QsAuthToken {
   // TBS: timestamp
   signature: Signature,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h2 id="client-endpoints-1"><a class="header" href="#client-endpoints-1">Client endpoints</a></h2>
 <p>Endpoints accessible to clients of the homeserver via HTTP requests.</p>
 <h3 id="fetch-queue-config-encryption-key"><a class="header" href="#fetch-queue-config-encryption-key">Fetch queue config encryption key</a></h3>
@@ -1653,8 +1859,7 @@ struct QsAuthToken {
   client_record_auth_key: SignaturePublicKey,
   queue_encryption_key: HpkePublicKey,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The QS creates the QS user record and QS client record, indexed by a freshly sampled QsUid and QsCid. The QS returns the following:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1662,23 +1867,21 @@ struct QsAuthToken {
   qs_uid: QsUid,
   qs_cid: QsCid,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h4 id="edit-qs-user-record"><a class="header" href="#edit-qs-user-record">Edit QS user record</a></h4>
+<span class="boring">}</span></code></pre></pre>
+<h4 id="update-qs-user-record"><a class="header" href="#update-qs-user-record">Update QS user record</a></h4>
 <ul>
-<li>Endpoint: <code>ENDPOINT_QS_EDIT_USER_RECORD</code></li>
+<li>Endpoint: <code>ENDPOINT_QS_UPDATE_USER_RECORD</code></li>
 </ul>
-<p>Edit a given QS user record, overwriting the existing values with the one given in the message.</p>
+<p>Update a given QS user record, overwriting the existing values with the one given in the message.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct EditUserRecordParams {
+</span>struct UpdateUserRecordParams {
   qs_uid: QsUid,
   user_record_auth_key: SignaturePublicKey,
   friendship_token: FriendshipToken,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h5 id="authentication-25"><a class="header" href="#authentication-25">Authentication</a></h5>
+<span class="boring">}</span></code></pre></pre>
+<h5 id="authentication-31"><a class="header" href="#authentication-31">Authentication</a></h5>
 <ul>
 <li>QsSenderId: QsUid</li>
 </ul>
@@ -1692,8 +1895,7 @@ struct QsAuthToken {
 </span>struct UserRecordParams {
   qs_uid: QsUid,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The QS returns the following.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1702,9 +1904,8 @@ struct QsAuthToken {
   friendship_token: FriendshipToken,
   client_records: Vec&lt;ClientRecordResponse&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h5 id="authentication-26"><a class="header" href="#authentication-26">Authentication</a></h5>
+<span class="boring">}</span></code></pre></pre>
+<h5 id="authentication-32"><a class="header" href="#authentication-32">Authentication</a></h5>
 <ul>
 <li>QsSenderId: QsUid</li>
 </ul>
@@ -1718,9 +1919,8 @@ struct QsAuthToken {
 </span>struct DeleteUserRecordParams {
   qs_uid: QsUid,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h5 id="authentication-27"><a class="header" href="#authentication-27">Authentication</a></h5>
+<span class="boring">}</span></code></pre></pre>
+<h5 id="authentication-33"><a class="header" href="#authentication-33">Authentication</a></h5>
 <ul>
 <li>QsSenderId: QsUid</li>
 </ul>
@@ -1738,36 +1938,33 @@ struct QsAuthToken {
   client_record_auth_key: SignaturePublicKey,
   queue_encryption_key: HpkePublicKey,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The QS creates the record indexed by a freshly sampled QsCid and returns the following.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>struct CreateClientRecordResponse {
   qs_cid: QsCid,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h5 id="authentication-28"><a class="header" href="#authentication-28">Authentication</a></h5>
+<span class="boring">}</span></code></pre></pre>
+<h5 id="authentication-34"><a class="header" href="#authentication-34">Authentication</a></h5>
 <ul>
 <li>QsSenderId: QsUid</li>
 </ul>
-<h4 id="edit-qs-client-record"><a class="header" href="#edit-qs-client-record">Edit QS client record</a></h4>
+<h4 id="update-qs-client-record"><a class="header" href="#update-qs-client-record">Update QS client record</a></h4>
 <ul>
 <li>Endpoint: <code>ENDPOINT_QS_UPDATE_CLIENT_RECORD</code></li>
 </ul>
-<p>Overwrite the data of the QS client record with the given QsCid with the given data.</p>
+<p>Update the data of the QS client record with the given QsCid with the given data.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct EditClientRecordParams {
+</span>struct UpdateClientRecordParams {
   qs_cid: QsCid,
   client_record_auth_key: SignaturePublicKey,
   queue_encryption_key: HpkePublicKey,
   blocklist_entries: Vec&lt;GroupId&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h5 id="authentication-29"><a class="header" href="#authentication-29">Authentication</a></h5>
+<span class="boring">}</span></code></pre></pre>
+<h5 id="authentication-35"><a class="header" href="#authentication-35">Authentication</a></h5>
 <ul>
 <li>QsSenderId: QsCid</li>
 </ul>
@@ -1781,8 +1978,7 @@ struct QsAuthToken {
 </span>struct ClientRecordParams {
   qs_cid: QsCid,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The QS returns the following data.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1791,9 +1987,8 @@ struct QsAuthToken {
   queue_encryption_key: HpkePublicKey,
   blocklist_entries: Vec&lt;GroupId&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h5 id="authentication-30"><a class="header" href="#authentication-30">Authentication</a></h5>
+<span class="boring">}</span></code></pre></pre>
+<h5 id="authentication-36"><a class="header" href="#authentication-36">Authentication</a></h5>
 <ul>
 <li>QsSenderId: QsCid</li>
 </ul>
@@ -1807,9 +2002,8 @@ struct QsAuthToken {
 </span>struct DeleteClientRecordParams {
   qs_cid: QsCid,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h5 id="authentication-31"><a class="header" href="#authentication-31">Authentication</a></h5>
+<span class="boring">}</span></code></pre></pre>
+<h5 id="authentication-37"><a class="header" href="#authentication-37">Authentication</a></h5>
 <ul>
 <li>QsSenderId: QsUid</li>
 </ul>
@@ -1825,10 +2019,9 @@ struct QsAuthToken {
   qs_cid: QsCid,
   add_packages: Vec&lt;AddPackage&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The QS deletes all existing KeyPackages before publishing the new ones.</p>
-<h5 id="authentication-32"><a class="header" href="#authentication-32">Authentication</a></h5>
+<h5 id="authentication-38"><a class="header" href="#authentication-38">Authentication</a></h5>
 <ul>
 <li>QsSenderId: QsCid</li>
 </ul>
@@ -1846,10 +2039,9 @@ struct QsAuthToken {
 </span>struct ClientKeyPackageParams {
   qs_cid: QsCid,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The QS returns one of the client's AddPackages and deletes the AddPackage afterwards (except if it contains a KeyPackage of last resort.)</p>
-<h5 id="authentication-33"><a class="header" href="#authentication-33">Authentication</a></h5>
+<h5 id="authentication-39"><a class="header" href="#authentication-39">Authentication</a></h5>
 <ul>
 <li>QsSenderId: QsUid</li>
 </ul>
@@ -1863,8 +2055,7 @@ struct QsAuthToken {
 </span>struct KeyPackageBatchParams {
   friendship_token: FriendshipToken,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The QS checks if there is a QS user record with the given <a href="spec/glossary.html#friendship-token">FriendshipToken</a> and returns a <a href="spec/glossary.html#addpackage">AddPackage</a> of each of the matching user's clients, along with a signed <a href="spec/glossary.html#user-keypackage-batch">KeyPackageBatch</a> that includes a current time stamp and the references of the returned KeyPackages.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1872,9 +2063,8 @@ struct QsAuthToken {
   add_packages: Vec&lt;AddPackage&gt;,
   key_package_batch: KeyPackageBatch,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h5 id="authentication-34"><a class="header" href="#authentication-34">Authentication</a></h5>
+<span class="boring">}</span></code></pre></pre>
+<h5 id="authentication-40"><a class="header" href="#authentication-40">Authentication</a></h5>
 <p>Instead of a QSAuthToken, the QS requires the client to provide a friendship token. If the token matches the one in the QS user record, the query is considered valid.</p>
 <h4 id="dequeue-messages-1"><a class="header" href="#dequeue-messages-1">Dequeue messages</a></h4>
 <ul>
@@ -1888,15 +2078,14 @@ struct QsAuthToken {
   sequence_number_start: u64,
   max_message_number: u64,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The QS deletes messages older than the given sequence number and returns messages starting with the given sequence number. The maximum number of messages returned this way is the smallest of the following values.</p>
 <ul>
 <li>The number of messages remaining in the queue</li>
 <li>The value of the <code>max_message_number</code> field in the request</li>
 <li>The QS configured maximum number of returned messages</li>
 </ul>
-<h5 id="authentication-35"><a class="header" href="#authentication-35">Authentication</a></h5>
+<h5 id="authentication-41"><a class="header" href="#authentication-41">Authentication</a></h5>
 <ul>
 <li>QsSenderId: QsCid</li>
 </ul>
@@ -1910,9 +2099,8 @@ struct QsAuthToken {
 </span>struct WsParams {
   qs_cid: QsCid,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h5 id="authentication-36"><a class="header" href="#authentication-36">Authentication</a></h5>
+<span class="boring">}</span></code></pre></pre>
+<h5 id="authentication-42"><a class="header" href="#authentication-42">Authentication</a></h5>
 <ul>
 <li>QsSenderId: QsCid</li>
 </ul>
@@ -2018,8 +2206,7 @@ struct QsAuthToken {
     as_domain: FQDN,
     user_name: String,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h2 id="client-id-cid"><a class="header" href="#client-id-cid">Client ID (CID)</a></h2>
 <p>ID of a user's client, qualified by the user name of the owner's user.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -2028,8 +2215,7 @@ struct QsAuthToken {
     user_id: UserName,
     client_uuid: UUID,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h2 id="qs-user-id-qsuid"><a class="header" href="#qs-user-id-qsuid">QS User ID (QsUid)</a></h2>
 <p>The ID of a QS user record on the user's QS.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -2037,8 +2223,7 @@ struct QsAuthToken {
 </span>struct QsUid {
     user_id: UUID,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h2 id="qs-client-id-qscid"><a class="header" href="#qs-client-id-qscid">QS client ID (QsCid)</a></h2>
 <p>The ID representing a client in the owning user's QS user record.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -2047,8 +2232,7 @@ struct QsAuthToken {
     qs_uid: QsUid,
     client_id: UUID,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h2 id="queueconfig-encryption-key"><a class="header" href="#queueconfig-encryption-key">QueueConfig encryption key</a></h2>
 <p>A public HPKE key owned by a homeserver's QS. It is used by the homeserver's clients to encrypt their <a href="spec/glossary.html#sealed-queue-config">sealed queue configs</a>. The QS holds the private key so that it can decrypt the sealed queue configs when receiving messages.</p>
 <h2 id="sealed-queue-config"><a class="header" href="#sealed-queue-config">Sealed queue config</a></h2>
@@ -2064,8 +2248,7 @@ struct QueueConfig {
     option_push_token_key: Option&lt;PushTokenEarKey&gt;,
     pseudonymous_client_id: PseudonymousClientId,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The <code>SealedQueueConfig</code> is the client's <code>QueueConfig</code> encrypted using HPKE in the asymmetrically authenticated mode using the <code>QueueConfigEncryptionKey</code> of the client's QS and the client's own <a href="spec/glossary.html#qs-client-record-auth-key">QS QS client record key</a>.</p>
 <h2 id="rolesextension"><a class="header" href="#rolesextension">RolesExtension</a></h2>
 <p>An MLS group context extension that contains information on the roles of the individual members in a given group. A member's role can be either <em>admin</em> or <em>member</em>.</p>
@@ -2075,8 +2258,7 @@ struct QueueConfig {
     admins: Vec&lt;LeafIndex&gt;,
     members: Vec&lt;LeafIndex&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>If a user has multiple clients in a given group, all clients of that user MUST have the same role.</p>
 <h3 id="future-work-manage-roles-via-proposal"><a class="header" href="#future-work-manage-roles-via-proposal">Future work: Manage roles via proposal</a></h3>
 <p>For now, chaning roles requires a GroupContextExtension proposal, which can be expensive if there is more than one extension. Instead it should probably be possible to change roles via a custom proposal.</p>
@@ -2099,8 +2281,7 @@ struct WelcomeAttributionInfo {
     payload: WelcomeAttributionInfoPayload,
     signature: Signature,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h2 id="welcomebundle"><a class="header" href="#welcomebundle">WelcomeBundle</a></h2>
 <p>A bundle allowing a client to join a new group.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -2111,8 +2292,7 @@ struct WelcomeAttributionInfo {
     encrypted_group_state_ear_key: Vec&lt;u8&gt;,
     group_id: GroupId,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <p>The WelcomeAttributionInfo is encrypted under the joining client's friendship encryption key. The group state EAR key is by the DS under the recipient's init key (contained in the recipient's KeyPackage).</p>
 <h2 id="user-keypackage-batch"><a class="header" href="#user-keypackage-batch">User KeyPackage batch</a></h2>
 <p>When a client retrieves KeyPackages from a QS for a given user, the QS responds with the KeyPackages, the associated Intermediate Client credentials, as well as a KeyPackageBatch.</p>
@@ -2123,8 +2303,7 @@ struct WelcomeAttributionInfo {
   timestamp: Timestamp,
   signature: Signature,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h2 id="addpackage"><a class="header" href="#addpackage">AddPackage</a></h2>
 <p>A struct consisting of a KeyPackage and the associated <a href="spec/authentication_service/credentials.html#intermediate-client-credentials">Intermediate Client Credential</a>, where the latter is encrypted under the user's current <a href="spec/glossary.html#friendship-encryption-key">friendship encryption key</a>.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -2133,8 +2312,7 @@ struct WelcomeAttributionInfo {
     key_package: KeyPackage,
     icc_ciphertext: Vec&lt;u8&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h2 id="friendship-keys"><a class="header" href="#friendship-keys">Friendship keys</a></h2>
 <p>A set of keys known to users that the owning user has a <a href="spec/authentication_service/connection_establishment.html">connection</a> with.</p>
 <h3 id="friendship-encryption-key"><a class="header" href="#friendship-encryption-key">Friendship encryption key</a></h3>
@@ -2167,16 +2345,13 @@ struct FanOutMessage {
     client_queue_configs: Vec&lt;ClientQueueConfig&gt;,
     message_content: MessageContent,
 }
-<span class="boring">}
-</span></code></pre></pre>
+<span class="boring">}</span></code></pre></pre>
 <h2 id="last-resort-extension"><a class="header" href="#last-resort-extension">Last resort extension</a></h2>
 <p>A KeyPackage extension that marks the given KeyPackage as a <a href="https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-keypackage-reuse">KeyPackage of last resort</a>.</p>
 <h2 id="push-token-encryption-key"><a class="header" href="#push-token-encryption-key">Push-token encryption key</a></h2>
 <p>A symmetric encryption key that a client uses to encrypt its push-token on its QS QS client record. It is part of the client's encrypted <a href="spec/glossary.html#sealed-queue-config">QueueConfig</a>.</p>
 <h2 id="queueconfig-extension"><a class="header" href="#queueconfig-extension">QueueConfig extension</a></h2>
 <p>A KeyPackage extension that contains a client's <a href="spec/glossary.html#sealed-queue-config">ClientQueueConfig</a>. This extension is required for all KeyPackages uploaded to a QS.</p>
-<h2 id="connectiongroup-extension"><a class="header" href="#connectiongroup-extension">ConnectionGroup extension</a></h2>
-<p>A GroupContext extension that contains no data, but the presence of which in a group indicates that the group is a <a href="spec/authentication_service/connection_establishment.html">connection group</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="authentication-in-messaging-applications"><a class="header" href="#authentication-in-messaging-applications">Authentication in messaging applications</a></h1>
 <p>All of the commonly used messaging applications aim to provide authentication as one of their primary security guarantees. The goal is that recipients of a given message can authenticate the sender based on (public) cryptographic key material which we call the sender’s <em>cryptographic identity</em> (for brevity sometimes just <em>identity</em>). The cryptographic identity is typically a signature public key or a public key that can be used in an authenticated key exchange. The holder of the corresponding private key material is the owner of the cryptographic identity.</p>
 <p>The recipient can use the cryptographic identity of the sender to either authenticate individual messages (e.g. verifying the sender’s signature on an incoming message using the sender’s public signature key) or to establish an authenticated channel to the sender by way of an initial, authenticated key agreement (e.g. a Diffie-Hellman (DH) style key exchange involving the DH public key of both parties). In both cases, the recipient relies on the fact that the cryptographic identity it uses on for authentication is indeed owned by whom the recipient thinks the sender of the message is.</p>
@@ -2243,9 +2418,17 @@ struct FanOutMessage {
 <p><strong>Threat model:</strong> The adversary can control the network completely, as long as it doesn’t know the answer to the question.</p>
 <h1 id="approaches-used-in-messaging-applications"><a class="header" href="#approaches-used-in-messaging-applications">Approaches used in messaging applications</a></h1>
 <p>Different messaging applications make use of one or more of the authentication approaches, sometimes with small variations to the general concepts described above.</p>
-<h3 id="multi-client-or-composed-user-identities"><a class="header" href="#multi-client-or-composed-user-identities">Multi-client or composed user identities</a></h3>
-<p>Messaging applications often allow the use of multiple clients (e.g. on different devices) by a single user. However, since users are typically interested in authenticating users rather than individual clients, applications have to deal with the challenge of presenting a single user identity despite messages being sent potentially from more than one client.</p>
-<p>Multi-client authentication is not covered in the discussion of existing approaches above, because the individual messaging applications have found unique ways of dealing with this problem.</p>
+<h2 id="multi-client-or-composed-user-identities"><a class="header" href="#multi-client-or-composed-user-identities">Multi-client or composed user identities</a></h2>
+<p>Messaging applications often allow the use of multiple clients (e.g. on different devices) by a single user. However, users typically authenticate other users rather than individual clients. The applications thus have to compose individual client identities into user identities.</p>
+<p>Compared to simple, single-client user identities, composed user identities pose additional challenges.</p>
+<h3 id="ghost-clients"><a class="header" href="#ghost-clients">Ghost clients</a></h3>
+<p>In many cases the messaging provider informs other users if a new client is added for a given user. A compromised or malicious provider can thus insert one of its own clients into the conversation without the target user noticing. Techniques like cross-signing can prevent such an attack, since any client additions have to be performed by one of the user's existing clients. Alternatively, <a href="authentication_systems.html#identity-gossiping">identity gossiping</a>, as well as OOB verification help detect such an attack.</p>
+<h3 id="revocation-suppression"><a class="header" href="#revocation-suppression">Revocation suppression</a></h3>
+<p>Users need to be able to remove lost or potentially compromised devices from their composed identity. Here, the problem is often that a malicious messaging provider can (silently) drop messages performing such a revocation operation. This can not be prevented entirely, since the messaging provider can always decide to drop messages. <a href="./authentication_systems.html#identity-gossiping">Identity gossiping</a> can help mitigate this problem, as it prevents the messaging provider from dropping messages selectively. Instead, the provider is forced to drop all of a user's messages, thus significantly increasing the risk of detection.</p>
+<p>Such an attack is also detected if two affected users verify one-another's identities OOB.</p>
+<h3 id="identity-gossiping"><a class="header" href="#identity-gossiping">Identity Gossiping</a></h3>
+<p>Some of the techniques discussed above (such as cross signing) help in ensuring that all participants of a given conversation agree on their respective identities. However, if the messaging protocol (cryptographically) includes the identity of a user in messages it sends, it can help mitigate the two attacks described above.</p>
+<p>If the authentication systems includes a <a href="authentication_systems.html#verifiable-data-structures">verifyable data structure</a> that records fingerprints of client identities, clients can also gossip their view of the data structure.</p>
 <h2 id="signal"><a class="header" href="#signal">Signal</a></h2>
 <p>The Signal app takes the TTP approach to authentication with <a href="https://support.signal.org/hc/en-us/articles/360007060632-What-is-a-safety-number-and-why-do-I-see-that-it-changed-">optional OOB verification by the user</a>. Users can discover other users via the Signal servers. Once a connection is established with another user, the server provides both users with the cryptographic identities of their peers. The same is true if a user joins a group with other users with whom it doesn’t necessarily have a previous connection.</p>
 <p>Additionally, users can verify the identity of other users out-of-band, either by comparing a numerical code or by scanning a QR code. Notably, the code presented by the Signal app is not the cryptographic identity of a specific user, but instead a byte string specific to the connection between the users.</p>
@@ -2281,36 +2464,65 @@ struct FanOutMessage {
 <p>iMessage <a href="https://support.apple.com/guide/security/how-imessage-sends-and-receives-messages-sec70e68c949/web">purely relies on the TTP approach</a>, where Apple distributes the cryptographic identities of individual parties to conversation partners. There is no way for parties to verify their peers’ public keys OOB.</p>
 <h3 id="multi-client-6"><a class="header" href="#multi-client-6">Multi-client</a></h3>
 <p>iMessage clients have their own cryptographic identity and Apple automatically distributes keys of new clients, as well as changes to a user’s client list to a user’s contacts.</p>
+<h1 id="comparison-of-messaging-applications"><a class="header" href="#comparison-of-messaging-applications">Comparison of messaging applications</a></h1>
+<p>Due to the diversity of approaches to authentication in general and multi-device in particular, it is hard to compare the individual applications directly. However, we can categorize them broadly. Note that none of the applications below support transparency via a verifiable datastructure or verification via a verification question. The composed identity colum determines if the application exposes a fingerprint of the <a href="authentication_systems.html#multi-client-or-composed-user-identities">composed user identity</a> (as opposed to the identities of the individual clients).</p>
+<div class="table-wrapper"><table><thead><tr><th>Application</th><th>TTP</th><th>OOB Auth</th><th>Cross-signing</th><th>Transparency</th><th>Composed Identity</th></tr></thead><tbody>
+<tr><td>Signal</td><td>✅</td><td>✅</td><td>❌<sup class="footnote-reference"><a href="#1">1</a></sup></td><td>❌</td><td>❌<sup class="footnote-reference"><a href="#1">1</a></sup></td></tr>
+<tr><td>WhatsApp</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td><td>✅</td></tr>
+<tr><td>Keybase</td><td>✅</td><td>❌</td><td>✅</td><td>✅<sup class="footnote-reference"><a href="#4">2</a></sup></td><td>✅</td></tr>
+<tr><td>Threema</td><td>✅</td><td>✅</td><td>❌<sup class="footnote-reference"><a href="#2">3</a></sup></td><td>❌</td><td>❌</td></tr>
+<tr><td>PGP</td><td>❌</td><td>✅</td><td>✅<sup class="footnote-reference"><a href="#3">4</a></sup></td><td>❌</td><td>❌</td></tr>
+<tr><td>Element</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td></tr>
+<tr><td>iMessage</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+</tbody></table>
+</div>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p>Signal uses the same cryptographic identity for all of a user's clients.
+<sup class="footnote-reference"><a href="#2">3</a></sup>: Threema only supports multi-client by routing all messages through a main client. Secondary clients thus don't have their own cryptographic identity.
+<sup class="footnote-reference"><a href="#3">4</a></sup>: Only if individual clients have their own key material.
+<sup class="footnote-reference"><a href="#4">2</a></sup>: Keybase's signature chains are no <a href="https://transparency.dev/verifiable-data-structures/">verifiable datastructure</a>, but they do allow users to verify the consistency of another user's identity.</p>
+</div>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+
+
                         <div style="clear: both"></div>
                     </nav>
                 </div>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
             </nav>
 
         </div>
 
-        <script type="text/javascript">
+
+
+
+        <script>
             window.playground_copyable = true;
         </script>
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script type="text/javascript">
+
+        <script>
         window.addEventListener('load', function() {
             window.setTimeout(window.print, 100);
         });
         </script>
+
     </body>
 </html>
