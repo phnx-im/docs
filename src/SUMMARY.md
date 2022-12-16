@@ -38,3 +38,5 @@
     - [Future work](spec/future_work.md)
     - [Glossary](./spec/glossary.md)
 - [Authentication in messaging applications](./authentication_systems.md)
+    - [Concepts and security properties](./authentication_systems/concepts.md)
+    - [Comparison of existing applications](./authentication_systems/comparison.md)
