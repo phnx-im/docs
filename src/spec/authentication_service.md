@@ -116,7 +116,7 @@ After receiving the response, the client must call the [finalize user registrati
 This endpoint allows the user to finish its registration.
 
 ```rust
-struct InitUserRegistrationParams {
+struct FinishUserRegistrationParams {
   user_name: UserName,
   queue_encryption_key: HpkePublicKey,
   connection_key_package: KeyPackage,
