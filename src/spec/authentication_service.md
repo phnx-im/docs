@@ -1,6 +1,10 @@
-# Work in progress: Authentication Service (AS)
+# Authentication Service (AS)
 
 In this chapter, we detail the different functionalitites of the authentication service. See the subchapter on [credentials](authentication_service/credentials.md) for more details on the credential types referenced in this chapter.
+
+The AS detailed in this section represents only the base-line version. A more sophisticated version with additional features such as better cross-signing and transparency is work in progress.
+
+For an overview over the security of the AS see [here](./authentication_service/security_guarantees.rs).
 
 ## Configuration
 
