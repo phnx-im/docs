@@ -27,6 +27,7 @@
         - [Evolving Identities](spec/authentication_service/evolving_identities.md)
           - [Adding new devices](spec/authentication_service/new_device_flow.md)
         - [Discovery and connection esablishment](spec/authentication_service/connection_establishment.md)
+        - [Security Guarantees](spec/authentication_service/security_guarantees.md)
     - [Delivery service](spec/delivery_service.md)
         - [Group state encryption](spec/delivery_service/group_state_encryption.md)
         - [Broken state detection](spec/delivery_service/broken_state_detection.md)
