@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Security Guarantees - Docs</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="../../status.html">Status</a></li><li class="chapter-item expanded "><a href="../../functional_requirements.html"><strong aria-hidden="true">1.</strong> Functional Requirements</a></li><li class="chapter-item expanded "><a href="../../modularization.html"><strong aria-hidden="true">2.</strong> Modularization</a></li><li class="chapter-item expanded "><a href="../../performance_goals.html"><strong aria-hidden="true">3.</strong> Performance Goals</a></li><li class="chapter-item expanded "><a href="../../threat_model.html"><strong aria-hidden="true">4.</strong> Threat Model</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../threat_model/methodology.html"><strong aria-hidden="true">4.1.</strong> Methodology</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_assumptions.html"><strong aria-hidden="true">4.2.</strong> Security Assumptions</a></li><li class="chapter-item expanded "><a href="../../threat_model/application_assets.html"><strong aria-hidden="true">4.3.</strong> Application Assets</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_requirements.html"><strong aria-hidden="true">4.4.</strong> Security Requirements</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../threat_model/security_requirements/operators.html"><strong aria-hidden="true">4.4.1.</strong> Operators</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_requirements/public.html"><strong aria-hidden="true">4.4.2.</strong> Public</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_requirements/users.html"><strong aria-hidden="true">4.4.3.</strong> Users</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_requirements/clients.html"><strong aria-hidden="true">4.4.4.</strong> Clients</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_requirements/federated_homeservers.html"><strong aria-hidden="true">4.4.5.</strong> Federated Homeservers</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_requirements/federated_users.html"><strong aria-hidden="true">4.4.6.</strong> Federated Users</a></li><li class="chapter-item expanded "><a href="../../threat_model/security_requirements/federated_clients.html"><strong aria-hidden="true">4.4.7.</strong> Federated Clients</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../cryptographic_primitives.html"><strong aria-hidden="true">5.</strong> Cryptographic Primitives and Schemes</a></li><li class="chapter-item expanded "><a href="../../spec.html"><strong aria-hidden="true">6.</strong> Specification (Draft)</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../spec/authentication_service.html"><strong aria-hidden="true">6.1.</strong> Authentication service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../spec/authentication_service/credentials.html"><strong aria-hidden="true">6.1.1.</strong> Credentials</a></li><li class="chapter-item expanded "><a href="../../spec/authentication_service/evolving_identities.html"><strong aria-hidden="true">6.1.2.</strong> Evolving Identities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../spec/authentication_service/new_device_flow.html"><strong aria-hidden="true">6.1.2.1.</strong> Adding new devices</a></li></ol></li><li class="chapter-item expanded "><a href="../../spec/authentication_service/connection_establishment.html"><strong aria-hidden="true">6.1.3.</strong> Discovery and connection esablishment</a></li><li class="chapter-item expanded "><a href="../../spec/authentication_service/security_guarantees.html" class="active"><strong aria-hidden="true">6.1.4.</strong> Security Guarantees</a></li></ol></li><li class="chapter-item expanded "><a href="../../spec/delivery_service.html"><strong aria-hidden="true">6.2.</strong> Delivery service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../spec/delivery_service/group_state_encryption.html"><strong aria-hidden="true">6.2.1.</strong> Group state encryption</a></li><li class="chapter-item expanded "><a href="../../spec/delivery_service/broken_state_detection.html"><strong aria-hidden="true">6.2.2.</strong> Broken state detection</a></li></ol></li><li class="chapter-item expanded "><a href="../../spec/queuing_service.html"><strong aria-hidden="true">6.3.</strong> Queuing service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../spec/queuing_service/queue_encryption.html"><strong aria-hidden="true">6.3.1.</strong> Queue encryption</a></li><li class="chapter-item expanded "><a href="../../spec/queuing_service/keypackage_publication.html"><strong aria-hidden="true">6.3.2.</strong> KeyPackage publication</a></li></ol></li><li class="chapter-item expanded "><a href="../../spec/clients.html"><strong aria-hidden="true">6.4.</strong> Work in progress: Clients</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../spec/clients/client_sync.html"><strong aria-hidden="true">6.4.1.</strong> Client synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="../../spec/future_work.html"><strong aria-hidden="true">6.5.</strong> Future work</a></li><li class="chapter-item expanded "><a href="../../spec/glossary.html"><strong aria-hidden="true">6.6.</strong> Glossary</a></li></ol></li><li class="chapter-item expanded "><a href="../../authentication_systems.html"><strong aria-hidden="true">7.</strong> Authentication in messaging applications</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../authentication_systems/concepts.html"><strong aria-hidden="true">7.1.</strong> Concepts and security properties</a></li><li class="chapter-item expanded "><a href="../../authentication_systems/comparison.html"><strong aria-hidden="true">7.2.</strong> Comparison of existing applications</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Docs</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="authentication-security-guarantees"><a class="header" href="#authentication-security-guarantees">Authentication security guarantees</a></h1>
+<p>In this document, we outline how the Phoenix homeserver protocol facilitates end-to-end authentication in this first phase of the project. This first approach will provide a baseline of authentication guarantees for users that is comparable to commonly used messaging applications. In a future version, we intend to provide more extensive authentication guarantees that go significantly beyond the current state-of-the-art in secure messaging. Among other things, <a href="evolving_identities.html">evolving identity</a> will be a central part of v2 of the Phoenix homeserver authentication system.</p>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>The authentication system consists of the authentication services (AS’, one operated by each homeserver operator), which act as a trusted third party for their respective homeserver, and a validation module run on each client. We will go into more detail on how much users have to trust their AS <a href="./security_guarantees.html#threat-model-and-security-guarantees">here</a>.</p>
+<p>The AS of a homeserver issues client credentials for each of its users’ clients. The clients can then use the credentials to sign the leaf credentials used in each of their groups or in their pre-published MLS KeyPackages. The leaf credentials are then used to sign messages as per the MLS specification.</p>
+<p>When a client receives a message from another client, it performs the following validation steps:</p>
+<ol>
+<li>The signature on the message is valid w.r.t. the credential in the sender’s leaf.</li>
+<li>The signature on the sender’s leaf is valid w.r.t. the sender’s client credential.</li>
+<li>The signature on the sender’s client credential is valid w.r.t. one of the credentials published by the AS.</li>
+</ol>
+<p>If all signatures are indeed valid, the recipient can conclude that the message came from the user indicated by the user name in the sending client’s client ID.</p>
+<p>Similarly, a joiner in a new group performs steps 2. and 3. to authenticate each member of the new group.</p>
+<h3 id="out-of-band-validation"><a class="header" href="#out-of-band-validation">Out-of-band validation</a></h3>
+<p>To ensure security even against a compromised AS, users can validate the client credentials of their contacts out-of-band. The validation process is as follows:</p>
+<ul>
+<li>Alice sends a hash of her current client credentials to Bob out-of-band</li>
+<li>Bob hashes the credentials of Alice’s clients in their shared connection group and compares the result.</li>
+<li>Bob compares the two hash values to see if his view of Alice’s composed user identity is correct.</li>
+</ul>
+<p>The process above ensures that Bob’s current view of Alice’s identity is correct. Note that users have to re-validate out-of-band if a user adds one or more clients.</p>
+<h3 id="connection-groups-and-multi-client-identity"><a class="header" href="#connection-groups-and-multi-client-identity">Connection groups and multi-client identity</a></h3>
+<p>As detailed <a href="./connection_establishment.html">here</a>, users have a connection group with each of their contacts (but not necessarily with each user they are in a group with). The connection group acts as a reference for users w.r.t. what clients represent an individual contact. If a user is invited into a new group by one of its contacts, but the inviting client is not part of the corresponding connection group, the invited user must decline the invitation.</p>
+<p>For this to work reliably, users have to first add new clients to all of their connection groups before adding them to any other groups. Similarly, users have to remove clients first from all other groups before removing them from their connection groups.</p>
+<p>This requires some care in the add/remove process, where clients have to coordinate through the user’s all-client group s.t. there the addition and removal process is robust.</p>
+<h2 id="threat-model-and-security-guarantees"><a class="header" href="#threat-model-and-security-guarantees">Threat model and security guarantees</a></h2>
+<p>Generally, the threat model of end-to-end authentication is an adversary that controls everything but the users’ clients, which includes the network, as well as infrastructure components such as the homeserver. However, in this first version of the Phoenix homeserver authentication system, we rely on the AS to perform some security-critical operations. As a consequence, we examine two scenarios in this section: One in which the AS is not malicious/compromised and one where it is.</p>
+<h3 id="security-under-an-honest-as"><a class="header" href="#security-under-an-honest-as">Security under an honest AS</a></h3>
+<p>If the AS can be trusted to behave honestly, it will issue client credentials only to the user registered under the user name contained in the client ID. As a consequence, performing the verification steps outlined above will ensure that</p>
+<ul>
+<li>a given message originates from the specific client that signed the message,</li>
+<li>the sending client is associated with the user name in the client ID and</li>
+<li>that user is registered with the signing homeserver under the claimed user name.</li>
+</ul>
+<h3 id="security-under-a-compromised-as"><a class="header" href="#security-under-a-compromised-as">Security under a compromised AS</a></h3>
+<p>In case a homeserver (or the AS specifically) is compromised or its operator malicious, security guarantees are limited, as the AS can create its own credentials for arbitrary users. However, there are still some security guarantees that the authentication system (in conjunction with MLS) provides in that scenario.</p>
+<p>If two users have a connection (that was established while the AS was honest), both users cannot be impersonated towards one another by the AS. This is ensured by users adding clients to their connection groups before all other groups, thus effectively performing cross-signatures that all of their contacts can verify.</p>
+<p>The adversary can generally impersonate a user towards non-contacts by creating a fresh client credential with a client ID containing the user’s user name. With this credential, the adversary can create connection groups with any non-contact. Theoretically, the adversary can even impersonate a user towards non-contacts in groups that the user itself is already in. However, this requires the adversary to learn which group to target (since group membership is hidden from the homeserver). Additionally, after joining such a group, the adversary must effectively block the user from that group to avoid detection (although the block itself might alert the user to the attack).</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../spec/authentication_service/connection_establishment.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../../spec/delivery_service.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../spec/authentication_service/connection_establishment.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../../spec/delivery_service.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>
