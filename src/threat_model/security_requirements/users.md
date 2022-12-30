@@ -2,112 +2,148 @@
 
 TODO: Maybe note somewhere generally how notifications, or more generally client-to-client messages must be authenticated? This seems to repeat here and in the client's section.
 
-## Client management
+## Authentication service endpoints
+### Initiate 2FA operation
 
-| STRIDE property      | Requirement                                                                                                    | Remark |
-| -------------------- | -------------------------------------------------------------------------------------------------------------- | ------ |
-| Authentication (C2S) | Users can only manage their own clients                                                                        |        |
-| Authentication (C2C) | The user's contacts (local and federated) must be able to authenticate the user's actions end-to-end           |        |
-| Authentication (S2S) | A federated homeserver forwarding a notification must be able to authenticate the users's homeserver as origin |        |
-| Integrity            | Not a risk. Users are responsible for the integrity of their own clients                                       |        |
-| Non-repudiation      | Other clients of the user must be able to determine which client performed the action                          |        |
-|                      | The user's contacts must be notified of the action                                                             |        |
-| Confidentiality      | Not a risk. A user's client management is considered public                                                    |        |
-| Availability         | Users should always be able to manage their own clients                                                        |        |
-| Authorization        | Not a risk. The user can manage clients through any of their clients                                           |        |
-| Spam prevention      | Client management actions should be limited, as they are message sending                                       |        |
+| STRIDE property | Requirement                                                                 | Remark |
+| --------------- | --------------------------------------------------------------------------- | ------ |
+| Authentication  | Only local clients can initiate a 2FA operation                             |        |
+| Integrity       | Not a risk. The entry in the DB are ephemeral and scoped to the client's ID |        |
+| Non-repudiation | Not a risk. The client needs to be authenticated, but not otherwise traced  |        |
+| Confidentiality | Not a risk. There is no confidential data in the query                      |        |
+| Availability    | Clients should always be able to initiate 2FA operations                    |        |
+| Authorization   | Not a risk. All clients should be allowed to initiate 2FA operations        |        |
+| Spam prevention | Not a risk. The operation is not message-sending or otherwise enables spam  |        |
 
-## Account reset
+### Initiate user registration
 
-| STRIDE property      | Requirement                                                                                                    | Remark                                |
-| -------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
-| Authentication       | Users can only reset their own accounts                                                                        |                                       |
-| Authentication (C2C) | The user's contacts (local and federated) must be able to authenticate the user's actions end-to-end           |                                       |
-| Authentication (S2S) | A federated homeserver forwarding a notification must be able to authenticate the users's homeserver as origin |                                       |
-| Integrity            | Not a risk. A reset replaces all user data except the user name                                                |                                       |
-| Non-repudiation      | The users contacts must be notified of the user's account reset                                                |                                       |
-| Confidentiality      | Not a risk. No confidential user data is transmitted during an account reset                                   |                                       |
-| Availability         | Users should be able to reset their own account once every month                                               | TODO: Is this the time frame we want? |
-| Authorization        | Not a risk. The user is the only entity that can perform this action                                           |                                       |
-| Spam prevention      | The homeserver must limit the number of account resets, as they are message sending                            |                                       |
+| STRIDE property | Requirement                                                                                                                                                | Remark |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Authentication  | Not a risk. Anyone should be able to initialize user registration                                                                                          |        |
+| Integrity       | The `client_csr` included in the request must be validated (e.g. username must be unique)                                                                  |        |
+| Non-repudiation | Not a risk. The client does not need to be identified beyond the `client_csr`                                                                              |        |
+| Confidentiality | Not a risk as long as basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) hold |        |
+| Availability    | It is not critical that new users be able to register and the endpoint can be disabled to mitigate an ongoing attack                                       |        |
+| Authorization   | Not a risk. Everyone should be able to initiate registration                                                                                               |        |
+| Spam prevention | User registration is a big potential amplifier for spam and measures need to be taken to prevent sybil attacks                                             |        |
 
-## User name change
 
-| STRIDE property | Requirement                                                                            | Remark                                |
-| --------------- | -------------------------------------------------------------------------------------- | ------------------------------------- |
-| Authentication  | Users can only change their own user name                                              |                                       |
-| Integrity       | The homeserver must ensure the new user name is valid                                  | (see user registration)               |
-| Non-repudiation | The users contacts must be notified of the user's user name change                     |                                       |
-| Confidentiality | The new user name must be communicated to contacts end-to-end encrypted                |                                       |
-| Availability    | Users should be able to change their user name once every month                        | TODO: Is this the time frame we want? |
-| Authorization   | Not a risk. The user is the only entity that can perform this action                   |                                       |
-| Spam prevention | The homeserver must limit the number of user name changes, as they are message sending |                                       |
+### Finish user registration
 
-## User discovery
+| STRIDE property | Requirement                                                                                                                                                | Remark |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Authentication  | Only clients that have initialized user registration before should be able to call this endpoint                                                           |        |
+|                 | The OPAQUE setup must be completed successfully                                                                                                            |        |
+| Integrity       | The KeyPackage in the query parameters must be a valid KeyPackage with a valid credential for the calling client                                           |        |
+| Non-repudiation | Not a risk. There is no need to trace this operation                                                                                                       |        |
+| Confidentiality | Not a risk as long as basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) hold |        |
+| Availability    | It is not critical that new users be able to register and the endpoint can be disabled to mitigate an ongoing attack                                       |        |
+| Authorization   | Not a risk. Only clients that have previously initiated registration should be able to complete it                                                         |        |
+| Spam prevention | User registration is a big potential amplifier for spam and measures need to be taken to prevent sybil attacks                                             |        |
 
-| STRIDE property | Requirement                                                                               | Remark |
-| --------------- | ----------------------------------------------------------------------------------------- | ------ |
-| Authentication  | All registered users should be able to discover other users by their full user name       |        |
-|                 | Users must be able to authenticate any user information in an end-to-end way              |        |
-| Integrity       | Not a risk. End-to-end authentication implies integrity of the data                       |        |
-| Non-repudiation | Not a risk. Users must be able to discover other users anonymously                        |        |
-| Confidentiality | The user must be able to perform discovery anonymously                                    |        |
-|                 | Users should only be able to discover a limited number of users every day                 |        |
-| Availability    | Users should always be able to discover users with the given confidentiality restrictions |        |
-| Authorization   | Not a risk. All users should be able to discover other users                              |        |
-| Spam prevention | Not a risk. Discovering a user should not be message sending                              |        |
 
-## Connection establishment
+### Get user clients
 
-| STRIDE property | Requirement                                                                            | Remark |
-| --------------- | -------------------------------------------------------------------------------------- | ------ |
-| Authentication  | All registered users should be able to establish connections to other users            |        |
-|                 | The establishing user must be able to authenticate the target user                     |        |
-| Integrity       | Not a risk. Authentication implies integrity of the connection request                 |        |
-| Non-repudiation | Not a risk. Users must be able to establish connections anonymously                    |        |
-| Confidentiality | The user must be able to establish connections anonymously w.r.t. the homeserver       |        |
-| Availability    | Users should always be able to establish connections (limited by anti-spam measures)   |        |
-| Authorization   | Not a risk. All users should be able to establish connections                          |        |
-| Spam prevention | High spam risk. Connection establishments are message sending must be limited per user |        |
+| STRIDE property | Requirement                                                                                                                                                | Remark |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Authentication  | Not a risk. Every client should be able to obtain the set of clients of another user                                                                       |        |
+|                 | Access should be limited to prevent DoS attacks                                                                                                            |        |
+| Integrity       | The user retrieving the client information must be able to verify it                                                                                       |        |
+| Non-repudiation | Not a risk. Users must be able to discover other users anonymously                                                                                         |        |
+| Confidentiality | Not a risk as long as basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) hold |        |
+| Availability    | Users should be able to discover a reasonable number of users at a time. However, it must be hard to exhaust a user's KeyPackages                          |        |
+| Authorization   | Not a risk. All users should be able to discover other users                                                                                               |        |
+| Spam prevention | Not a risk. Discovering a user should not be message sending                                                                                               |        |
 
-## Connection rejection
+### User account deletion
 
-| STRIDE property | Requirement                                                                          | Remark                                |
-| --------------- | ------------------------------------------------------------------------------------ | ------------------------------------- |
-| Authentication  | All registered users should be able to accept/reject incoming connections requests   |                                       |
-|                 | The accepting/rejecting user must be able to authenticate the requesting user        |                                       |
-| Integrity       | Not a risk. Authentication implies integrity of the connection request               |                                       |
-| Non-repudiation | Not a risk as long as connection requests can be authenticated by the receiving user |                                       |
-| Confidentiality | Not a risk as long as transport encryption and metadata minimalism are upheld        |                                       |
-| Availability    | Users should always be able to accept or reject connections                          |                                       |
-| Authorization   | Not a risk. All users should be able to accept/reject connections                    |                                       |
-| Spam prevention | Connection accepts/rejects are message sending and thus have to be limited           | TODO: Is this really message sending? |
+| STRIDE property | Requirement                                                                                                                                                | Remark |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Authentication  | Only the user's own clients should be able to delete the user's account                                                                                    |        |
+|                 | Account deletion should require multiple factors                                                                                                           |        |
+| Integrity       | Not a risk. All user data is deleted                                                                                                                       |        |
+| Non-repudiation | Not a risk. Account deletion does not need to be traced                                                                                                    |        |
+| Confidentiality | Not a risk as long as basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) hold |        |
+| Availability    | Users must always be able to delete their own account                                                                                                      |        |
+| Authorization   | Users must only be able to delete their own account                                                                                                        |        |
+| Spam prevention | Not a risk. Account deletion should not be message sending                                                                                                 |        |
 
-## Connection management
 
-| STRIDE property | Requirement                                                                   | Remark                                |
-| --------------- | ----------------------------------------------------------------------------- | ------------------------------------- |
-| Authentication  | All registered users should be able to manage their existing connections      |                                       |
-|                 | Each user should only be able to manage their own connections                 |                                       |
-| Integrity       | Not a risk. Clients are responsible for their own list of connections         |                                       |
-| Non-repudiation | Not a risk. Connection management does not need to be logged                  |                                       |
-| Confidentiality | The homeserver should not learn which connections a user has                  |                                       |
-|                 | The homeserver should not learn which users a user has blocked                |                                       |
-| Availability    | Users should always be able to manage their own connections                   |                                       |
-| Authorization   | Not a risk. All users should be able to accept/reject (their own) connections |                                       |
-| Spam prevention | Connection management is message sending and thus has to be limited           | TODO: Is this really message sending? |
+### Initiate client addition
 
-## Account deletion
+| STRIDE property | Requirement                                                                                                                                                | Remark |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Authentication  | Users should only be able to add clients for themselves                                                                                                    |        |
+| Integrity       | The client credential must be well-formed and the client ID must contain the correct user name                                                             |        |
+|                 | The client ID must be unique among all of the user's clients                                                                                               |        |
+| Non-repudiation | Not a risk until the operation is finalized                                                                                                                |        |
+| Confidentiality | Not a risk as long as basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) hold |        |
+| Availability    | Users must always be able to add new clients                                                                                                               |        |
+| Authorization   | Users must only be able to add clients under their own user name                                                                                           |        |
+| Spam prevention | Not a risk. Initiating addition is not message sending and no clients are added yet                                                                        |        |
 
-| STRIDE property | Requirement                                                                 | Remark                                |
-| --------------- | --------------------------------------------------------------------------- | ------------------------------------- |
-| Authentication  | All registered users should be able to delete their won account             |                                       |
-|                 | Each user should only be able to delete their own account                   |                                       |
-| Integrity       | Not a risk, as there should be no data left after deletion                  |                                       |
-| Non-repudiation | Not a risk. Account deletion should not be logged                           |                                       |
-| Confidentiality | Not a risk as long as transport encryption and metadata mimimalism hold     |                                       |
-|                 | In particular, all metadata regarding the deleted account should be deleted |                                       |
-| Availability    | Users should always be able to delete their own account                     |                                       |
-| Authorization   | Not a risk. All users should be able to delete (their own) account          |                                       |
-| Spam prevention | Account deletion is message sending and thus has to be limited              | TODO: Is this really message sending? |
+### Finish client addition
+
+| STRIDE property | Requirement                                                                                                                                                | Remark |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Authentication  | Users should only be able to add clients for themselves                                                                                                    |        |
+| Integrity       | There must be a record in the database indicating that the same user has previously initiated the client addition with matching data                       |        |
+| Non-repudiation | Other clients of the user should be notified that a client was added                                                                                       |        |
+| Confidentiality | Not a risk as long as basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) hold |        |
+| Availability    | Users must always be able to add new clients                                                                                                               |        |
+| Authorization   | Users must only be able to add clients under their own user name                                                                                           |        |
+| Spam prevention | The query must be authenticated and notifications should only be sent to the user's other clients                                                          |        |
+|                 | The number of clients for a user should be limited as clients can act as amplifiers for spam or DoS attacks                                                |        |
+
+### Delete client
+
+| STRIDE property | Requirement                                                                                                                                                | Remark |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Authentication  | Users should only be able to delete their own clients                                                                                                      |        |
+| Integrity       | A client that is deleted must no longer be able to act as a valid client for the user                                                                      |        |
+| Non-repudiation | Other clients of the user should be notified that a client was deleted                                                                                     |        |
+| Confidentiality | Not a risk as long as basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) hold |        |
+| Availability    | Users must always be able to delete their clients                                                                                                          |        |
+| Authorization   | Users must only be able to their own clients                                                                                                               |        |
+| Spam prevention | The query must be authenticated and notifications should only be sent to the user's other clients                                                          |        |
+
+### Dequeue messages
+
+| STRIDE property | Requirement                                                                                                                                                | Remark |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Authentication  | Clients should only be able to dequeue messages from their own queue                                                                                       |        |
+| Integrity       | Outdated messages (sequence numbers lower than `sequence_number_start`) must be deleted from the queue                                                     |        |
+| Non-repudiation | Not a risk. Message dequeuing need not be traced                                                                                                           |        |
+| Confidentiality | Not a risk as long as basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) hold |        |
+| Availability    | Clients must always be able to dequeue messages from their own queue                                                                                       |        |
+| Authorization   | Clients must only be able to dequeue messages from their own queue                                                                                         |        |
+| Spam prevention | Dequeuing messages is not a message sending operation                                                                                                      |        |
+
+### Enqueue message
+
+| STRIDE property | Requirement                                                                                                                               | Remark |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Authentication  | Not a risk. All clients should be able to enqueue messages into the queues of all other clients                                           |        |
+| Integrity       | Not a risk.                                                                                                                               |        |
+| Non-repudiation | Not a risk. Clients must be able to enqueue messages anonymously                                                                          |        |
+| Confidentiality | Basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) must hold |        |
+|                 | Enqueued messages must be encrypted according to the specification                                                                        |        |
+| Availability    | The ability to enqueue messages for a given client might be deactivated or rate-limited if there is increased spam activity               |        |
+| Authorization   | Not a risk. All clients may enqueue messages for all other clients                                                                        |        |
+| Spam prevention | Enqueuing messages entails a high spam risk. Message enqueuing should be heavily rate-limited                                             |        |
+
+### Get AS credentials
+
+| STRIDE property | Requirement                                                                                                                                   | Remark |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Authentication  | AS credentials are publicly available to everyone                                                                                             |        |
+|                 | Clients must be able to authenticate intermediate AS credentials using the corresponding AS credential                                        |        |
+|                 | The basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) must hold |        |
+| Integrity       | Not a risk as this is a read-only operation                                                                                                   |        |
+| Non-repudiation | Not a risk. There is no need to trace                                                                                                         |        |
+| Confidentiality | Basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) must hold     |        |
+|                 | Enqueued messages must be encrypted according to the specification                                                                            |        |
+| Availability    | Clients must always be able to obtain AS credentials                                                                                          |        |
+| Authorization   | Not a risk. All clients are allowed to obtain AS credentials                                                                                  |        |
+| Spam prevention | Not a risk as getting AS credentials is not message-sending                                                                                   |        |
 
