@@ -45,7 +45,7 @@ The AS generally keeps the following state
 There are three modes of authentication for endpoints on the AS.
 
 * **None:** For endpoints that are meant to be publicly accessible, e.g. user account registration
-* **Client Credential:** A signature over a time stamp using the signature key in the calling client's ClientCredential.
+* **Client Credential:** A signature over a time stamp using the signature key in the calling client's ClientCredential. The request additionally contains the calling client's ClientCredential.
 * **Client Password:** An OPAQUE login flow.
 * **Client 2FA:** The same as **Client**, but additionally performing an [OPAQUE](https://datatracker.ietf.org/doc/draft-irtf-cfrg-opaque/) login flow
 
@@ -305,6 +305,35 @@ struct AsCredentialsResponse {
   revoked_certs: Vec<Fingerprint>,
 }
 ```
+
+### Authentication
+
+* None
+
+## Token Issuance
+
+This endpoints allows both local clients and clients of federated homeservers to retrieve Privacy Pass tokens which they can then redeem to interact with the local DS.
+
+```rust
+struct RequestToken {
+  client_id: ClientId,
+  token_request: TokenRequest,
+}
+```
+
+`TokenRequest` represents a Privacy Pass token request.
+
+### Rate-limiting
+
+Token issuance is the main way of rate-limiting queries to the endpoints of the DS of a homeserver, which means that the AS should rate-limit token issuance based on a per-client basis, essentially giving each client a certain allowance of tokens.
+
+If the calling client is a federated client, rate-limiting should also occur on a per-homeserver (or per homeserver domain) basis to protect agains malicious or negligent homeservers that allow an attacker to register a large number of clients.
+
+### Authentication
+
+For this endpoint, the AS also accepts authentication by federated clients. If the `client_id` in the client credential indicates that the client belongs to a federated homeserver, the AS looks up the authentication key material of that client's AS using the [corresponding endpoint](./authentication_service.md#get-as-credentials), or looks the key material up in its local cache. The AS then uses that key material to verify the query.
+
+* Client Credential
 
 ## Future work: Evolving Identity
 
