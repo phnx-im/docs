@@ -32,6 +32,7 @@
 
     </head>
     <body>
+    <div id="body-container">
         <!-- Provide site root to javascript -->
         <script>
             var path_to_root = "../";
@@ -69,10 +70,12 @@
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             var html = document.querySelector('html');
-            var sidebar = 'hidden';
+            var sidebar = null;
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
@@ -80,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="../status.html">Status</a></li><li class="chapter-item expanded "><a href="../functional_requirements.html"><strong aria-hidden="true">1.</strong> Functional Requirements</a></li><li class="chapter-item expanded "><a href="../modularization.html"><strong aria-hidden="true">2.</strong> Modularization</a></li><li class="chapter-item expanded "><a href="../performance_goals.html"><strong aria-hidden="true">3.</strong> Performance Goals</a></li><li class="chapter-item expanded "><a href="../threat_model.html"><strong aria-hidden="true">4.</strong> Threat Model</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../threat_model/methodology.html"><strong aria-hidden="true">4.1.</strong> Methodology</a></li><li class="chapter-item expanded "><a href="../threat_model/security_assumptions.html"><strong aria-hidden="true">4.2.</strong> Security Assumptions</a></li><li class="chapter-item expanded "><a href="../threat_model/application_assets.html"><strong aria-hidden="true">4.3.</strong> Application Assets</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements.html"><strong aria-hidden="true">4.4.</strong> Security Requirements</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../threat_model/security_requirements/operators.html"><strong aria-hidden="true">4.4.1.</strong> Operators</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/public.html"><strong aria-hidden="true">4.4.2.</strong> Public</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/users.html"><strong aria-hidden="true">4.4.3.</strong> Users</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/clients.html"><strong aria-hidden="true">4.4.4.</strong> Clients</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/federated_homeservers.html"><strong aria-hidden="true">4.4.5.</strong> Federated Homeservers</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/federated_users.html"><strong aria-hidden="true">4.4.6.</strong> Federated Users</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/federated_clients.html"><strong aria-hidden="true">4.4.7.</strong> Federated Clients</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../cryptographic_primitives.html"><strong aria-hidden="true">5.</strong> Cryptographic Primitives and Schemes</a></li><li class="chapter-item expanded "><a href="../spec.html"><strong aria-hidden="true">6.</strong> Specification (Draft)</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/authentication_service.html"><strong aria-hidden="true">6.1.</strong> Authentication service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/authentication_service/credentials.html"><strong aria-hidden="true">6.1.1.</strong> Credentials</a></li><li class="chapter-item expanded "><a href="../spec/authentication_service/evolving_identities.html"><strong aria-hidden="true">6.1.2.</strong> Evolving Identities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/authentication_service/new_device_flow.html"><strong aria-hidden="true">6.1.2.1.</strong> Adding new devices</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/authentication_service/connection_establishment.html"><strong aria-hidden="true">6.1.3.</strong> Discovery and connection esablishment</a></li><li class="chapter-item expanded "><a href="../spec/authentication_service/security_guarantees.html"><strong aria-hidden="true">6.1.4.</strong> Security Guarantees</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/delivery_service.html"><strong aria-hidden="true">6.2.</strong> Delivery service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/delivery_service/group_state_encryption.html"><strong aria-hidden="true">6.2.1.</strong> Group state encryption</a></li><li class="chapter-item expanded "><a href="../spec/delivery_service/broken_state_detection.html"><strong aria-hidden="true">6.2.2.</strong> Broken state detection</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/queuing_service.html" class="active"><strong aria-hidden="true">6.3.</strong> Queuing service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/queuing_service/queue_encryption.html"><strong aria-hidden="true">6.3.1.</strong> Queue encryption</a></li><li class="chapter-item expanded "><a href="../spec/queuing_service/keypackage_publication.html"><strong aria-hidden="true">6.3.2.</strong> KeyPackage publication</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/clients.html"><strong aria-hidden="true">6.4.</strong> Work in progress: Clients</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/clients/client_sync.html"><strong aria-hidden="true">6.4.1.</strong> Client synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/future_work.html"><strong aria-hidden="true">6.5.</strong> Future work</a></li><li class="chapter-item expanded "><a href="../spec/glossary.html"><strong aria-hidden="true">6.6.</strong> Glossary</a></li></ol></li><li class="chapter-item expanded "><a href="../authentication_systems.html"><strong aria-hidden="true">7.</strong> Authentication in messaging applications</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../authentication_systems/concepts.html"><strong aria-hidden="true">7.1.</strong> Concepts and security properties</a></li><li class="chapter-item expanded "><a href="../authentication_systems/comparison.html"><strong aria-hidden="true">7.2.</strong> Comparison of existing applications</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="../status.html">Status</a></li><li class="chapter-item expanded "><a href="../functional_requirements.html"><strong aria-hidden="true">1.</strong> Functional Requirements</a></li><li class="chapter-item expanded "><a href="../modularization.html"><strong aria-hidden="true">2.</strong> Modularization</a></li><li class="chapter-item expanded "><a href="../performance_goals.html"><strong aria-hidden="true">3.</strong> Performance Goals</a></li><li class="chapter-item expanded "><a href="../threat_model.html"><strong aria-hidden="true">4.</strong> Threat Model</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../threat_model/methodology.html"><strong aria-hidden="true">4.1.</strong> Methodology</a></li><li class="chapter-item expanded "><a href="../threat_model/security_assumptions.html"><strong aria-hidden="true">4.2.</strong> Security Assumptions</a></li><li class="chapter-item expanded "><a href="../threat_model/application_assets.html"><strong aria-hidden="true">4.3.</strong> Application Assets</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements.html"><strong aria-hidden="true">4.4.</strong> Security Requirements</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../threat_model/security_requirements/operators.html"><strong aria-hidden="true">4.4.1.</strong> Operators</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/public.html"><strong aria-hidden="true">4.4.2.</strong> Public</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/users.html"><strong aria-hidden="true">4.4.3.</strong> Users</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/clients.html"><strong aria-hidden="true">4.4.4.</strong> Clients</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/federated_homeservers.html"><strong aria-hidden="true">4.4.5.</strong> Federated Homeservers</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/federated_users.html"><strong aria-hidden="true">4.4.6.</strong> Federated Users</a></li><li class="chapter-item expanded "><a href="../threat_model/security_requirements/federated_clients.html"><strong aria-hidden="true">4.4.7.</strong> Federated Clients</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../cryptographic_primitives.html"><strong aria-hidden="true">5.</strong> Cryptographic Primitives and Schemes</a></li><li class="chapter-item expanded "><a href="../spec.html"><strong aria-hidden="true">6.</strong> Specification (Draft)</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/authentication_service.html"><strong aria-hidden="true">6.1.</strong> Authentication service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/authentication_service/credentials.html"><strong aria-hidden="true">6.1.1.</strong> Credentials</a></li><li class="chapter-item expanded "><a href="../spec/authentication_service/evolving_identities.html"><strong aria-hidden="true">6.1.2.</strong> Evolving Identities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/authentication_service/new_device_flow.html"><strong aria-hidden="true">6.1.2.1.</strong> Adding new devices</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/authentication_service/connection_establishment.html"><strong aria-hidden="true">6.1.3.</strong> Discovery and connection esablishment</a></li><li class="chapter-item expanded "><a href="../spec/authentication_service/security_guarantees.html"><strong aria-hidden="true">6.1.4.</strong> Security Guarantees</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/delivery_service.html"><strong aria-hidden="true">6.2.</strong> Delivery service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/delivery_service/group_state_encryption.html"><strong aria-hidden="true">6.2.1.</strong> Group state encryption</a></li><li class="chapter-item expanded "><a href="../spec/delivery_service/broken_state_detection.html"><strong aria-hidden="true">6.2.2.</strong> Broken state detection</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/queuing_service.html" class="active"><strong aria-hidden="true">6.3.</strong> Queuing service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/queuing_service/queue_encryption.html"><strong aria-hidden="true">6.3.1.</strong> Queue encryption</a></li><li class="chapter-item expanded "><a href="../spec/queuing_service/keypackage_publication.html"><strong aria-hidden="true">6.3.2.</strong> KeyPackage publication</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/federation.html"><strong aria-hidden="true">6.4.</strong> Federation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/use_cases_and_threat_model.html"><strong aria-hidden="true">6.4.1.</strong> Use-cases and Threat Model</a></li><li class="chapter-item expanded "><a href="../spec/federation_protocol.html"><strong aria-hidden="true">6.4.2.</strong> Federation protocol</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/clients.html"><strong aria-hidden="true">6.5.</strong> Work in progress: Clients</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../spec/clients/client_sync.html"><strong aria-hidden="true">6.5.1.</strong> Client synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="../spec/future_work.html"><strong aria-hidden="true">6.6.</strong> Future work</a></li><li class="chapter-item expanded "><a href="../spec/glossary.html"><strong aria-hidden="true">6.7.</strong> Glossary</a></li></ol></li><li class="chapter-item expanded "><a href="../authentication_systems.html"><strong aria-hidden="true">7.</strong> Authentication in messaging applications</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../authentication_systems/concepts.html"><strong aria-hidden="true">7.1.</strong> Concepts and security properties</a></li><li class="chapter-item expanded "><a href="../authentication_systems/comparison.html"><strong aria-hidden="true">7.2.</strong> Comparison of existing applications</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -181,7 +184,8 @@
 </li>
 </ul>
 </li>
-<li><strong>Queue ID encryption keypair:</strong> <a href="glossary.html#queueconfig-encryption-key">A public/private HPKE keypair</a> that clients can encrypt their queue ID under before providing it to a local or federated DS.</li>
+<li><strong>Queue ID authentication key:</strong> A symmetric key that the QS uses to MAC a queue ID. Clients have to include that MAC when they encrypt their queue ID under the Queue ID encryption key. The QS uses this key to validate queue IDs after encryption and before enqueuing a message.</li>
+<li><strong>Queue ID encryption keypair:</strong> <a href="glossary.html#queueconfig-encryption-key">A public/private HPKE keypair</a> that clients can encrypt their queue ID and queue id MAC under before providing it to a local or federated DS.</li>
 <li><strong>QS signing key:</strong> <a href="./glossary.html#qs-signing-key">A public/private signature keypair</a> that the QS uses to sign KeyPackage bundles before returning them upon request. Also used to sign messages when forwarding them from the local DS to a remote QS.</li>
 <li><strong>QS-to-QS queues:</strong> A database of queues indexed by the remote QS' domain. Each queue has the same queue encryption key material attached as the client queues.</li>
 </ul>
@@ -230,13 +234,15 @@ struct QsAuthToken {
 <li>QsUid: <a href="./glossary.html#qs-user-record-auth-key">QS user record auth key</a></li>
 <li>QsCid: <a href="./glossary.html#qs-client-record-auth-key">QS QS client record auth key</a></li>
 </ul>
-<h2 id="work-in-progress-federation-endpoints"><a class="header" href="#work-in-progress-federation-endpoints">Work in progress: Federation endpoints</a></h2>
-<p>Endpoints publicly accessible and meant to be accessed by federated homeservers.</p>
-<h3 id="fetch-qs-signing-key"><a class="header" href="#fetch-qs-signing-key">Fetch QS signing key</a></h3>
-<p>A DS or QS can fetch the <a href="./glossary.html#qs-signing-key">QS' signing key</a> through this endpoint.</p>
-<h3 id="federated-enqueue-message"><a class="header" href="#federated-enqueue-message">Federated enqueue message</a></h3>
-<p>This endpoint allows a remote QS to enqueue a <a href="glossary.html#fan-out-message">fan-out message</a>.</p>
-<p>The (receiving) QS decrypts the ciphertext and checks if the QS client record exists. If it doesn't, it responds to the sending QS with the following message.</p>
+<h2 id="ds-to-qs-communication"><a class="header" href="#ds-to-qs-communication">DS-to-QS communication</a></h2>
+<h3 id="enqueuing-messages"><a class="header" href="#enqueuing-messages">Enqueuing messages</a></h3>
+<p>A local DS can enqueue the message sending just a <a href="./glossary.html#fan-out-message"><code>FanOutMessage</code></a>.</p>
+<p>The receiving QS first checks the FQDNs in the <code>client_queue_configs</code> and
+<a href="./queuing_service.html#federated-qs-to-qs-communication">forwards the messages for remote
+QS'</a>.</p>
+<p>For all local <code>client_queue_configs</code>, the QS decrypts the ciphertext, verifies the MACs using its symmetric
+authentication key and checks if the QS client record exists. If it doesn't, it
+responds to the sending QS with the following message.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>struct QueueDeleted {
@@ -244,17 +250,41 @@ struct QsAuthToken {
   group_id: GroupId,
 }
 <span class="boring">}</span></code></pre></pre>
-<p>If the QS client record exists, the QS checks if the group ID given in the message is in the blocklist of the associated queue. If it isn't, the QS enqueues the message.</p>
-<h4 id="inter-qs-authentication"><a class="header" href="#inter-qs-authentication">Inter-QS Authentication</a></h4>
-<p>For each query the sending QS has to provide an InterQsAuthToken signed with its QS signing key.</p>
+<p>If the QS client record exists, the QS checks if the group ID in the
+message is in the blocklist of the associated queue. If it isn't, the QS
+enqueues the message.</p>
+<h2 id="publicly-avaliable-endpoints"><a class="header" href="#publicly-avaliable-endpoints">Publicly avaliable endpoints</a></h2>
+<h3 id="fetch-qs-verifying-key"><a class="header" href="#fetch-qs-verifying-key">Fetch QS verifying key</a></h3>
+<p>A DS or QS can fetch the <a href="./glossary.html#qs-signing-key">QS' verifying key</a>
+through this endpoint. This endpoint has to be reachable via a TLS connection to
+allow the sender to authenticate the verifying key using its local web root of
+trust.</p>
+<h3 id="federated-qs-to-qs-communication"><a class="header" href="#federated-qs-to-qs-communication">Federated QS-to-QS communication</a></h3>
+<p>This endpoint allows a remote QS to enqueue a <a href="glossary.html#fan-out-message">fan-out
+message</a>. This endpoint has to be reachable via a
+TLS connection only to allow the remote QS to authenticate this QS based on its
+local web root of trust.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct InterQsAuthToken {
-  timetamp: Timestamp,
-  // TBS: timestamp
+</span>struct QsToQsMessage {
+  source: Fqdn,
+  destination: Fqdn,
+  payload: FanOutMessage,
   signature: Signature,
 }
 <span class="boring">}</span></code></pre></pre>
+<p>When receing a <code>QsToQsMessage</code>, the QS verifies that it is the intended
+destination and tries to fetch the verifying key of the sending QS (if it is not
+cached locally) based on the <code>source</code> field. The recipient QS then uses the
+verifying key to verify the signature. If the signature is valid, the QS
+processes the message like a message from its local QS.</p>
+<h4 id="rate-limiting"><a class="header" href="#rate-limiting">Rate-limiting</a></h4>
+<p>The QS can rate-limit messages from a federated QS in multiple ways. The most
+obvious way is to rate-limit messages simply based on the sender's domain.
+Secondly, the receiving QS can rate-limit based on the client queue config in
+the FanOutMessage, which is unique to the group in the context of which the
+message was fanned out. Finally, the QS can rate-limit the message based on the
+decrypted queue config, i.e. on a per-queue/client basis.</p>
 <h2 id="client-endpoints"><a class="header" href="#client-endpoints">Client endpoints</a></h2>
 <p>Endpoints accessible to clients of the homeserver via HTTP requests.</p>
 <h3 id="fetch-queue-config-encryption-key"><a class="header" href="#fetch-queue-config-encryption-key">Fetch queue config encryption key</a></h3>
@@ -580,5 +610,6 @@ struct QsAuthToken {
         <!-- Custom JS scripts -->
 
 
+    </div>
     </body>
 </html>
