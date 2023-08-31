@@ -1,7 +1,28 @@
 # Clients
 
-TODO: Add note on group integrity validation and why it's only possible to a certain extent.
-TODO: Restructure with C2S, S2S and C2C authentication in mind.
+This document details the STRIDE requirements for client-initiated actions.
+
+Many client-initiated actions are operations in the context of an MLS group.
+While the server can track the public group state and thus validate certain
+subsets of MLS messages (such as the validity of client signatures), it cannot
+validate all aspects of each MLS message. For example, the server cannot inspect
+parts of the payload that are encrypted to private key material held only by
+group members. As a consequence, the Integrity STRIDE property is limited to
+publicly readable parts of each message.
+
+
+## Get user clients
+
+| STRIDE property | Requirement                                                                                                                                                | Remark |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Authentication  | Not a risk. Every client should be able to obtain the set of clients of another user                                                                       |        |
+|                 | Access should be limited to prevent DoS attacks                                                                                                            |        |
+| Integrity       | The user retrieving the client information must be able to verify it                                                                                       |        |
+| Non-repudiation | Not a risk. Users must be able to discover other users anonymously                                                                                         |        |
+| Confidentiality | Not a risk as long as basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) hold |        |
+| Availability    | Users should be able to discover a reasonable number of users at a time. However, it must be hard to exhaust a user's KeyPackages                          |        |
+| Authorization   | Not a risk. All users should be able to discover other users                                                                                               |        |
+| Spam prevention | Not a risk. Discovering a user should not be message sending                                                                                               |        |
 
 ## Group creation
 

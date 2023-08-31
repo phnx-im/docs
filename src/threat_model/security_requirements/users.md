@@ -42,19 +42,6 @@ TODO: Maybe note somewhere generally how notifications, or more generally client
 | Spam prevention | User registration is a big potential amplifier for spam and measures need to be taken to prevent sybil attacks                                             |        |
 
 
-### Get user clients
-
-| STRIDE property | Requirement                                                                                                                                                | Remark |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| Authentication  | Not a risk. Every client should be able to obtain the set of clients of another user                                                                       |        |
-|                 | Access should be limited to prevent DoS attacks                                                                                                            |        |
-| Integrity       | The user retrieving the client information must be able to verify it                                                                                       |        |
-| Non-repudiation | Not a risk. Users must be able to discover other users anonymously                                                                                         |        |
-| Confidentiality | Not a risk as long as basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) hold |        |
-| Availability    | Users should be able to discover a reasonable number of users at a time. However, it must be hard to exhaust a user's KeyPackages                          |        |
-| Authorization   | Not a risk. All users should be able to discover other users                                                                                               |        |
-| Spam prevention | Not a risk. Discovering a user should not be message sending                                                                                               |        |
-
 ### User account deletion
 
 | STRIDE property | Requirement                                                                                                                                                | Remark |
@@ -132,18 +119,4 @@ TODO: Maybe note somewhere generally how notifications, or more generally client
 | Authorization   | Not a risk. All clients may enqueue messages for all other clients                                                                        |        |
 | Spam prevention | Enqueuing messages entails a high spam risk. Message enqueuing should be heavily rate-limited                                             |        |
 
-### Get AS credentials
-
-| STRIDE property | Requirement                                                                                                                                   | Remark |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| Authentication  | AS credentials are publicly available to everyone                                                                                             |        |
-|                 | Clients must be able to authenticate intermediate AS credentials using the corresponding AS credential                                        |        |
-|                 | The basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) must hold |        |
-| Integrity       | Not a risk as this is a read-only operation                                                                                                   |        |
-| Non-repudiation | Not a risk. There is no need to trace                                                                                                         |        |
-| Confidentiality | Basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) must hold     |        |
-|                 | Enqueued messages must be encrypted according to the specification                                                                            |        |
-| Availability    | Clients must always be able to obtain AS credentials                                                                                          |        |
-| Authorization   | Not a risk. All clients are allowed to obtain AS credentials                                                                                  |        |
-| Spam prevention | Not a risk as getting AS credentials is not message-sending                                                                                   |        |
 
