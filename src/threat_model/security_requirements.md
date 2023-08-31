@@ -11,3 +11,9 @@ All actions performed via the network (which includes all actions with the possi
 ## Metadata minimalism
 
 Metadata that is not required to provide functionality at a later point in time MUST be deleted immediately. Similarly, all metadata that is not required to be stored in the clear MUST be stored encrypted-at-rest.
+
+## Architecture
+
+The following figure illustrates the interactions of the individual roles.
+
+![Interactions between the individual roles in the context of this threat model.](../images/nlnet_arch.excalidraw.svg).
