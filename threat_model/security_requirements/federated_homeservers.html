@@ -88,11 +88,33 @@
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
                                 <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
@@ -145,7 +167,27 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="federated-homeservers"><a class="header" href="#federated-homeservers">Federated Homeservers</a></h1>
-
+<p>Federated homeservers allow their respective users to communicate with one
+another. Each group is owned by one homeserver, which fans out messages to that
+group to other homeservers (of which there are members in that group) such that
+they can store and forward those messages to their users. The owning homeserver
+in turn allows users of other homeservers to perform group operations for groups
+that they are a member of.</p>
+<p>The only federation-relevant action is thus the fan-out action, as all other
+actions are essentially public actions.</p>
+<h2 id="message-fan-out"><a class="header" href="#message-fan-out">Message fan-out</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>STRIDE property</th><th>Requirement</th><th>Remark</th></tr></thead><tbody>
+<tr><td>Authentication</td><td>Any federated homeserver can deliver messages to another homeserver</td><td></td></tr>
+<tr><td></td><td>Homeservers must not be able to fan out messages on behalf of other homeservers</td><td></td></tr>
+<tr><td>Integrity</td><td>No risk</td><td></td></tr>
+<tr><td>Non-repudiation</td><td>The recipient must be able to identify the sending homeserver</td><td></td></tr>
+<tr><td>Confidentiality</td><td>Not a risk</td><td></td></tr>
+<tr><td>Availability</td><td>Homeserver should generally be able to process fanned-out messages</td><td></td></tr>
+<tr><td>Authorization</td><td>The sender must be authorized to send messages to the recipient as per recipient policy</td><td></td></tr>
+<tr><td></td><td>The sender must prove that it is authorized to deliver a message to the target client</td><td></td></tr>
+<tr><td>Spam prevention</td><td>The homeserver must limit the number of message deliveries to its client, as they are message sending</td><td></td></tr>
+</tbody></table>
+</div>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
