@@ -1,7 +1,6 @@
 # Summary
 
 [Introduction](./introduction.md)
-[Status](./status.md)
 
 - [Functional Requirements](./functional_requirements.md)
 - [Modularization](./modularization.md)
