@@ -1,7 +1,5 @@
 # Users
 
-TODO: Maybe note somewhere generally how notifications, or more generally client-to-client messages must be authenticated? This seems to repeat here and in the client's section.
-
 ## Authentication service endpoints
 ### Initiate 2FA operation
 

@@ -1,6 +1,20 @@
 # Threat model
 
-This document contains a threat model for an MLS homeserver. For now, this threat model is based solely on its functional requirements. As we build the specification of the homeserver, we will update this document to consider any additional assets.
+## Overview
+
+The main concern of the Phoenix homeserver protocol is to minimize client metadata visible to the server. Two kinds of adversary are generally considered in this threat model: The snapshot adversary and the active observer adversary.
+
+While both adversaries can be generally assumed to control the network, this threat model does not consider analysis of traffic patterns or other use of network metadata. While the use of network metadata can yield powerful attacks, common countermeasures such as onion routing or the use of mixnets are orthogonal to the Phoenix homeserver protocol and can be used in conjunction with it to mitigate such attacks.
+
+### Adversary types
+
+As suggested by the name, the snapshot adversary has access to snapshots of the server's persisted state. It can view an arbitrary number of individual snapshots, but does not have access to any part of the server's volatile memory.
+
+The active observer adversary is strictly more powerful than the snapshot adversary. It can inspect both persisted server state, as well as any part of the server's volatile memory.
+
+## STRIDE based threat model
+
+This chapter contains a STRIDE threat model for an MLS homeserver that covers the homeserver's main endpoints. For now, this threat model is based solely on its functional requirements. As we build the specification of the homeserver, we will update this document to consider any additional assets and add additional endpoints.
 
 ## Functional requirements
 
