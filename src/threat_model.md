@@ -14,7 +14,7 @@ The active observer adversary is strictly more powerful than the snapshot advers
 
 ## STRIDE based threat model
 
-This chapter contains a threat model for an MLS homeserver. For now, this threat model is based solely on its functional requirements. As we build the specification of the homeserver, we will update this document to consider any additional assets.
+This chapter contains a STRIDE threat model for an MLS homeserver that covers the homeserver's main endpoints. For now, this threat model is based solely on its functional requirements. As we build the specification of the homeserver, we will update this document to consider any additional assets and add additional endpoints.
 
 ## Functional requirements
 
