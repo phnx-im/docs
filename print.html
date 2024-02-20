@@ -1,17 +1,17 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="light" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Docs</title>
-        <meta name="robots" content="noindex" />
+        <meta name="robots" content="noindex">
 
 
         <!-- Custom HTML head -->
         
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
         <link rel="icon" href="favicon.svg">
         <link rel="shortcut icon" href="favicon.png">
@@ -32,7 +32,7 @@
         <!-- Custom theme stylesheets -->
 
     </head>
-    <body>
+    <body class="sidebar-visible no-js">
     <div id="body-container">
         <!-- Provide site root to javascript -->
         <script>
@@ -62,31 +62,38 @@
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             var html = document.querySelector('html');
-            html.classList.remove('no-js')
             html.classList.remove('light')
             html.classList.add(theme);
-            html.classList.add('js');
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
         </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var html = document.querySelector('html');
+            var body = document.querySelector('body');
             var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
             }
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="status.html">Status</a></li><li class="chapter-item expanded "><a href="functional_requirements.html"><strong aria-hidden="true">1.</strong> Functional Requirements</a></li><li class="chapter-item expanded "><a href="modularization.html"><strong aria-hidden="true">2.</strong> Modularization</a></li><li class="chapter-item expanded "><a href="performance_goals.html"><strong aria-hidden="true">3.</strong> Performance Goals</a></li><li class="chapter-item expanded "><a href="threat_model.html"><strong aria-hidden="true">4.</strong> Threat Model</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="threat_model/methodology.html"><strong aria-hidden="true">4.1.</strong> Methodology</a></li><li class="chapter-item expanded "><a href="threat_model/security_assumptions.html"><strong aria-hidden="true">4.2.</strong> Security Assumptions</a></li><li class="chapter-item expanded "><a href="threat_model/application_assets.html"><strong aria-hidden="true">4.3.</strong> Application Assets</a></li><li class="chapter-item expanded "><a href="threat_model/security_requirements.html"><strong aria-hidden="true">4.4.</strong> Security Requirements</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="threat_model/security_requirements/operators.html"><strong aria-hidden="true">4.4.1.</strong> Operators</a></li><li class="chapter-item expanded "><a href="threat_model/security_requirements/public.html"><strong aria-hidden="true">4.4.2.</strong> Public</a></li><li class="chapter-item expanded "><a href="threat_model/security_requirements/users.html"><strong aria-hidden="true">4.4.3.</strong> Users</a></li><li class="chapter-item expanded "><a href="threat_model/security_requirements/clients.html"><strong aria-hidden="true">4.4.4.</strong> Clients</a></li><li class="chapter-item expanded "><a href="threat_model/security_requirements/federated_homeservers.html"><strong aria-hidden="true">4.4.5.</strong> Federated Homeservers</a></li><li class="chapter-item expanded "><a href="threat_model/security_requirements/federated_users.html"><strong aria-hidden="true">4.4.6.</strong> Federated Users</a></li><li class="chapter-item expanded "><a href="threat_model/security_requirements/federated_clients.html"><strong aria-hidden="true">4.4.7.</strong> Federated Clients</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="cryptographic_primitives.html"><strong aria-hidden="true">5.</strong> Cryptographic Primitives and Schemes</a></li><li class="chapter-item expanded "><a href="spec.html"><strong aria-hidden="true">6.</strong> Specification (Draft)</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="spec/authentication_service.html"><strong aria-hidden="true">6.1.</strong> Authentication service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="spec/authentication_service/credentials.html"><strong aria-hidden="true">6.1.1.</strong> Credentials</a></li><li class="chapter-item expanded "><a href="spec/authentication_service/evolving_identities.html"><strong aria-hidden="true">6.1.2.</strong> Evolving Identities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="spec/authentication_service/new_device_flow.html"><strong aria-hidden="true">6.1.2.1.</strong> Adding new devices</a></li></ol></li><li class="chapter-item expanded "><a href="spec/authentication_service/connection_establishment.html"><strong aria-hidden="true">6.1.3.</strong> Discovery and connection esablishment</a></li><li class="chapter-item expanded "><a href="spec/authentication_service/security_guarantees.html"><strong aria-hidden="true">6.1.4.</strong> Security Guarantees</a></li></ol></li><li class="chapter-item expanded "><a href="spec/delivery_service.html"><strong aria-hidden="true">6.2.</strong> Delivery service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="spec/delivery_service/group_state_encryption.html"><strong aria-hidden="true">6.2.1.</strong> Group state encryption</a></li><li class="chapter-item expanded "><a href="spec/delivery_service/broken_state_detection.html"><strong aria-hidden="true">6.2.2.</strong> Broken state detection</a></li></ol></li><li class="chapter-item expanded "><a href="spec/queuing_service.html"><strong aria-hidden="true">6.3.</strong> Queuing service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="spec/queuing_service/queue_encryption.html"><strong aria-hidden="true">6.3.1.</strong> Queue encryption</a></li><li class="chapter-item expanded "><a href="spec/queuing_service/keypackage_publication.html"><strong aria-hidden="true">6.3.2.</strong> KeyPackage publication</a></li></ol></li><li class="chapter-item expanded "><a href="spec/federation.html"><strong aria-hidden="true">6.4.</strong> Federation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="spec/federation/use_cases_and_threat_model.html"><strong aria-hidden="true">6.4.1.</strong> Use-cases and Threat Model</a></li><li class="chapter-item expanded "><a href="spec/federation/federation_protocol.html"><strong aria-hidden="true">6.4.2.</strong> Federation protocol</a></li></ol></li><li class="chapter-item expanded "><a href="spec/clients.html"><strong aria-hidden="true">6.5.</strong> Work in progress: Clients</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="spec/clients/client_sync.html"><strong aria-hidden="true">6.5.1.</strong> Client synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="spec/future_work.html"><strong aria-hidden="true">6.6.</strong> Future work</a></li><li class="chapter-item expanded "><a href="spec/glossary.html"><strong aria-hidden="true">6.7.</strong> Glossary</a></li></ol></li><li class="chapter-item expanded "><a href="authentication_systems.html"><strong aria-hidden="true">7.</strong> Authentication in messaging applications</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="authentication_systems/concepts.html"><strong aria-hidden="true">7.1.</strong> Concepts and security properties</a></li><li class="chapter-item expanded "><a href="authentication_systems/comparison.html"><strong aria-hidden="true">7.2.</strong> Comparison of existing applications</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="functional_requirements.html"><strong aria-hidden="true">1.</strong> Functional Requirements</a></li><li class="chapter-item expanded "><a href="modularization.html"><strong aria-hidden="true">2.</strong> Modularization</a></li><li class="chapter-item expanded "><a href="performance_goals.html"><strong aria-hidden="true">3.</strong> Performance Goals</a></li><li class="chapter-item expanded "><a href="threat_model.html"><strong aria-hidden="true">4.</strong> Threat Model</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="threat_model/methodology.html"><strong aria-hidden="true">4.1.</strong> Methodology</a></li><li class="chapter-item expanded "><a href="threat_model/security_assumptions.html"><strong aria-hidden="true">4.2.</strong> Security Assumptions</a></li><li class="chapter-item expanded "><a href="threat_model/application_assets.html"><strong aria-hidden="true">4.3.</strong> Application Assets</a></li><li class="chapter-item expanded "><a href="threat_model/security_requirements.html"><strong aria-hidden="true">4.4.</strong> Security Requirements</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="threat_model/security_requirements/operators.html"><strong aria-hidden="true">4.4.1.</strong> Operators</a></li><li class="chapter-item expanded "><a href="threat_model/security_requirements/public.html"><strong aria-hidden="true">4.4.2.</strong> Public</a></li><li class="chapter-item expanded "><a href="threat_model/security_requirements/users.html"><strong aria-hidden="true">4.4.3.</strong> Users</a></li><li class="chapter-item expanded "><a href="threat_model/security_requirements/clients.html"><strong aria-hidden="true">4.4.4.</strong> Clients</a></li><li class="chapter-item expanded "><a href="threat_model/security_requirements/federated_homeservers.html"><strong aria-hidden="true">4.4.5.</strong> Federated Homeservers</a></li><li class="chapter-item expanded "><a href="threat_model/security_requirements/federated_users.html"><strong aria-hidden="true">4.4.6.</strong> Federated Users</a></li><li class="chapter-item expanded "><a href="threat_model/security_requirements/federated_clients.html"><strong aria-hidden="true">4.4.7.</strong> Federated Clients</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="cryptographic_primitives.html"><strong aria-hidden="true">5.</strong> Cryptographic Primitives and Schemes</a></li><li class="chapter-item expanded "><a href="spec.html"><strong aria-hidden="true">6.</strong> Specification (Draft)</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="spec/authentication_service.html"><strong aria-hidden="true">6.1.</strong> Authentication service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="spec/authentication_service/credentials.html"><strong aria-hidden="true">6.1.1.</strong> Credentials</a></li><li class="chapter-item expanded "><a href="spec/authentication_service/evolving_identities.html"><strong aria-hidden="true">6.1.2.</strong> Evolving Identities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="spec/authentication_service/new_device_flow.html"><strong aria-hidden="true">6.1.2.1.</strong> Adding new devices</a></li></ol></li><li class="chapter-item expanded "><a href="spec/authentication_service/connection_establishment.html"><strong aria-hidden="true">6.1.3.</strong> Discovery and connection esablishment</a></li><li class="chapter-item expanded "><a href="spec/authentication_service/security_guarantees.html"><strong aria-hidden="true">6.1.4.</strong> Security Guarantees</a></li></ol></li><li class="chapter-item expanded "><a href="spec/delivery_service.html"><strong aria-hidden="true">6.2.</strong> Delivery service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="spec/delivery_service/group_state_encryption.html"><strong aria-hidden="true">6.2.1.</strong> Group state encryption</a></li><li class="chapter-item expanded "><a href="spec/delivery_service/broken_state_detection.html"><strong aria-hidden="true">6.2.2.</strong> Broken state detection</a></li></ol></li><li class="chapter-item expanded "><a href="spec/queuing_service.html"><strong aria-hidden="true">6.3.</strong> Queuing service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="spec/queuing_service/queue_encryption.html"><strong aria-hidden="true">6.3.1.</strong> Queue encryption</a></li><li class="chapter-item expanded "><a href="spec/queuing_service/keypackage_publication.html"><strong aria-hidden="true">6.3.2.</strong> KeyPackage publication</a></li></ol></li><li class="chapter-item expanded "><a href="spec/federation.html"><strong aria-hidden="true">6.4.</strong> Federation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="spec/federation/use_cases_and_threat_model.html"><strong aria-hidden="true">6.4.1.</strong> Use-cases and Threat Model</a></li><li class="chapter-item expanded "><a href="spec/federation/federation_protocol.html"><strong aria-hidden="true">6.4.2.</strong> Federation protocol</a></li></ol></li><li class="chapter-item expanded "><a href="spec/clients.html"><strong aria-hidden="true">6.5.</strong> Work in progress: Clients</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="spec/clients/client_sync.html"><strong aria-hidden="true">6.5.1.</strong> Client synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="spec/future_work.html"><strong aria-hidden="true">6.6.</strong> Future work</a></li><li class="chapter-item expanded "><a href="spec/glossary.html"><strong aria-hidden="true">6.7.</strong> Glossary</a></li></ol></li><li class="chapter-item expanded "><a href="authentication_systems.html"><strong aria-hidden="true">7.</strong> Authentication in messaging applications</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="authentication_systems/concepts.html"><strong aria-hidden="true">7.1.</strong> Concepts and security properties</a></li><li class="chapter-item expanded "><a href="authentication_systems/comparison.html"><strong aria-hidden="true">7.2.</strong> Comparison of existing applications</a></li></ol></li></ol>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
         </nav>
 
         <!-- Track and set sidebar scroll position -->
@@ -117,9 +124,9 @@
                                 <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
@@ -167,12 +174,17 @@
 
                 <div id="content" class="content">
                     <main>
-                        <p>This book contains design considerations and documentation for an infrastructure that allows clients to exchange messages via the Messaging Layer Security (MLS) protocol.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="open-mls-infrastructure-project-status"><a class="header" href="#open-mls-infrastructure-project-status">Open MLS Infrastructure Project Status</a></h1>
-<h2 id="update-1-oct-05-2022"><a class="header" href="#update-1-oct-05-2022">Update 1, Oct. 05 2022</a></h2>
-<p>The short chapter on <a href="./authentication_systems.html#">authentication systems</a> we add to the book today provides an overview over existing approaches to authentication in secure messaging applications. The report is based on testing, as well as public documentation of the individual applications.</p>
-<h2 id="update-0-july-22-2022"><a class="header" href="#update-0-july-22-2022">Update 0, July 22 2022</a></h2>
-<p>Today, we publish a <a href="./threat_model.html">threat model</a> for an abstract homeserver that aims fulfills the functional requirements. The threat model also contains privacy and security requirements. This is a first iteration and just like the functional requirements, we expect this to be a living document that grows as we move forward with this project.</p>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<p>This book contains design considerations and documentation for an infrastructure
+that allows clients to exchange messages via the Messaging Layer Security (MLS)
+protocol.</p>
+<h2 id="implementation"><a class="header" href="#implementation">Implementation</a></h2>
+<p>A proof-of-concept implementation of the client and server parts of the protocol
+can be found <a href="https://github.com/phnx-im/infra">here</a>.</p>
+<h2 id="license"><a class="header" href="#license">License</a></h2>
+<p>The documentation in this book is released under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons
+Attribution 4.0 International
+License</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="functional-requirements"><a class="header" href="#functional-requirements">Functional Requirements</a></h1>
 <p>This section describes the functional requirements of a homeserver. Before we detail the individual requirements, we first introduce the different roles that interact with the system.</p>
 <p>Note that while the homeserver should ultimately provide the functionality described, the entity in the given role might have to keep state and perform protocol actions to interact with the homeserver.</p>
@@ -222,14 +234,14 @@
 <ul>
 <li>Group creation: Clients MUST be able to initialize an MLS group.</li>
 <li>Group deletion: Clients MUST be able to delete an MLS group.</li>
-<li>Message delivery: Clients MUST be able to asynchronously send <a href="https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-7">MLS messages</a> to all members of an MLS group that it is a member of (this implies the &quot;filtering server&quot; role specified by the <a href="https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#section-4.3">&quot;delivery of messages&quot;</a> requirement of the MLS architecture document). If a given group member has provided the homeserver with a notification for this group, the homeserver MUST attach the notification policy to the message when delivering it. If a group member is a federated client, the homeserver MUST forward the message to the federated homeserver for delivery.</li>
+<li>Message delivery: Clients MUST be able to asynchronously send <a href="https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-7">MLS messages</a> to all members of an MLS group that it is a member of (this implies the "filtering server" role specified by the <a href="https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#section-4.3">"delivery of messages"</a> requirement of the MLS architecture document). If a given group member has provided the homeserver with a notification for this group, the homeserver MUST attach the notification policy to the message when delivering it. If a group member is a federated client, the homeserver MUST forward the message to the federated homeserver for delivery.</li>
 <li>Message queuing: The homeserver MUST store messages sent to a client either by itself or forwarded by a federated homeserver while the client is offline.</li>
 <li>Message notifications: Clients MAY provide the homeserver with a means to notify them when a new message is queued, as well as a default notification policy. If the client has provided the homeserver with such a means and corresponding policy, the homeserver MUST notify the client according to either the policy attached to the message, or, if none was attached, according to the default policy.</li>
-<li>KeyPackage retrieval: Clients MUST be able to retrieve <a href="https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11">KeyPackages</a> for clients of users with a previously established connection (this implies the <a href="https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-key-storage">&quot;key storage&quot;</a> requirement). As long as there is more than one KeyPackage, the server MUST delete the KeyPackage after it was provided to a (local or federated) client.</li>
+<li>KeyPackage retrieval: Clients MUST be able to retrieve <a href="https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11">KeyPackages</a> for clients of users with a previously established connection (this implies the <a href="https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-key-storage">"key storage"</a> requirement). As long as there is more than one KeyPackage, the server MUST delete the KeyPackage after it was provided to a (local or federated) client.</li>
 <li>Welcome message delivery: Clients MUST be able to send <a href="https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-13.4.3.1">Welcome</a> messages to clients of users with a previously established connection. If the client has provided the homeserver with a means of notification (and default notification policy), the homeserver MUST notify the client according to the default policy.</li>
 <li>Message retrieval: Clients MUST be able to fetch messages queued by the homeserver.</li>
 <li>Client authentication: Clients MUST be able to verify the authenticity of MLS leaf <a href="https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-credentials">Credentials</a> of clients with which it shares a group (this implies at least partially fulfilling the <a href="https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-authentication-service">Authentication Service</a> role).</li>
-<li>KeyPackage publishing: Clients MUST be able to publish <a href="https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11">KeyPackages</a> (this implies the <a href="https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-key-retrieval">&quot;key retrieval&quot;</a> requirement). When a client publishes new KeyPackages, the homeserver MUST delete all remaining previously uploaded KeyPackages of that client.</li>
+<li>KeyPackage publishing: Clients MUST be able to publish <a href="https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11">KeyPackages</a> (this implies the <a href="https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-key-retrieval">"key retrieval"</a> requirement). When a client publishes new KeyPackages, the homeserver MUST delete all remaining previously uploaded KeyPackages of that client.</li>
 <li>Notification configuration: Clients SHOULD be able to configure notification settings of groups of which it is a member.</li>
 </ul>
 <h3 id="functional-requirements-for-federated-homeservers"><a class="header" href="#functional-requirements-for-federated-homeservers">Functional Requirements for Federated Homeservers</a></h3>
@@ -314,7 +326,7 @@
 <div style="break-before: page; page-break-before: always;"></div><h1 id="threat-model-methodology"><a class="header" href="#threat-model-methodology">Threat model methodology</a></h1>
 <p>We describe our threat model by roughly following the STRIDE framework as outlined <a href="https://www.securesoftware.nl/resources/FrameworkSecureSoftware_v1.pdf">here</a>. However, we modify the methodology slightly to fit use-case.</p>
 <h2 id="authentication"><a class="header" href="#authentication">Authentication</a></h2>
-<p>The &quot;Authentication&quot; property as listed in the STRIDE model can apply to multiple entities in a given operation provided by the homeserver. For example, the <em>message delivery</em> action described in the <a href="threat_model/../functional_requirements.html">functional requirements</a> involves the client requesting that the homeserver deliver the message, the homeserver receiving and processing the request, a potential federated homeserver that stores and forwards the request and finally the user receiving the message on the other end.</p>
+<p>The "Authentication" property as listed in the STRIDE model can apply to multiple entities in a given operation provided by the homeserver. For example, the <em>message delivery</em> action described in the <a href="threat_model/../functional_requirements.html">functional requirements</a> involves the client requesting that the homeserver deliver the message, the homeserver receiving and processing the request, a potential federated homeserver that stores and forwards the request and finally the user receiving the message on the other end.</p>
 <p>We thus have three kinds of authentication rather than just one: Client to server (C2S), server to server (S2S) and client to client (C2C), all of which we consider as sub-properties of the authentication property of the STRIDE model.</p>
 <h2 id="spam-reduction"><a class="header" href="#spam-reduction">Spam reduction</a></h2>
 <p>Spam (outside of its potential for a denial-of-service attack on the homeserver) is a general risk for a messaging service. We talk about spam reduction rather than spam prevention, because we don't believe spam is a problem that can be avoided entirely in a privacy-preserving messenger and instead aim to reduce it to a minimum.</p>
@@ -868,7 +880,7 @@ of group creation. The same STRIDE requirements apply.</p>
   opaque_ke2: OpaqueKe2,
 }
 <span class="boring">}</span></code></pre></pre>
-<p>After calling this endpoint, the client must call the <a href="spec/./authentication_service.html#finish-client-addition">&quot;finish client addition endpoint&quot;</a> to finish the client addition.</p>
+<p>After calling this endpoint, the client must call the <a href="spec/./authentication_service.html#finish-client-addition">"finish client addition endpoint"</a> to finish the client addition.</p>
 <h3 id="authentication-7"><a class="header" href="#authentication-7">Authentication</a></h3>
 <ul>
 <li>Client Password</li>
@@ -1004,13 +1016,13 @@ of group creation. The same STRIDE requirements apply.</p>
 
 struct CredentialSelfSignedPayload {
 		payload: CredentialPayload,
-		// SignWithLabel(., &quot;CredentialPayload&quot;, CredentialPayload)
+		// SignWithLabel(., "CredentialPayload", CredentialPayload)
 		self_signature: Signature,
 }
 
 struct Credential {
 		signed_payload: CredentialSelfSignedPayload,
-		// SignWithLabel(., &quot;CredentialSelfSignedPayload&quot;, CredentialSelfSignedPayload)
+		// SignWithLabel(., "CredentialSelfSignedPayload", CredentialSelfSignedPayload)
 		signature: Signature,
 }
 <span class="boring">}</span></code></pre></pre>
@@ -1114,8 +1126,8 @@ struct Credential {
 <h2 id="future-work-user-id-changes"><a class="header" href="#future-work-user-id-changes">Future work: User ID changes</a></h2>
 <p>In a future iteration, users will be able to change their user name by terminating their existing EID and starting a new one. The old and the new EID group will be cross-linked to one-another cryptographically to ensure that the user name change is fully authenticated.</p>
 <h2 id="future-work-as-tickets"><a class="header" href="#future-work-as-tickets">Future work: AS tickets</a></h2>
-<p>There is currently no way for other clients to judge how recent a given EID state is. Having a strict bound on how recent an EID is required to be is important to ensure prompt propagation of client removal. Adding a &quot;ticket&quot;, i.e. a signed message from the AS containing a time stamp and the hash of the EID state could help with this.</p>
-<p>The protocol would then be extended by requiring clients to regularly upload a ticket attesting the validity and recency of the EID state currently uploaded to the group. Clients receving a message from another client could then always require that the client's AS ticket be recent (for a configurable definition of &quot;recent&quot;).</p>
+<p>There is currently no way for other clients to judge how recent a given EID state is. Having a strict bound on how recent an EID is required to be is important to ensure prompt propagation of client removal. Adding a "ticket", i.e. a signed message from the AS containing a time stamp and the hash of the EID state could help with this.</p>
+<p>The protocol would then be extended by requiring clients to regularly upload a ticket attesting the validity and recency of the EID state currently uploaded to the group. Clients receving a message from another client could then always require that the client's AS ticket be recent (for a configurable definition of "recent").</p>
 <p>It's not clear yet, though, what exactly the AS should sign, since it doesn't know the ciphertext used in each group, so it can only sign the plaintext, which the DS can't check.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="future-workwork-in-progress-registering-a-new-device-when-using-evolving-identity"><a class="header" href="#future-workwork-in-progress-registering-a-new-device-when-using-evolving-identity">Future work/Work in progress: Registering a new device when using Evolving Identity</a></h1>
 <p>To register a new client, the user needs to be in possession of one of his existing clients. To properly perform the <a href="spec/authentication_service/evolving_identities.html">evolving identity</a> (EID) operation and securely transfer data from the existing client to the new client, this chapter defines a protocol between new client, the owning user's homeserver and an existing client. The protocol proceeds roughly in the following steps:</p>
@@ -1664,7 +1676,7 @@ struct AddClientsParamsAad {
 <span class="boring">}</span></code></pre></pre>
 <ul>
 <li>The commit must contain exclusively Add proposals</li>
-<li>This endpoint brings the same potential to break the group state as the &quot;Join with new client&quot; endpoint. See there for more information.</li>
+<li>This endpoint brings the same potential to break the group state as the "Join with new client" endpoint. See there for more information.</li>
 <li>Finally, the DS sends the <code>commit</code> to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.</li>
 <li>It also sends <a href="spec/./glossary.html#welcomebundle">WelcomeBundles</a> to the newly added clients.</li>
 </ul>
@@ -1867,7 +1879,7 @@ struct AddClientsParamsAad {
 </ul>
 </li>
 <li>Clients can upload an encrypted, but broken client credential chain. This will be detected by all other clients. The two sections below propose a detection + reaction strategy, as well as a prevention strategy.</li>
-<li>Clients can corrupt the user profile information of the DS when adding new clients, either by Welcome or by External commit(see the &quot;Join group with new client&quot; endpoint description)</li>
+<li>Clients can corrupt the user profile information of the DS when adding new clients, either by Welcome or by External commit(see the "Join group with new client" endpoint description)</li>
 </ul>
 <h2 id="future-work-stage-1-detection-and-removal-of-the-offending-user"><a class="header" href="#future-work-stage-1-detection-and-removal-of-the-offending-user">Future work (stage 1): Detection and removal of the offending user</a></h2>
 <p>One way of dealing with bad updates is to use franking and allow users prove to the DS that a given update to the group state was broken. The DS can then allow ordinary members to remove the member. Note that it's proabably a reasonable trade-off that the identity of the offender is revealed to the DS in the reporting process. However, revealing group secrets is not.</p>
@@ -2752,10 +2764,16 @@ struct FanOutMessage {
 </tbody></table>
 </div>
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p>Signal uses the same cryptographic identity for all of a user's clients.
-<sup class="footnote-reference"><a href="#2">3</a></sup>: Threema only supports multi-client by routing all messages through a main client. Secondary clients thus don't have their own cryptographic identity.
-<sup class="footnote-reference"><a href="#3">4</a></sup>: Only if individual clients have their own key material.
-<sup class="footnote-reference"><a href="#4">2</a></sup>: Keybase's signature chains are no <a href="https://transparency.dev/verifiable-data-structures/">verifiable datastructure</a>, but they do allow users to verify the consistency of another user's identity.</p>
+<p>Signal uses the same cryptographic identity for all of a user's clients.</p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">3</sup>
+<p>Threema only supports multi-client by routing all messages through a main client. Secondary clients thus don't have their own cryptographic identity.</p>
+</div>
+<div class="footnote-definition" id="3"><sup class="footnote-definition-label">4</sup>
+<p>Only if individual clients have their own key material.</p>
+</div>
+<div class="footnote-definition" id="4"><sup class="footnote-definition-label">2</sup>
+<p>Keybase's signature chains are no <a href="https://transparency.dev/verifiable-data-structures/">verifiable datastructure</a>, but they do allow users to verify the consistency of another user's identity.</p>
 </div>
 
                     </main>
