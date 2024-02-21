@@ -20,7 +20,8 @@ As a general rule, if an Admin breaks the group state in such a way that the DS 
 * Clients can corrupt the user profile information of the DS when adding new
   clients, either by Welcome or by External commit(see the "Join group with new
   client" endpoint description)
-* A user can add a client from another group member as one of its own.
+* A user can add a client from another group member as one of its own. This is a
+  variant of the attack above which is feasible for a slightly weaker adversary.
   * Proposed mitigation: Add proof-of-ownership for KeyPackages when adding a
     client of the same user
 
