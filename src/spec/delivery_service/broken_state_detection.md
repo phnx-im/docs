@@ -8,10 +8,22 @@ However, other clients can detect broken credential chains of other clients and 
 
 As a general rule, if an Admin breaks the group state in such a way that the DS can't validate, but that all group members can detect, all group members must consider the group closed.
 
-* Clients can send a valid-looking commit (from the DS' point of view), where the update path includes invalid (encrypted) path secrets for one or more subtrees of the committer's direct path.
-    * Proposed mitigation: The affected clients can resync. It's not clear if it makes sense for affected clients to react differently depending on the role of the attacking client.
-* Clients can upload an encrypted, but broken client credential chain. This will be detected by all other clients. The two sections below propose a detection + reaction strategy, as well as a prevention strategy.
-* Clients can corrupt the user profile information of the DS when adding new clients, either by Welcome or by External commit(see the "Join group with new client" endpoint description)
+* Clients can send a valid-looking commit (from the DS' point of view), where
+  the update path includes invalid (encrypted) path secrets for one or more
+  subtrees of the committer's direct path.
+  * Proposed mitigation: The affected clients can resync. It's not clear if it
+    makes sense for affected clients to react differently depending on the role
+    of the attacking client.
+* Clients can upload an encrypted, but broken client credential chain. This will
+  be detected by all other clients. The two sections below propose a detection +
+  reaction strategy, as well as a prevention strategy.
+* Clients can corrupt the user profile information of the DS when adding new
+  clients, either by Welcome or by External commit(see the "Join group with new
+  client" endpoint description)
+* A user can add a client from another group member as one of its own. This is a
+  variant of the attack above which is feasible for a slightly weaker adversary.
+  * Proposed mitigation: Add proof-of-ownership for KeyPackages when adding a
+    client of the same user
 
 ## Future work (stage 1): Detection and removal of the offending user
 
