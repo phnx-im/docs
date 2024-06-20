@@ -10,9 +10,19 @@ The second consideration is that neither of the homeservers involved (with the i
 
 ## Connection group creation
 
-To allow connection establishment in the first place, every client of a user publishes a special *connection establishment KeyPackage* with the AS which contains the client's [client credential](credentials.md#client-credentials) instead of the Leaf Credential that is used in other KeyPackages.
+To allow connection establishment in the first place, every client of a user publishes a special *connection package* with the AS which contains the client's [client credential](credentials.md#client-credentials) instead of the Leaf Credential that is used in KeyPackages.
 
-When discovering a user, the initiator fetches the connection establishment KeyPackages of all of the user's clients. The next step if for the initiator to create a group that contains all of the initiator's clients. The initiator then sends a `ConnectionEstablishmentPackage` to the responder's clients.
+```rust
+struct ConnectionPackage {
+    encryption_key: ConnectionEncryptionKey,
+    lifetime: ExpirationData,
+    client_credential: ClientCredential,
+    // TBS: All information above signed by the ClientCredential.
+    signature: Signature
+}
+```
+
+When discovering a user, the initiator fetches the connection packages of all of the user's clients. The next step if for the initiator to create a group that contains all of the initiator's clients. The initiator then sends a `ConnectionEstablishmentPackage` to the responder's clients.
 
 ```rust
 struct ConnectionEstablishmentPackage {
@@ -25,7 +35,7 @@ struct ConnectionEstablishmentPackage {
 }
 ```
 
-The `ConnectionEstablishmentPackage`s are then signed using the initiator's client credential and each encrypted under the init key of the connection establishment KeyPackage of the responder's individual clients.
+The `ConnectionEstablishmentPackage`s are then signed using the initiator's client credential and each encrypted under the `ConnectionEncryptionKey` of the connection package of the responder's individual clients.
 
 Receiving the `ConnectionEstablishmentPackage`, a responder's client first makes sure that its queue on the QS is empty. This is to ensure that the responding user hasn't already accepted the connection on another client. If there is a WelcomeBundle with the same GroupId as in the `ConnectionEstablishmentPackage`, the client uses the former to join the group and discards the `ConnectionEstablishmentPackage`.
 

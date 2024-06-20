@@ -85,7 +85,7 @@ struct IntermediateAsCredential {
 
 ## Client Credentials
 
-- Used by clients to sign IntermediateClientCredentials, as well as some other messages such as the [WelcomeAttributionInfo](../glossary.md#welcome-attribution-info) and the Connection KeyPackages.
+- Used by clients to sign IntermediateClientCredentials, as well as some other messages such as the [WelcomeAttributionInfo](../glossary.md#welcome-attribution-info) and the connection packages.
 - Should be stored by clients in their device’s secure enclave if possible.
 
 ```rust

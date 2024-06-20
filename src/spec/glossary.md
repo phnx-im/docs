@@ -146,9 +146,13 @@ struct AddPackage {
 
 A set of keys known to users that the owning user has a [connection](authentication_service/connection_establishment.md) with.
 
+### Welcome Attribution Info encryption key
+
+A symmetric key used to encrypt information in the [Welcome Attribution Info](#welcome-attribution-info).
+
 ### Friendship encryption key
 
-A symmetric key used to encrypt the credential information attached to KeyPackages, as well as the WelcomeAttributionInfo. This key is never rotated.
+A symmetric key used to encrypt the credential information attached to AddPackages.
 
 #### Future work: Rotate friendship encryption key
 
