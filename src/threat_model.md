@@ -1,25 +1,31 @@
 # Threat model
 
-## Overview
+This section describes the different security properties the Phoenix homeserver protocol aims to provide and identifies and assesses threats to those properties.
 
-The main concern of the Phoenix homeserver protocol is to minimize client metadata visible to the server. Two kinds of adversary are generally considered in this threat model: The snapshot adversary and the active observer adversary.
+The threat model is divided into two parts, a threat model based on a slightly modified version of the STRIDE methodology and a more qualitative description of the impacts of various compromise scenarios on the individual actors of the system.
 
-While both adversaries can be generally assumed to control the network, this threat model does not consider analysis of traffic patterns or other use of network metadata. While the use of network metadata can yield powerful attacks, common countermeasures such as onion routing or the use of mixnets are orthogonal to the Phoenix homeserver protocol and can be used in conjunction with it to mitigate such attacks.
+## Security properties
 
-### Adversary types
+The Phoenix homeserver system aims to provide confidentiality and authenticity for the communication between its users, privacy for user metadata and availability for the individual service components. The following briefly summarizes the security users can expect and explains on a high level why the individual security properties hold.
 
-As suggested by the name, the snapshot adversary has access to snapshots of the server's persisted state. It can view an arbitrary number of individual snapshots, but does not have access to any part of the server's volatile memory.
+### Confidentiality and authenticity
 
-The active observer adversary is strictly more powerful than the snapshot adversary. It can inspect both persisted server state, as well as any part of the server's volatile memory.
+Confidentiality and authenticity of user communication are the foremost priorities of the protocol. Specifically, users can expect that messages are readable only by their intended recipients and that recieved messages indeed originate from the apparent sender.
 
-## STRIDE based threat model
+Both of these properties are already provided by the Messaging Layer Security (MLS) protocol underlying the Phoenix homeserver protocol. However, the authentication service (AS) is responsible for the issuance and distribution of authentication key material. Consequences of AS compromise on confidentiality and authenticity are detailed in the qualitative threat model.
 
-This chapter contains a STRIDE threat model for an MLS homeserver that covers the homeserver's main endpoints. For now, this threat model is based solely on its functional requirements. As we build the specification of the homeserver, we will update this document to consider any additional assets and add additional endpoints.
+### Metadata privacy
 
-## Functional requirements
+Secondary to confidentiality and authenticity is user metadata privacy. This means that the individual services (AS, queuing service (QS), delivery service (DS)) cannot link any individual action of a user with the user's identity (as seen by other users).
 
-The homeserver is expected to fulfill the functional requirements described [here](./functional_requirements.md) and to interface with parties fulfilling the roles outlined in that document.
+The metadata threat model considers two types of adversaries: a snapshot adversary, which has access to snapshots of the server's persisted state, and a more powerful active observer adversary, which has full access to the server including its volatile memory.
 
-## MLS as underlying protocol
+The main protection against the snapshot adversary is encryption at rest for almost all relevant metadata. Against the observer, users interact with the services using per-group pseudonyms instead of their real identities.
 
-The homeserver facilitates communication between clients via the Messaging Layer Security (MLS) protocol, which already provides a number of [security guarantees](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-intended-security-guarantee) which we do not describe here.
+This threat model does not consider analysis of traffic patterns or other use of network metadata. While the use of network metadata can yield powerful attacks, common countermeasures such as onion routing or the use of mixnets are orthogonal to the Phoenix homeserver protocol and can be used in conjunction with it to mitigate such attacks.
+
+### Availability
+
+Availability of services is the final security property of the Phoenix homeserver protocol. While clients are expected to go offline periodically, an adversary should not be able to render a server unavailable to its users.
+
+Besides industry standard mitigation approaches like IP-based rate-limiting, the Phoenix homeserver protocol uses Privacy Pass to rate-limit individual users without violating their metadata privacy.
