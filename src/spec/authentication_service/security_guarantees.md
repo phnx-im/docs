@@ -4,7 +4,7 @@ In this document, we outline how the Phoenix homeserver protocol facilitates end
 
 ## Overview
 
-The authentication system consists of the authentication services (AS’, one operated by each homeserver operator), which act as a trusted third party for their respective homeserver, and a validation module run on each client. We will go into more detail on how much users have to trust their AS [here](./security_guarantees.md#threat-model-and-security-guarantees).
+The authentication system consists of the authentication services (AS’, one operated by each homeserver operator), which act as a trusted third party for their respective homeserver, and a validation module run on each client. For more information on the consequences of a malicious or compromised AS, see [here](../../threat_model/qualitative/authentication_service.md).
 
 The AS of a homeserver issues client credentials for each of its users’ clients. The clients can then use the credentials to sign the leaf credentials used in each of their groups or in their pre-published MLS KeyPackages. The leaf credentials are then used to sign messages as per the MLS specification.
 
@@ -35,23 +35,3 @@ As detailed [here](./connection_establishment.md), users have a connection group
 For this to work reliably, users have to first add new clients to all of their connection groups before adding them to any other groups. Similarly, users have to remove clients first from all other groups before removing them from their connection groups.
 
 This requires some care in the add/remove process, where clients have to coordinate through the user’s all-client group s.t. there the addition and removal process is robust.
-
-## Threat model and security guarantees
-
-Generally, the threat model of end-to-end authentication is an adversary that controls everything but the users’ clients, which includes the network, as well as infrastructure components such as the homeserver. However, in this first version of the Phoenix homeserver authentication system, we rely on the AS to perform some security-critical operations. As a consequence, we examine two scenarios in this section: One in which the AS is not malicious/compromised and one where it is.
-
-### Security under an honest AS
-
-If the AS can be trusted to behave honestly, it will issue client credentials only to the user registered under the user name contained in the client ID. As a consequence, performing the verification steps outlined above will ensure that
-
-- a given message originates from the specific client that signed the message,
-- the sending client is associated with the user name in the client ID and
-- that user is registered with the signing homeserver under the claimed user name.
-
-### Security under a compromised AS
-
-In case a homeserver (or the AS specifically) is compromised or its operator malicious, security guarantees are limited, as the AS can create its own credentials for arbitrary users. However, there are still some security guarantees that the authentication system (in conjunction with MLS) provides in that scenario.
-
-If two users have a connection (that was established while the AS was honest), both users cannot be impersonated towards one another by the AS. This is ensured by users adding clients to their connection groups before all other groups, thus effectively performing cross-signatures that all of their contacts can verify.
-
-The adversary can generally impersonate a user towards non-contacts by creating a fresh client credential with a client ID containing the user’s user name. With this credential, the adversary can create connection groups with any non-contact. Theoretically, the adversary can even impersonate a user towards non-contacts in groups that the user itself is already in. However, this requires the adversary to learn which group to target (since group membership is hidden from the homeserver). Additionally, after joining such a group, the adversary must effectively block the user from that group to avoid detection (although the block itself might alert the user to the attack).

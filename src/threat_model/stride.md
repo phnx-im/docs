@@ -1,4 +1,4 @@
-# Threat model methodology
+# STRIDE Threat Model
 
 We describe our threat model by roughly following the STRIDE framework as outlined [here](https://www.securesoftware.nl/resources/FrameworkSecureSoftware_v1.pdf). However, we modify the methodology slightly to fit use-case.
 
