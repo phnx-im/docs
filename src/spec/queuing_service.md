@@ -240,10 +240,6 @@ struct DeleteUserRecordParams {
 
 * QsSenderId: QsUid
 
-##### Future work: MFA for user or QS client record deletion
-
-User and client deletion are very destructive operations. We should probably require MFA for the associated operations.
-
 #### Publish KeyPackages
 
 * Endpoint: `ENDPOINT_QS_PUBLISH_KEY_PACKAGES`
@@ -264,14 +260,6 @@ The QS deletes all existing KeyPackages before publishing the new ones.
 ##### Authentication
 
 * QsSenderId: QsCid
-
-##### Future work: Allow more granular KeyPackage rotation
-
-Throwing all KeyPackages away regardless of their remaining validity is a bit wasteful. A client should have more granular control over which KeyPackages it wants to remain on the QS.
-
-##### Future work: More than one last-resort KeyPackage
-
-Using the same KeyPackage of last resort in multiple groups can allow a federated DS to track the user across these groups. This could be mitigated somewhat by having multiple KeyPackages of last resort that the QS can cycle through when there are no other KeyPackages left.
 
 #### Get AddPackage
 
@@ -350,7 +338,3 @@ The QS checks the `client_homeserver_domain` in the `client_queue_config`. If it
 If the domain is not the homerserver's own domain, the QS calls the [federated enqueue message](queuing_service.md#federated-enqueue-message) endpoint of the QS of the corresponding domain.
 
 If the QS learns that a message couldn't be delivered due to a missing queue, either because a local lookup has failed, or due to a response from a federated QS, it reports the `client_queue_config` and the group ID back to the DS via a [QueueDeleted](queuing_service.md#federated-enqueue-message) message.
-
-#### Future work: Persist and EAR encrypt federated messages
-
-We can't expect federated homeservers to be online all the time. Instead of sending the messages immediately, they should be stored-and-forwarded via a queue and encrypted-at-rest in the same way as with client queues.

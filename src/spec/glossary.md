@@ -76,10 +76,6 @@ struct RolesExtension {
 }
 ```
 
-### Future work: Manage roles via proposal
-
-For now, chaning roles requires a GroupContextExtension proposal, which can be expensive if there is more than one extension. Instead it should probably be possible to change roles via a custom proposal.
-
 ## Welcome attribution info
 
 Encrypted under the recipient's friendship encryption key. The TBS has to be signed by the sender's client credential.
@@ -139,10 +135,6 @@ A symmetric key used to encrypt information in the [Welcome Attribution Info](#w
 ### Friendship encryption key
 
 A symmetric key used to encrypt the credential information attached to AddPackages.
-
-#### Future work: Rotate friendship encryption key
-
-Rotating the friendship encryption key can lead to annoying race conditions (e.g. a Welcome sent short before the key was rotated). If we want to rotate it, we could use key ids (see [here](./delivery_service/group_state_encryption.md)) and a grace period before an old key is not accepted anymore.
 
 ### Friendship token
 

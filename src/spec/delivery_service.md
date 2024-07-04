@@ -142,11 +142,6 @@ struct CreateGroupParams {
 
 * DsSenderId: LeafIndex
 
-#### Future work: Obfuscate group creator
-
-* A leaf index of 0 can be a strong indicator that the client with that index is the original creator of the group.
-* It would be good to allow clients to start groups with them in another position than 0.
-
 ### Update queue information
 
 * Endpoint: `ENDPOINT_UPDATE_QUEUE_INFO`
@@ -239,11 +234,6 @@ Finally, the DS sends the `commit` to the group members by sending them on to it
 
 * DsSenderId: LeafIndex
 
-#### Future work: Tighten up DS validation using Zero-Knowledge proofs
-
-* ZKPs could allow the DS to verify that the sender of a Welcome sends the correct encrypted information
-* Alternatively, the recipient of the Welcome could let the DS know that it received a bogus Welcome. The problem here is how the recipient can prove that the Welcome is indeed bogus.
-
 ### Remove users
 
 * Endpoint: `ENDPOINT_DS_REMOVE_USERS`
@@ -294,11 +284,6 @@ struct UpdateClientParamsAad {
 #### Authentication
 
 * SenderId: LeafIndex
-
-#### Future work: Base user secret rotation
-
-* Although the group secret should provide sufficient PCS guarantees after a client removal, users should also be able to rotate their base user secret.
-* This is tricky, because a rotation would affect all groups simultaneously.
 
 ### Join connection group
 
@@ -363,10 +348,6 @@ struct SelfRemoveUserParams {
 
 * SenderId: LeafIndex
 
-#### Future work: Batch remove proposals
-
-With multiple individual proposals all parties have to verify multiple signatures. Ideally, it would be possible to batch remove proposals such that multiple clients can be removed with one proposal. This would require a custom proposal type on the level of MLS.
-
 ### Send application message
 
 * Endpoint: `ENDPOINT_DS_SEND_MESSAGE`
@@ -403,10 +384,6 @@ struct DeleteGroupParams {
 
 * SenderId: LeafIndex
 
-#### Future work: More efficient group deletion
-
-It might be nice to just commit to a message that indicates deletion of the group. Alternatively, one could use a batch remove proposal as mentioned [here](delivery_service.md#future-work-batch-remove-proposals).
-
 ## DS-induced removals
 
 In some situations, the DS will mandate the removal of a given group user by adding a remove proposal to the group's [proposal store](delivery_service.md#proposal-store). Every time, a group state is EAR-decrypted during to process a request, the DS performs the following operations:
@@ -426,7 +403,3 @@ struct QueueDeletionRemoval {
   proposals: Vec<MlsMessage>
 }
 ```
-
-### Future work: Removal due to client misbehaviour
-
-See [here](./delivery_service/broken_state_detection.md).

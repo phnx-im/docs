@@ -72,14 +72,6 @@ struct Initiate2FaAuthenticationResponse {
 }
 ```
 
-### Future work: Client and query binding
-
-The query to initialize the 2FA operation should be tied to the query that actually requires 2FA. Also, the OPAQUE handshake should be bound to the client id and the 2FA endpoint.
-
-### Future work: Prevent client enumeration attacks
-
-As noted [in the OPAQUE RFC](https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-client-enumeration) the server should take measures against client enumeration attacks. We should implement them as described in the RFC.
-
 ## Authentication
 
 * Client Credential
@@ -140,10 +132,6 @@ The AS performs the following actions:
 ### Authentication
 
 * Client 2FA (the AS has to successfully complete the OPAQUE handshake and the client needs to provide Client Credential authentication using the signature key of the initial client)
-
-### Future work: Sybil attack protection
-
-Being able to create arbitrarily many users can enable a number of DDoS attacks and effectively renders the anonymous token DDoS prevention strategy useless. Thus we need some form of restriction here, such as a CAPTCHA or other proof of personhood.
 
 ## Get user connection package
 
@@ -267,7 +255,3 @@ If the calling client is a federated client, rate-limiting should also occur on 
 For this endpoint, the AS also accepts authentication by federated clients. If the `client_id` in the client credential indicates that the client belongs to a federated homeserver, the AS looks up the authentication key material of that client's AS using the [corresponding endpoint](./authentication_service.md#get-as-credentials), or looks the key material up in its local cache. The AS then uses that key material to verify the query.
 
 * Client Credential
-
-## Future work: Evolving Identity
-
-For now, the AS relies on [client credential chains](glossary.md#client-credential-chain), but in the future, client authentication should be achieved using [evolving identity](authentication_service/evolving_identities.md).

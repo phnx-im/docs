@@ -31,13 +31,3 @@ However, to avoid leakage of metadata, the sender's identity must be hidden from
 ## Friendship token rotation
 
 A user must rotate its friendship token when removing the connection with another user. The token is rotated by sampling a fresh, random token and replacing the old token on the QS. After replacing the token on the QS, the user must broadcast the new token to all users with which the user wishes to keep a connection.
-
-### Future work: Friendship encryption key rotation
-
-It should also be possible to rotate the friendship encryption key.
-
-Rotating the friendship encryption key can lead to annoying race conditions (e.g. a Welcome sent shortly before the key was rotated). If we want to rotate it, we could use key ids (see [here](./delivery_service/group_state_encryption.md)) and a grace period before an old key is not accepted anymore.
-
-### Future work: Replace the friendship token
-
-It is conceivable that the frienship token can be replaced with a better mechanism that allows for easier rotation. It is conceivable that puncturable signatures or blocklistable anonymous credentials could be useful here.
