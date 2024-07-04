@@ -9,7 +9,6 @@ To create a new group, the client requests a [group ID from the DS](../delivery_
 It then freshly generates the following key material.
 
 - credential encryption key (see [credential encryption](../delivery_service/group_state_encryption.md#credential-encryption))
-- user auth key (used for user-level authentication towards the DS)
 - group state encryption key (see [group state encryption](../delivery_service/group_state_encryption.md#group-state-encryption))
 - a [leaf credential](../authentication_service/credentials.md#leaf-credentials)
 
@@ -27,4 +26,3 @@ The inviting client prepares the query to the DS by performing the following ste
 - encrypt the [welcome attribution infos](../glossary.md#welcome-attribution-info) under the invitee clients' respective encryption keys
 
 Finally, the client queries the [relevant DS endpoint](../delivery_service.md#adding-new-users-to-the-group). If the query is successful, the client merges the commit.
-

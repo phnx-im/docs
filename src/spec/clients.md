@@ -26,7 +26,6 @@ client interacts with its homeserver, or other, federated instances.
   * MLS group state
   * group state EAR key
   * credential encryption key
-  * User auth key (plus private key)
 * For each connected user:
   * friendship token
   * friendship encryption key
