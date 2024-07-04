@@ -162,7 +162,7 @@ Signature public key associated with a QS user record. Used by the QS to authent
 
 ## QS signing key
 
-Signature key used by federated QS' to authenticate the owning QS, as well as by a local or federated DS to verify signatures on [user KeyPackage batches](./glossary.md#user-keypackage-batch).
+Signature key used by federated QS' to authenticate the owning QS.
 
 ## Fan out message
 

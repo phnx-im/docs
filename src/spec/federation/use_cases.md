@@ -20,7 +20,7 @@ For the PoC-Phase, discovery is simple, as each homeserver is expected to be rea
 
 ### Authentication key distribution
 
-At their respective domains, the each part of the homeserver provides an endpoint for federated homeservers (and clients) to retrieve their key material. The QS and DS provide endpoints to retrieve their respective verification keys and the AS provides an endpoint to retrieve the AS root and intermediate credentials, as well as associated revocation information. This key material can then be used to authenticate incoming messages and KeyPackageBatches (QS), remove proposals in the context of MLS groups (DS) or client credentials (AS). All queries to key discovery endpoints must be sent through TLS-secured channels to ensure that homeserver authentication is tied to the local web root of trust of the caller.
+At their respective domains, the each part of the homeserver provides an endpoint for federated homeservers (and clients) to retrieve their key material. The QS and DS provide endpoints to retrieve their respective verification keys and the AS provides an endpoint to retrieve the AS root and intermediate credentials, as well as associated revocation information. This key material can then be used to authenticate incoming messages, remove proposals in the context of MLS groups (DS) or client credentials (AS). All queries to key discovery endpoints must be sent through TLS-secured channels to ensure that homeserver authentication is tied to the local web root of trust of the caller.
 
 ### User discovery and connection management
 

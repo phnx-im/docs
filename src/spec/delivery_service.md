@@ -4,8 +4,6 @@ The delivery service keeps track of groups and (pseudonymous) group membership a
 
 ## DS configuration options
 
-* Maximal KeyPackageBatch age: Maximal difference between a KeyPackageBatch timestamp and the current time when a new user is added to a group.
-  * Default: 1h
 * Maximal DSAuthToken age: Maximal age of an [DSAuthToken](delivery_service.md#authentication) presented to the DS for client authentication.
   * Default: 1h
 * Maximal duration of client commit inactivity: Maximal duration between two commits of an individual client before the removal of the client is proposed by the DS.
