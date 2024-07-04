@@ -27,24 +27,22 @@ The plaintext group state contains the following data:
 
 * **Public ratchet tree:** The public MLS ratchet trees of the group.
 * **MLS GroupInfo:** The [GroupInfo](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-adding-members-to-the-group) of this group.
-* **User profile:** For each user that has at least one client in the group, the DS keeps the following records.
-  * **Clients:** The leaf indices of each client belonging to the user.
-  * **User auth key:** Public signature key known to all clients of a given user.
+* **User profile:** For each user in the group, the DS keeps the following records.
+  * **Client:** The leaf index of the client belonging to the user.
 * **Client profile:** For each client in the group, the DS keeps the following records.
   * **Client index:** The client's leaf index in the public group tree.
-  * **Client credential chain (encrypted):** The intermediate client credentials for each of the user's clients, as well as the client's client credential, encrypted using the group state encryption key.
+  * **Client credential (encrypted):** The client's client credential, encrypted using the group state encryption key.
   * **Client queue config:** The [client queue config](glossary.md#sealed-queue-config) of the client.
   * **Activity time:** A timestamp indicating either the time the client was added, or the last time the client has sent a commit (whatever is more recent).
   * **Activity epoch:** Epoch of the last time the client has sent a commit (see activity time).
 * **Past group states:** Whenever a new KeyPackage is added to the group, the DS files a copy of the current epoch's group state and keeps it until all group members added in a given, past epoch have updated, or until all KeyPackages added in the given epoch have expired. The copies include the following data:
   * **Public ratchet tree**
-  * **Client credential chain (encrypted)**
   * **Joining clients:** List of the KeyPackagerefs of all clients that are expected to pick up this group state.
 * **Proposal store:** List of proposals sent in this group in this epoch. Gets cleared upon every epoch change.
 
 ## Proposal store
 
-* Proposal store is emptied after each successful commit
+* The Proposal store is emptied after each successful commit
 * Proposals are added to the store either through user self removals,
 * If the proposal store is non-empty, the next commit must be a client update that contains all proposals in the proposal store. The DS must reject all other operations containing commits.
 * For all requests containing non-update commits, or commits that do not contain all proposals in the store, the DS will return an error message indicating the the proposal store is non-empty.
@@ -57,7 +55,6 @@ Messages from the client to the DS are authenticated by the client by providing 
 enum DsSenderId {
   LeafIndex(u32),
   KeyPackageRef(KeyPackageRef),
-  UserKeyHash(Vec<u8>),
 }
 
 struct DsAuthToken {
@@ -73,7 +70,6 @@ The verification key used to create the token depends on the `sender_id`:
 
 * LeafIndex: Signature key in the leaf's credential
 * KeyPackageRef: Signature key of the credential in the KeyPackage with the given KeyPackageRef
-* UserKeyHash: Signature key in the user profile indicated by the UserProfileHash
 
 ## GroupInfo updates
 
@@ -137,7 +133,6 @@ struct CreateGroupParams {
   key_package: KeyPackage,
   encrypted_credential_chain: Vec<u8>,
   creator_queue_config: ClientQueueConfig,
-  creator_user_auth_key: UserAuthKey,
   group_info: GroupInfo,
   initial_ear_key: GroupStateEarKey,
 }
@@ -147,7 +142,7 @@ struct CreateGroupParams {
 
 #### Authentication
 
-* DsSenderId: UserKeyHash
+* DsSenderId: LeafIndex
 
 #### Future work: Obfuscate group creator
 
@@ -210,14 +205,14 @@ struct WelcomeInfoResponse {
 
 #### Authentication
 
-* DSSenderId: UserKeyHash
+* DSSenderId: LeafIndex
 
 
 ### Adding new users to the group
 
 * Endpoint: `ENDPOINT_DS_ADD_USERS`
 
-Operation, where the commit contains one or more inline Add proposals containing clients of one or more new users. The sender has to additionally provide a signature of the user's QS to help the DS validate that the KeyPackages indeed all belong to one user, as well as a timestamp to prove that the KeyPackages were recently obtained.
+Operation, where the commit contains one or more inline Add proposals containing the client(s) of one or more new users.
 
 ```rust
 struct AddUsersParams {
@@ -226,7 +221,7 @@ struct AddUsersParams {
   group_info_update: GroupInfoUpdate,
   welcome: Welcome,
   welcome_attribution_info: Vec<WelcomeAttributionInfo>,
-  key_package_batches: Vec<KeyPackageBatch>,
+  key_package: Vec<KeyPackage>,
 }
 
 struct AddUsersParamsAad {
@@ -238,15 +233,13 @@ The `commit` must include the `AddUserParamsAad` of all added users in the AAD o
 
 This operation can only be performed by clients of users marked as *admin* and all KeyPackages have to contain an extension that contains a [ClientQueueConfig](./glossary.md#sealed-queue-config).
 
-Upon reception, the DS hashes the KeyPackages in all Add proposals contained in the commit. The KeyPackageBatches indicate, which KeyPackages belong to which user. If there are KeyPackages for which there is no matching KeyPackageRef in any KeyPackageBatch, or if there is a KeyPackageRef in a batch that has no corresponding Add proposal, the commit is invalid. Otherwise, the DS creates a user proile for each batch with the leaf indices of the KeyPackages referenced within. The user auth key of the new user remains empty until the first update of one of the user's clients.
-
-The DS also has to verify that the timestamp is not older than the DS' configured maximal KeyPackageBatch age.
+The DS also has to verify that the timestamp is not older than the DS' configured maximal KeyPackage age.
 
 Finally, the DS sends the `commit` to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue. It also sends [WelcomeBundles](./glossary.md#welcomebundle) to the newly added clients.
 
 #### Authentication
 
-* DsSenderId: UserKeyHash
+* DsSenderId: LeafIndex
 
 #### Future work: Tighten up DS validation using Zero-Knowledge proofs
 
@@ -266,7 +259,6 @@ struct RemoveUserParams {
 ```
 
 * The commit must exclusively contain Remove proposals
-* The commit must contain Remove proposals for all clients of all evicted users
 * The sending client must be a client of an admin
 * The DS validates the commit and updates its public tree
 * The DS removes the user profiles for the evicted users and the encrypted credential information of all of their clients
@@ -275,7 +267,7 @@ struct RemoveUserParams {
 
 #### Authentication
 
-* DsSenderId: UserKeyHash
+* DsSenderId: LeafIndex
 
 ### Updating the sending client's own key material
 
@@ -297,43 +289,18 @@ struct UpdateClientParamsAad {
   * The commit must contain an update path, as well as all pending proposals
   * If the credential in the sender's KeyPackage has changed, there must be encrypted credential information in the AAD
 * If there is encrypted client credential information in the commit's AAD, the DS also updates its corresponding state
-* If a remove proposal is committed as part of the commit, the DS removes the associated client profile and updates the owning user's user profile. If the remove proposal removes the last client of a user, it also removes the associated user profile.
+* If a remove proposal is committed as part of the commit, the DS removes the associated client and user profiles.
 * If the KeyPackageRef of the updating client (prior to applying the update) is in one of the *joining clients* vectors in the group's storage of old group states, the DS removes that KeyPackageRef from the vector. If this leaves te vector empty, the DS removes this particular copy of the group state.
 * Finally, the DS sends the `commit` to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.
 
 #### Authentication
 
-* SenderId: UserKeyHash
+* SenderId: LeafIndex
 
 #### Future work: Base user secret rotation
 
 * Although the group secret should provide sufficient PCS guarantees after a client removal, users should also be able to rotate their base user secret.
 * This is tricky, because a rotation would affect all groups simultaneously.
-
-### Join group with new client
-
-* Endpoint: `ENDPOINT_DS_JOIN_GROUP`
-
-```rust
-struct JoinGroupParams {
-  external_commit: MlsMessage,
-  group_state_ear_key: GroupStateEarKey,
-  group_info_update: GroupInfoUpdate,
-}
-
-struct JoinGroupParamsAad {
-  existing_user_clients: Vec<LeafIndex>,
-  encrypted_credential_information: Vec<u8>,
-}
-```
-
-* The DS verifies that the `existing_user_clients` correspond to the leaf indices in the user profile of the sending user (identified via the UserKeyHash used for authentication)
-* An adversary could make the state of clients and DS diverge if it has two users in a group and sends the commit with a client of one user while using the user auth key of the other. The existing_user_clients allows other group members to verify that the adder didn't falsely claim to be another user towards the DS. If the adder did indeed misbehave, other group members can rectify the error as described [here](./delivery_service/broken_state_detection.md).
-
-#### Authentication
-
-* SenderId: UserKeyHash
-
 
 ### Join connection group
 
@@ -357,57 +324,6 @@ struct JoinConnectionGroupParamsAad {
 
 No additional authentication is required for this endpoint. The knowledge of the group's EAR key effectively authenticates the joining client.
 
-### Add own clients
-
-* Endpoint: `ENDPOINT_DS_ADD_CLIENTS`
-
-```rust
-struct AddClientsParams {
-  commit: MlsMessage,
-  group_state_ear_key: GroupStateEarKey,
-  group_info_update: GroupInfoUpdate,
-  welcome: Welcome,
-  welcome_attribution_info: WelcomeAttributionInfo,
-}
-
-struct AddClientsParamsAad {
-  encrypted_credential_information: Vec<u8>,
-}
-```
-
-* The commit must contain exclusively Add proposals
-* This endpoint brings the same potential to break the group state as the "Join with new client" endpoint. See there for more information.
-* Finally, the DS sends the `commit` to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.
-* It also sends [WelcomeBundles](./glossary.md#welcomebundle) to the newly added clients.
-
-#### Authentication
-
-* SenderId: UserKeyHash
-
-### Remove own clients
-
-* Endpoint: `ENDPOINT_DS_REMOVE_CLIENTS`
-
-```rust
-struct RemoveClientsParams {
-  commit: MlsMessage,
-  group_state_ear_key: GroupStateEarKey,
-  group_info_update: GroupInfoUpdate,
-  user_auth_key: UserAuthKey,
-}
-```
-
-* The commit must exclusively contain Remove proposals
-* The DS validates the commit and updates its public tree
-* The DS removes the encrypted credential information of all of removed clients
-* Note, that a user can't remove itself due to MLS constraints
-* The DS replaces the user auth key of the sender's user profile with the `user_auth_key`
-* Finally, the DS sends the `commit` to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.
-
-#### Authentication
-
-* SenderId: UserKeyHash
-
 ### ReSync
 
 * Endpoint: `ENDPOINT_DS_RESYNC_CLIENT`
@@ -427,27 +343,7 @@ struct ResyncClientParams {
 
 #### Authentication
 
-* SenderId: UserKeyHash
-
-### Client self remove
-
-* Endpoint: `ENDPOINT_DS_SELF_REMOVE_CLIENT`
-
-```rust
-struct SelfRemoveClientParams {
-  remove_proposal: MlsMessage,
-  group_state_ear_key: GroupStateEarKey,
-}
-```
-
-* The proposal must be a Remove proposal for the sending client
-* The sending client must not be the last client of the user
-* The DS validates the proposal and stores it in this epoch's proposal store
-* Finally, the DS sends the `remove_proposal` to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.
-
-#### Authentication
-
-* SenderId: UserKeyHash
+* SenderId: LeafIndex
 
 ### User self remove
 
@@ -455,19 +351,19 @@ struct SelfRemoveClientParams {
 
 ```rust
 struct SelfRemoveUserParams {
-  remove_proposals: Vec<MlsMessage>,
+  remove_proposal: MlsMessage,
   group_state_ear_key: GroupStateEarKey,
 }
 ```
 
-* The proposals must be a Remove proposals for all clients of the user
-* The DS validates the proposals and stores them in this epoch's proposal store
-* Finally, the DS sends the `remove_proposals` to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.
-* Once the proposals are committed, the DS performs the same clean up as for the Remove User endpoint
+* The proposal must be a Remove proposal for the clients of the user
+* The DS validates the proposal and stores it in this epoch's proposal store
+* Finally, the DS sends the `remove_proposal` to the group members by sending it on to its local QS, either for it to forward the the client's federated QS or to a local queue.
+* Once the proposal are committed, the DS performs the same clean up as for the Remove User endpoint
 
 #### Authentication
 
-* SenderId: UserKeyHash
+* SenderId: LeafIndex
 
 #### Future work: Batch remove proposals
 
@@ -507,7 +403,7 @@ struct DeleteGroupParams {
 
 #### Authentication
 
-* SenderId: UserKeyHash
+* SenderId: LeafIndex
 
 #### Future work: More efficient group deletion
 

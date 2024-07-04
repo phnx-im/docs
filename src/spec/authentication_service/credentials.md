@@ -1,4 +1,7 @@
 # Credentials
+
+The MLS protocol underlying the Phoenix homeserver protocol uses different types of credentials to identify different actors. It also uses credential chaining to make credential management easier.
+
 ## Credential Fingerprints
 
 Credentials can be referenced via their credential fingerprints. A credential fingerprint is simply the hash of the credential, where the hash is determined by the CredentialCiphersuite.
@@ -102,27 +105,10 @@ struct ClientCredential {
 
 When a client requests that its credential be signed by an AS, it sends the CredentialSelfSignedPayload as defined [here](./credentials.md#credential-signing-and-self-signatures).
 
-## Intermediate client credentials
-
-TODO: Instead of intermediate client credentials, we want a salt that can be stored encrypted on the server side, although this would only work with signature schemes that don't leak the public key in the signature. Generally, we should check carefully if a given security scheme actually has the property we want here.
-
-- Per-group credential.
-- To be used by the client to sign LeafCredentials for the associated group.
-- Should be stored on the DS encrypted on the group’s group key (the key not accessible to the DS, but given to new joiners).
-
-```rust
-struct IntermediateClientCredential {
-		expiration_data: ExpirationData,
-		credential_ciphersuite: CredentialCiphersuite,
-		public_key: PublicSignatureKey,
-		signer_fingerprint: CredentialFingerprint,
-}
-```
-
 ## Leaf credentials
 
 - per-group credential
-- to identify a client, the identifying client should follow the chain via the intermediate client cert to the client cert.
+- to identify a client, the identifying client should follow the chain to the client cert.
 - To be used in leaves in an MLS group.
 
 ```rust

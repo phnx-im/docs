@@ -2,7 +2,7 @@
 
 Messages in queues contain metadata such as epochs, group IDs and explicit changes to group states (although all based on pseudonymous identities). To protect this metadata against state-leakages, messages in queues are stored encrypted in such a way that only the client owning the queue can decrypt the messages.
 
-Since state-leakage (i.e. state compromise) is the threat model, the encryption protocol provides forward secrecy and post-compromise security.
+Since state-leakage (i.e. state compromise) is part of the threat model, the encryption protocol provides forward secrecy and post-compromise security.
 
 ## Key ratcheting
 

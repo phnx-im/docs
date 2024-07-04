@@ -6,7 +6,7 @@ In this document, we outline how the Phoenix homeserver protocol facilitates end
 
 The authentication system consists of the authentication services (AS’, one operated by each homeserver operator), which act as a trusted third party for their respective homeserver, and a validation module run on each client. For more information on the consequences of a malicious or compromised AS, see [here](../../threat_model/qualitative/authentication_service.md).
 
-The AS of a homeserver issues client credentials for each of its users’ clients. The clients can then use the credentials to sign the leaf credentials used in each of their groups or in their pre-published MLS KeyPackages. The leaf credentials are then used to sign messages as per the MLS specification.
+The AS of a homeserver issues client credentials its users’ clients. The clients can then use the credentials to sign the leaf credentials used in each of their groups or in their pre-published MLS KeyPackages. The leaf credentials are then used to sign messages as per the MLS specification.
 
 When a client receives a message from another client, it performs the following validation steps:
 
@@ -26,12 +26,8 @@ To ensure security even against a compromised AS, users can validate the client 
 - Bob hashes the credentials of Alice’s clients in their shared connection group and compares the result.
 - Bob compares the two hash values to see if his view of Alice’s composed user identity is correct.
 
-The process above ensures that Bob’s current view of Alice’s identity is correct. Note that users have to re-validate out-of-band if a user adds one or more clients.
+The process above ensures that Bob’s current view of Alice’s identity is correct.
 
 ### Connection groups and multi-client identity
 
 As detailed [here](./connection_establishment.md), users have a connection group with each of their contacts (but not necessarily with each user they are in a group with). The connection group acts as a reference for users w.r.t. what clients represent an individual contact. If a user is invited into a new group by one of its contacts, but the inviting client is not part of the corresponding connection group, the invited user must decline the invitation.
-
-For this to work reliably, users have to first add new clients to all of their connection groups before adding them to any other groups. Similarly, users have to remove clients first from all other groups before removing them from their connection groups.
-
-This requires some care in the add/remove process, where clients have to coordinate through the user’s all-client group s.t. there the addition and removal process is robust.

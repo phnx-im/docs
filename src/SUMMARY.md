@@ -37,7 +37,7 @@
     - [Queue encryption](spec/queuing_service/queue_encryption.md)
     - [KeyPackage publication](spec/queuing_service/keypackage_publication.md)
   - [Federation](spec/federation.md)
-    - [Use-cases and Threat Model](spec/federation/use_cases_and_threat_model.md)
+    - [Use-cases and Threat Model](spec/federation/use_cases.md)
     - [Federation protocol](spec/federation/federation_protocol.md)
   - [Clients](spec/clients.md)
     - [Creation](spec/clients/creation.md)

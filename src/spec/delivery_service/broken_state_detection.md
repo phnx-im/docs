@@ -6,7 +6,7 @@ However, other clients can detect broken credential chains of other clients and 
 
 ## Broken states and hidden invalid updates
 
-As a general rule, if an Admin breaks the group state in such a way that the DS can't validate, but that all group members can detect, all group members must consider the group closed.
+As a general rule, if an Admin breaks the group state in a way that the DS can't validate, but that all group members can detect, all group members must consider the group closed.
 
 * Clients can send a valid-looking commit (from the DS' point of view), where
   the update path includes invalid (encrypted) path secrets for one or more

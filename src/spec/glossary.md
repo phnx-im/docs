@@ -76,8 +76,6 @@ struct RolesExtension {
 }
 ```
 
-If a user has multiple clients in a given group, all clients of that user MUST have the same role.
-
 ### Future work: Manage roles via proposal
 
 For now, chaning roles requires a GroupContextExtension proposal, which can be expensive if there is more than one extension. Instead it should probably be possible to change roles via a custom proposal.
@@ -119,21 +117,9 @@ struct WelcomeBundle {
 
 The WelcomeAttributionInfo is encrypted under the joining client's friendship encryption key. The group state EAR key is by the DS under the recipient's init key (contained in the recipient's KeyPackage).
 
-## User KeyPackage batch
-
-When a client retrieves KeyPackages from a QS for a given user, the QS responds with the KeyPackages, the associated Intermediate Client credentials, as well as a KeyPackageBatch.
-
-```rust
-struct KeyPackageBatch {
-  key_package_refs: Vec<KeyPackageRef>,
-  timestamp: Timestamp,
-  signature: Signature,
-}
-```
-
 ## AddPackage
 
-A struct consisting of a KeyPackage and the associated [Intermediate Client Credential](authentication_service/credentials.md#intermediate-client-credentials), where the latter is encrypted under the user's current [friendship encryption key](glossary.md#friendship-encryption-key).
+A struct consisting of a KeyPackage and the associated [Client Credential](authentication_service/credentials.md#client-credentials), where the latter is encrypted under the user's current [friendship encryption key](glossary.md#friendship-encryption-key).
 
 ```rust
 struct AddPackage {
@@ -162,17 +148,13 @@ Rotating the friendship encryption key can lead to annoying race conditions (e.g
 
 A random byte string that is used by users to prove that they have a [connection](authentication_service/connection_establishment.md) with the owning user, which in turn allows them to fetch the user's key packages. Can be rotated by the owning user by updating the value on its QS and broadcasting it to all of the user's (remaining) connections.
 
-## Client credential chain
-
-A tuple consisting of an intermediate client credential and a client credential. Used to authenticate individual clients in the context of an MLS group. Stored on the DS encrypted under the group's [credential encryption key](delivery_service/group_state_encryption.md).
-
 ## Queue encryption key
 
 HPKE public key associated with a client's fan-out or direct queue and used to facilitate [at-rest encryption of messages in the queue](queuing_service/queue_encryption.md).
 
 ## QS client record auth key
 
-Signature public key associated with a QS QS client record. Used by the QS to authenticate the owning client.
+Signature public key associated with a QS client record. Used by the QS to authenticate the owning client.
 
 ## QS user record auth key
 

@@ -1,6 +1,6 @@
 # Discovery and connection establishment
 
-Discovery allows users to find other users based on their user name and establish a connection with them. The connection establishment process establishes a *connection group* that consists of the devices of both connected users, but otherwise functions like a regular group with the exception of the group creation process.
+Discovery allows users to find other users based on their user name and establish a connection with them. The connection establishment process establishes a *connection group* that consists of the clients of both connected users, but otherwise functions like a regular group with the exception of the group creation process.
 
 Once two users have a *connection*, they can add one-another to groups.
 
@@ -10,7 +10,7 @@ The second consideration is that neither of the homeservers involved (with the i
 
 ## Connection group creation
 
-To allow connection establishment in the first place, every client of a user publishes a special *connection package* with the AS which contains the client's [client credential](credentials.md#client-credentials) instead of the Leaf Credential that is used in KeyPackages.
+To allow connection establishment in the first place, the user's client publishes *connection packages* with the AS which contains the client's [client credential](credentials.md#client-credentials) instead of the Leaf Credential that is used in KeyPackages.
 
 ```rust
 struct ConnectionPackage {
@@ -22,7 +22,7 @@ struct ConnectionPackage {
 }
 ```
 
-When discovering a user, the initiator fetches the connection packages of all of the user's clients. The next step if for the initiator to create a group that contains all of the initiator's clients. The initiator then sends a `ConnectionEstablishmentPackage` to the responder's clients.
+When discovering a user, the initiator fetches the connection packages the user's client. The initiator then creates a new group and sends a `ConnectionEstablishmentPackage` to the responder's client.
 
 ```rust
 struct ConnectionEstablishmentPackage {
@@ -35,15 +35,11 @@ struct ConnectionEstablishmentPackage {
 }
 ```
 
-The `ConnectionEstablishmentPackage`s are then signed using the initiator's client credential and each encrypted under the `ConnectionEncryptionKey` of the connection package of the responder's individual clients.
+The `ConnectionEstablishmentPackage` is signed using the initiator's client credential and encrypted under the `ConnectionEncryptionKey` of the connection package of the responder's client.
 
-Receiving the `ConnectionEstablishmentPackage`, a responder's client first makes sure that its queue on the QS is empty. This is to ensure that the responding user hasn't already accepted the connection on another client. If there is a WelcomeBundle with the same GroupId as in the `ConnectionEstablishmentPackage`, the client uses the former to join the group and discards the `ConnectionEstablishmentPackage`.
+The receiving client must verify the signature on the package and fetch the AS credential and AS intermediate credential to verify the signature chain from the initiator's client credential to the AS credential. The responder can then decide based on the sender's user name (contained in the client credential) if it wants to accept the connection.
 
-If the queue is empty, the receiving client must verify the signature on the package. It must also fetch the AS credential and AS intermediate credential and verify the signature chain from the initiator's client credential to the AS credential. The responder can then decide based on the sender's user name (contained in the client credential) if it wants to accept the connection.
-
-The responder accepts the connection by fetching the external commit information required to join the group from the initiator's DS and joins the group via the *join connection group* endpoint of said DS. After joining, the client adds all other clients of the same user to the group.
-
-If joining via the *join connection group* endpoint fails, the new client must check its queue again to ensure that no other client has accepted the connection in the mean time. If the queue is still empty, the client discards the ConnectionEstablishmentPackage and aborts the process.
+The responder accepts the connection by fetching the external commit information required to join the group from the initiator's DS and joins the group via the *join connection group* endpoint of said DS.
 
 ### Future work: Additional initiator information
 

@@ -13,6 +13,3 @@ We thus have three kinds of authentication rather than just one: Client to serve
 Spam (outside of its potential for a denial-of-service attack on the homeserver) is a general risk for a messaging service. We talk about spam reduction rather than spam prevention, because we don't believe spam is a problem that can be avoided entirely in a privacy-preserving messenger and instead aim to reduce it to a minimum.
 
 In the context of our threat model, we consider spam potential an additional security risk for every action that leads to messages being sent to users or that otherwise alerts the user, e.g. by triggering a notification. This is reflected by adding the security property _spam reduction_ to the existing STRIDE properties.
-
-
-

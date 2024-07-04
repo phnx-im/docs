@@ -27,7 +27,6 @@ client interacts with its homeserver, or other, federated instances.
   * group state EAR key
   * credential encryption key
   * User auth key (plus private key)
-  * Intermediate Client Credential (plus private key)
 * For each connected user:
   * friendship token
   * friendship encryption key
