@@ -1,6 +1,6 @@
 # Application assets
 
-The homeserver will have to perform all actions listed for the individual roles in the [functional requirements section](./functional_requirements.md).
+The homeserver will have to perform all actions listed for the individual roles in the [functional requirements section](../../functional_requirements.md).
 
 To fulfill these requirements, the homeserver will keep the following state (information assets in STRIDE terminology). Each piece of state is annotated by the actions involved in its lifecycle.
 

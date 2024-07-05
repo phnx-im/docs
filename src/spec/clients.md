@@ -1,6 +1,11 @@
-# Work in progress: Client state
+# Clients
 
-The documentation of the individual endpoints describes most of the behaviour expected by clients to interact with the homeserver. This chapter documents the state kept by each of a user's clients.
+The only purpose of the AS, QS and DS is to serve users through their clients.
+Using the homeserver services, users can establish connections with one-another,
+create groups and invite people to them, join other groups and send messages.
+
+This chapter details the main operations that the client supports and how the
+client interacts with its homeserver, or other, federated instances.
 
 ## Client state
 
@@ -21,8 +26,6 @@ The documentation of the individual endpoints describes most of the behaviour ex
   * MLS group state
   * group state EAR key
   * credential encryption key
-  * User auth key (plus private key)
-  * Intermediate Client Credential (plus private key)
 * For each connected user:
   * friendship token
   * friendship encryption key

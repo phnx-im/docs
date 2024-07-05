@@ -1,6 +1,6 @@
 # Federation Protocol
 
-The [federation functionality](./use_cases_and_threat_model.md#federation-functionality) of the Phoenix homeserver protocol allows users to communicate across homeserver instances. Federated communication requires a small addition to the Phoenix homeserver protocol, as well as slight modifications to the client-server parts of the protocol.
+The [federation functionality](./use_cases.md#federation-functionality) of the Phoenix homeserver protocol allows users to communicate across homeserver instances.
 
 ## Overview
 

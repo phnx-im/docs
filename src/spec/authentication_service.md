@@ -2,8 +2,6 @@
 
 In this chapter, we detail the different functionalitites of the authentication service. See the subchapter on [credentials](authentication_service/credentials.md) for more details on the credential types referenced in this chapter.
 
-The AS detailed in this section represents only the base-line version. A more sophisticated version with additional features such as better cross-signing and transparency is work in progress.
-
 For an overview over the security of the AS see [here](./authentication_service/security_guarantees.md).
 
 ## Configuration
@@ -23,7 +21,7 @@ The AS generally keeps the following state
 
 * **User entries:** A database with one entry for each user account. Each entry is indexed by the user's [user name](glossary.md#user-name-un) and contains a number of sub-entries.
   * **OPAQUE user record:** The OPAQUE protocol artifact that allows the user to authenticate itself via its password in queries to the AS.
-  * **Client entries:** Sub entries for each of the user's clients. Indexed by the clients' [client id](glossary.md#client-id-cid).
+  * **Client entries:** Sub entries for the users' clients. Indexed by the clients' [client id](glossary.md#client-id-cid).
     * **Client credential:** The [credential](authentication_service/credentials.md#client-credentials) of the client.
     * **Token issuance records:** A record of how many tokens were issued to the client.
     * **Activity time:** Timestamp indicating the last time a client has fetched messages from the queue.
@@ -61,6 +59,7 @@ struct Initiate2FaAuthenticationParams {
 ```
 
 The AS then performs the following steps:
+
 * perform the [first (server side) step in the OPAQUE online AKE handshake](https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-online-authenticated-key-exc)
 * store the resulting OPAQUE `server_state` in its ephemeral DB
 * return the OPAQUE response to the client
@@ -70,14 +69,6 @@ struct Initiate2FaAuthenticationResponse {
   opaque_ke2: OpaqueKe2,
 }
 ```
-
-### Future work: Client and query binding
-
-The query to initialize the 2FA operation should be tied to the query that actually requires 2FA. Also, the OPAQUE handshake should be bound to the client id and the 2FA endpoint.
-
-### Future work: Prevent client enumeration attacks
-
-As noted [in the OPAQUE RFC](https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-client-enumeration) the server should take measures against client enumeration attacks. We should implement them as described in the RFC.
 
 ## Authentication
 
@@ -140,13 +131,9 @@ The AS performs the following actions:
 
 * Client 2FA (the AS has to successfully complete the OPAQUE handshake and the client needs to provide Client Credential authentication using the signature key of the initial client)
 
-### Future work: Sybil attack protection
+## Get user connection package
 
-Being able to create arbitrarily many users can enable a number of DDoS attacks and effectively renders the anonymous token DDoS prevention strategy useless. Thus we need some form of restriction here, such as a CAPTCHA or other proof of personhood.
-
-## Get user clients
-
-Given a user name, get the [client credentials](authentication_service/credentials.md#client-credentials) of all of the user's clients.
+Given a user name, get a [connection package](authentication_service/connection_establishment.md#connection-group-creation) for the user's client.
 
 ```rust
 struct UserClientsParams {
@@ -158,7 +145,7 @@ The AS returns the following information.
 
 ```rust
 struct UserClientsResponse {
-  client_credentials: Vec<KeyPackage>,
+  connection_package: ConnectionPackage,
 }
 ```
 
@@ -178,6 +165,7 @@ struct DeleteUserParams {
 ```
 
 The AS performs the following actions:
+
 * look up the OPAQUE `server_state` in the ephemeral DB based on the `client_id`
 * authenticate the request using the signature key in the ClientCredential
 * perform the `ServerFinish` step of the OPAQUE online AKE flow
@@ -187,75 +175,6 @@ The AS performs the following actions:
 ### Authentication
 
 * Client 2FA
-
-## Initiate client addition
-
-Add a new client entry to the user's user entry.
-
-```rust
-struct InitiateClientAdditionParams {
-  client_csr: ClientCsr,
-  opaque_ke1: OpaqueKe1,
-}
-```
-
-The AS then performs the following steps:
-* check if a client entry with the name given in the `client_csr` already exists for the user
-* validate the `client_csr`
-* perform the [first (server side) step in the OPAQUE online AKE handshake](https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-online-authenticated-key-exc)
-* sign the CSR
-* store the resulting OPAQUE `server_state` in its ephemeral DB (along with the freshly signed ClientCredential)
-* return the ClientCredential to the client along with the OPAQUE response.
-
-```rust
-struct InitiateClientAdditionResponse {
-  client_credential: ClientCredential,
-  opaque_ke2: OpaqueKe2,
-}
-```
-
-After calling this endpoint, the client must call the ["finish client addition endpoint"](./authentication_service.md#finish-client-addition) to finish the client addition.
-
-### Authentication
-
-* Client Password
-
-## Finish client addition
-
-```rust
-struct FinishClientAdditionParams {
-  client_id: ClientId,
-  queue_encryption_key: HpkePublicKey,
-  connection_key_package: KeyPackage,
-  opaque_ke3: OpaqueKe3,
-}
-```
-
-The AS performs the following actions:
-* look up the new client's ClientCredential, as well as the OPAQUE `server_state` in the ephemeral DB based on the `client_id`
-* authenticate the request using the signature key in the ClientCredential
-* perform the `ServerFinish` step of the OPAQUE online AKE flow
-* check (again) if the client entry exists in the DB
-* create the new client entry
-* delete the entry in the ephemeral OPAQUE DB
-
-### Authentication
-
-* Client 2FA (checking the signature via lookup in the ephemeral DB, see above)
-
-## Delete client
-
-Delete the client with the given client id. This endpoint can't be used to delete the last client entry in a given user entry.
-
-```rust
-struct DeleteClientParams {
-  client_id: ClientId,
-}
-```
-
-### Authentication
-
-* Client
 
 ## Dequeue messages
 
@@ -271,9 +190,9 @@ struct DequeueMessagesParams {
 
 The AS deletes messages older than the given sequence number and returns messages starting with the given sequence number. The maximum number of messages returned this way is the smallest of the following values.
 
-- The number of messages remaining in the queue
-- The value of the `max_message_number` field in the request
-- The AS configured maximum number of returned messages
+* The number of messages remaining in the queue
+* The value of the `max_message_number` field in the request
+* The AS configured maximum number of returned messages
 
 ### Authentication
 
@@ -334,7 +253,3 @@ If the calling client is a federated client, rate-limiting should also occur on 
 For this endpoint, the AS also accepts authentication by federated clients. If the `client_id` in the client credential indicates that the client belongs to a federated homeserver, the AS looks up the authentication key material of that client's AS using the [corresponding endpoint](./authentication_service.md#get-as-credentials), or looks the key material up in its local cache. The AS then uses that key material to verify the query.
 
 * Client Credential
-
-## Future work: Evolving Identity
-
-For now, the AS relies on [client credential chains](glossary.md#client-credential-chain), but in the future, client authentication should be achieved using [evolving identity](authentication_service/evolving_identities.md).

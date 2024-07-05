@@ -10,7 +10,6 @@ that they are a member of.
 The only federation-relevant action is thus the fan-out action, as all other
 actions are essentially public actions.
 
-
 ## Message fan-out
 
 | STRIDE property | Requirement                                                                                           | Remark |

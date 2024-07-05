@@ -10,8 +10,7 @@ parts of the payload that are encrypted to private key material held only by
 group members. As a consequence, the Integrity STRIDE property is limited to
 publicly readable parts of each message.
 
-
-## Get user clients
+## Get user client
 
 | STRIDE property | Requirement                                                                                                                                                | Remark |
 | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
@@ -20,7 +19,7 @@ publicly readable parts of each message.
 | Integrity       | The user retrieving the client information must be able to verify it                                                                                       |        |
 | Non-repudiation | Not a risk. Users must be able to discover other users anonymously                                                                                         |        |
 | Confidentiality | Not a risk as long as basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) hold |        |
-| Availability    | Users should be able to discover a reasonable number of users at a time. However, it must be hard to exhaust a user's KeyPackages                          |        |
+| Availability    | Users should be able to discover a reasonable number of users at a time. However, it must be hard to exhaust a user's AddPackages                          |        |
 | Authorization   | Not a risk. All users should be able to discover other users                                                                                               |        |
 | Spam prevention | Not a risk. Discovering a user should not be message sending                                                                                               |        |
 
@@ -36,7 +35,6 @@ publicly readable parts of each message.
 | Availability    | Users should always be able to create new groups (limited by anti-spam measures)        |                                           |
 | Authorization   | Not a risk. All users should be able to create groups                                   |                                           |
 | Spam prevention | The homeserver must limit the number of groups created by a given user                  |                                           |
-
 
 ## Message delivery
 

@@ -10,11 +10,11 @@ Compared to simple, single-client user identities, composed user identities pose
 
 ### Ghost clients
 
-In many cases the messaging provider informs other users if a new client is added for a given user. A compromised or malicious provider can thus insert one of its own clients into the conversation without the target user noticing. Techniques like cross-signing can prevent such an attack, since any client additions have to be performed by one of the user's existing clients. Alternatively, [identity gossiping](authentication_systems.md#identity-gossiping), as well as OOB verification help detect such an attack.
+In many cases the messaging provider informs other users if a new client is added for a given user. A compromised or malicious provider can thus insert one of its own clients into the conversation without the target user noticing. Techniques like cross-signing can prevent such an attack, since any client additions have to be performed by one of the user's existing clients. Alternatively, [identity gossiping](../authentication_systems.md#identity-gossiping), as well as OOB verification help detect such an attack.
 
 ### Revocation suppression
 
-Users need to be able to remove lost or potentially compromised devices from their composed identity. Here, the problem is often that a malicious messaging provider can (silently) drop messages performing such a revocation operation. This can not be prevented entirely, since the messaging provider can always decide to drop messages. [Identity gossiping](./authentication_systems.md#identity-gossiping) can help mitigate this problem, as it prevents the messaging provider from dropping messages selectively. Instead, the provider is forced to drop all of a user's messages, thus significantly increasing the risk of detection.
+Users need to be able to remove lost or potentially compromised devices from their composed identity. Here, the problem is often that a malicious messaging provider can (silently) drop messages performing such a revocation operation. This can not be prevented entirely, since the messaging provider can always decide to drop messages. [Identity gossiping](../authentication_systems.md#identity-gossiping) can help mitigate this problem, as it prevents the messaging provider from dropping messages selectively. Instead, the provider is forced to drop all of a user's messages, thus significantly increasing the risk of detection.
 
 Such an attack is also detected if two affected users verify one-another's identities OOB.
 
@@ -22,7 +22,7 @@ Such an attack is also detected if two affected users verify one-another's ident
 
 Some of the techniques discussed above (such as cross signing) help in ensuring that all participants of a given conversation agree on their respective identities. However, if the messaging protocol (cryptographically) includes the identity of a user in messages it sends, it can help mitigate the two attacks described above.
 
-If the authentication systems includes a [verifyable data structure](authentication_systems.md#verifiable-data-structures) that records fingerprints of client identities, clients can also gossip their view of the data structure.
+If the authentication systems includes a [verifyable data structure](../authentication_systems.md#verifiable-data-structures) that records fingerprints of client identities, clients can also gossip their view of the data structure.
 
 ## Signal
 
@@ -96,7 +96,7 @@ iMessage clients have their own cryptographic identity and Apple automatically d
 
 # Comparison of messaging applications
 
-Due to the diversity of approaches to authentication in general and multi-device in particular, it is hard to compare the individual applications directly. However, we can categorize them broadly. Note that none of the applications below support transparency via a verifiable datastructure or verification via a verification question. The composed identity colum determines if the application exposes a fingerprint of the [composed user identity](authentication_systems.md#multi-client-or-composed-user-identities) (as opposed to the identities of the individual clients).
+Due to the diversity of approaches to authentication in general and multi-device in particular, it is hard to compare the individual applications directly. However, we can categorize them broadly. Note that none of the applications below support transparency via a verifiable datastructure or verification via a verification question. The composed identity colum determines if the application exposes a fingerprint of the [composed user identity](../authentication_systems.md#multi-client-or-composed-user-identities) (as opposed to the identities of the individual clients).
 
 | Application | TTP | OOB Auth | Cross-signing | Transparency | Composed Identity |
 | ----------- | --- | -------- | ------------- | ------------ | ----------------- |

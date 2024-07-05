@@ -1,6 +1,6 @@
 # Security requirements
 
-This section iterates over each role and analyses each action as described in the [Methodology](./../methodology.md) section.
+This section iterates over each role and analyses each action as described in the [STRIDE introduction](./../stride.md) section.
 
 In addition to any specific security requirements listed in the individual actions, the following general security requirements must hold.
 
@@ -16,4 +16,4 @@ Metadata that is not required to provide functionality at a later point in time 
 
 The following figure illustrates the interactions of the individual roles.
 
-![Interactions between the individual roles in the context of this threat model.](../images/nlnet_arch.excalidraw.svg).
+![Interactions between the individual roles in the context of this threat model.](../../images/nlnet_arch.excalidraw.svg).

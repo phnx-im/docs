@@ -76,12 +76,6 @@ struct RolesExtension {
 }
 ```
 
-If a user has multiple clients in a given group, all clients of that user MUST have the same role.
-
-### Future work: Manage roles via proposal
-
-For now, chaning roles requires a GroupContextExtension proposal, which can be expensive if there is more than one extension. Instead it should probably be possible to change roles via a custom proposal.
-
 ## Welcome attribution info
 
 Encrypted under the recipient's friendship encryption key. The TBS has to be signed by the sender's client credential.
@@ -119,48 +113,37 @@ struct WelcomeBundle {
 
 The WelcomeAttributionInfo is encrypted under the joining client's friendship encryption key. The group state EAR key is by the DS under the recipient's init key (contained in the recipient's KeyPackage).
 
-## User KeyPackage batch
-
-When a client retrieves KeyPackages from a QS for a given user, the QS responds with the KeyPackages, the associated Intermediate Client credentials, as well as a KeyPackageBatch.
-
-```rust
-struct KeyPackageBatch {
-  key_package_refs: Vec<KeyPackageRef>,
-  timestamp: Timestamp,
-  signature: Signature,
-}
-```
-
 ## AddPackage
 
-A struct consisting of a KeyPackage and the associated [Intermediate Client Credential](authentication_service/credentials.md#intermediate-client-credentials), where the latter is encrypted under the user's current [friendship encryption key](glossary.md#friendship-encryption-key).
+A struct consisting of a KeyPackage, as well as the associated [Client Credential](authentication_service/credentials.md#client-credentials) and [Signature Encryption Key](glossary.md), where the latter is encrypted under the user's current [friendship encryption key](glossary.md#friendship-encryption-key).
 
 ```rust
 struct AddPackage {
     key_package: KeyPackage,
-    icc_ciphertext: Vec<u8>,
+    encrypted_client_credential: Vec<u8>,
+    encrypted_signature_encryption_key: Vec<u8>,
 }
 ```
+
+### Signature encryption key
+
+The signature encryption key is used to encrypt the signature in LeafCredentials. These signatures are encrypted to prevent the DS from linking LeafCredentials across groups. Before an AddPackage is used in the context of a group, the inviting client decrypts the signature encryption key and re-encrypts it under the group's credential encryption key. See [here](./queuing_service/keypackage_publication.md#friendship-keys-and-credential-encryption) for more information.
 
 ## Friendship keys
 
 A set of keys known to users that the owning user has a [connection](authentication_service/connection_establishment.md) with.
 
+### Welcome Attribution Info encryption key
+
+A symmetric key used to encrypt information in the [Welcome Attribution Info](#welcome-attribution-info).
+
 ### Friendship encryption key
 
-A symmetric key used to encrypt the credential information attached to KeyPackages, as well as the WelcomeAttributionInfo. This key is never rotated.
-
-#### Future work: Rotate friendship encryption key
-
-Rotating the friendship encryption key can lead to annoying race conditions (e.g. a Welcome sent short before the key was rotated). If we want to rotate it, we could use key ids (see [here](./delivery_service/group_state_encryption.md)) and a grace period before an old key is not accepted anymore.
+A symmetric key used to encrypt the client credential and the signature encryption key attached to AddPackages.
 
 ### Friendship token
 
 A random byte string that is used by users to prove that they have a [connection](authentication_service/connection_establishment.md) with the owning user, which in turn allows them to fetch the user's key packages. Can be rotated by the owning user by updating the value on its QS and broadcasting it to all of the user's (remaining) connections.
-
-## Client credential chain
-
-A tuple consisting of an intermediate client credential and a client credential. Used to authenticate individual clients in the context of an MLS group. Stored on the DS encrypted under the group's [credential encryption key](delivery_service/group_state_encryption.md).
 
 ## Queue encryption key
 
@@ -168,7 +151,7 @@ HPKE public key associated with a client's fan-out or direct queue and used to f
 
 ## QS client record auth key
 
-Signature public key associated with a QS QS client record. Used by the QS to authenticate the owning client.
+Signature public key associated with a QS client record. Used by the QS to authenticate the owning client.
 
 ## QS user record auth key
 
@@ -176,7 +159,7 @@ Signature public key associated with a QS user record. Used by the QS to authent
 
 ## QS signing key
 
-Signature key used by federated QS' to authenticate the owning QS, as well as by a local or federated DS to verify signatures on [user KeyPackage batches](./glossary.md#user-keypackage-batch).
+Signature key used by federated QS' to authenticate the owning QS.
 
 ## Fan out message
 

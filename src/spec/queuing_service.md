@@ -6,11 +6,11 @@ The main purpose of the queuing service is to store-and-forward messages deliver
 
 The store-and-forwards functionality of the QS is designed in such a way that the QS cannot link the state it maintains for each of the homeserver's users with the user's actual identity as maintained by the AS.
 
-To avoid a connection with the user's actual identity, each user has a QS user record with a sub-record for each of the user's clients. The records are created by the user's clients when they register with the AS.
+To avoid a connection with the user's actual identity, each user has a QS user record with a sub-record the user's client. The records are created by the user's client after it has registered with the AS.
 
-After creation, the user's clients can publish KeyPackages and fetch messages from their queue, as well as rotate the key material used for authentication, or for at-rest encryption of queued messages.
+After creation, the user's client can publish KeyPackages and fetch messages from its queue, as well as rotate the key material used for authentication, or for at-rest encryption of queued messages.
 
-The QS user record also contains the user's [friendship token](glossary.md#friendship-token), which the QS uses to authenticate requests for batches of the user's KeyPackages.
+The QS user record also contains the user's [friendship token](glossary.md#friendship-token), which the QS uses to authenticate requests the user's KeyPackages.
 
 The client-specific records contain the client's fan-out queue (for messages received from a local or a federated DS), as well as the KeyPackages published by the client. See [here](queuing_service/keypackage_publication.md) for more information on KeyPackage publication and how unlinkability between a user's real identity and its pseudonym is maintained.
 
@@ -23,7 +23,7 @@ The QS keeps the following state.
 * **QS user records:** Indexed by a [QsUid](glossary.md#qs-user-id-qsuid), each record contains a number of sub fields.
   * **QS user record auth key:** [Public signature key](glossary.md#qs-user-record-auth-key) used by a user to authenticate itself as the owner of this record.
   * **Friendship token:** Clients have to provide the friendship token to obtain a bundle of KeyPackages for a given user.
-  * **Client specific records:** For each of the user's clients, the QS keeps the following state. Indexed by a [QsCid](glossary.md#qs-client-id-qscid).
+  * **Client specific records:** For the users' clients, the QS keeps the following state. Indexed by a [QsCid](glossary.md#qs-client-id-qscid).
     * **Activity time:** Timestamp indicating the last time a client has fetched messages from the queue.
     * **KeyPackages:** Encrypted KeyPackages, each with an encrypted [client credential chain](./glossary.md#client-credential-chain) attached. At least one KeyPackage has to be marked as KeyPackage of last resort.
     * **Public QS client record key:** [Public signature key](glossary.md#qs-client-record-auth-key). Authenticates the owner of this QS client record and authorizes them to dequeue (i.e. fetch and delete) messages in the queue, as well as to change the queue configuration such as the authentication keys, or to add entries to the block list. Also authorizes the client to upload KeyPackages.
@@ -80,7 +80,6 @@ The verification key used to create the token depends on the sender_id:
 ## DS-to-QS communication
 
 ### Enqueuing messages
-
 
 A local DS can enqueue the message sending just a [`FanOutMessage`](./glossary.md#fan-out-message).
 
@@ -241,98 +240,6 @@ struct DeleteUserRecordParams {
 
 * QsSenderId: QsUid
 
-##### Future work: MFA for user or QS client record deletion
-
-User and client deletion are very destructive operations. We should probably require MFA for the associated operations.
-
-### Client record management
-
-#### Create new QS client record
-
-* Endpoint: `ENDPOINT_QS_CREATE_CLIENT_RECORD`
-
-Create a new QS client record with the given data.
-
-```rust
-struct CreateClientRecordParams {
-  client_record_auth_key: SignaturePublicKey,
-  queue_encryption_key: HpkePublicKey,
-}
-```
-
-The QS creates the record indexed by a freshly sampled QsCid and returns the following.
-
-```rust
-struct CreateClientRecordResponse {
-  qs_cid: QsCid,
-}
-```
-
-##### Authentication
-
-* QsSenderId: QsUid
-
-#### Update QS client record
-
-* Endpoint: `ENDPOINT_QS_UPDATE_CLIENT_RECORD`
-
-Update the data of the QS client record with the given QsCid with the given data.
-
-```rust
-struct UpdateClientRecordParams {
-  qs_cid: QsCid,
-  client_record_auth_key: SignaturePublicKey,
-  queue_encryption_key: HpkePublicKey,
-  blocklist_entries: Vec<GroupId>,
-}
-```
-
-##### Authentication
-
-* QsSenderId: QsCid
-
-#### Get QS client record
-
-* Endpoint: `ENDPOINT_QS_CLIENT_RECORD`
-
-Get the data associated with the QS client record with the given QsCid.
-
-```rust
-struct ClientRecordParams {
-  qs_cid: QsCid,
-}
-```
-
-The QS returns the following data.
-
-```rust
-struct ClientRecordResponse {
-  client_record_auth_key: SignaturePublicKey,
-  queue_encryption_key: HpkePublicKey,
-  blocklist_entries: Vec<GroupId>,
-}
-```
-
-##### Authentication
-
-* QsSenderId: QsCid
-
-#### Delete QS client record
-
-* Endpoint: `ENDPOINT_QS_DELETE_CLIENT_RECORD`
-
-Delete the QS client record with the given QsCid if it is not the user's last QS client record. The last client in a QS user record can only be deleted by deleting the QS user record itself.
-
-```rust
-struct DeleteClientRecordParams {
-  qs_cid: QsCid,
-}
-```
-
-##### Authentication
-
-* QsSenderId: QsUid
-
 #### Publish KeyPackages
 
 * Endpoint: `ENDPOINT_QS_PUBLISH_KEY_PACKAGES`
@@ -350,55 +257,27 @@ struct PublishKeyPackagesParams {
 
 The QS deletes all existing KeyPackages before publishing the new ones.
 
-
 ##### Authentication
 
 * QsSenderId: QsCid
 
-##### Future work: Allow more granular KeyPackage rotation
+#### Get AddPackage
 
-Throwing all KeyPackages away regardless of their remaining validity is a bit wasteful. A client should have more granular control over which KeyPackages it wants to remain on the QS.
+* Endpoint: `ENDPOINT_QS_ADD_PACKAGE`
 
-##### Future work: More than one last-resort KeyPackage
-
-Using the same KeyPackage of last resort in multiple groups can allow a federated DS to track the user across these groups. This could be mitigated somewhat by having multiple KeyPackages of last resort that the QS can cycle through when there are no other KeyPackages left.
-
-#### Get client KeyPackage
-
-* Endpoint: `ENDPOINT_QS_CLIENT_KEY_PACKAGE`
-
-Get the KeyPackage of the client with the given QsCid. This allows clients of a user to fetch individual AddPackages for other clients of the same user. These individual AddPackages are required to add new clients to existing groups.
+Get a KeyPackage of the user with the given friendship token.
 
 ```rust
-struct ClientKeyPackageParams {
-  qs_cid: QsCid,
-}
-```
-
-The QS returns one of the client's AddPackages and deletes the AddPackage afterwards (except if it contains a KeyPackage of last resort.)
-
-##### Authentication
-
-* QsSenderId: QsUid
-
-#### Get KeyPackage batch
-
-* Endpoint: `ENDPOINT_QS_KEY_PACKAGE_BATCH`
-
-Get a [KeyPackageBatch](glossary.md#user-keypackage-batch) of the user with the given friendship token.
-
-```rust
-struct KeyPackageBatchParams {
+struct AddPackageParams {
   friendship_token: FriendshipToken,
 }
 ```
 
-The QS checks if there is a QS user record with the given [FriendshipToken](glossary.md#friendship-token) and returns a [AddPackage](glossary.md#addpackage) of each of the matching user's clients, along with a signed [KeyPackageBatch](glossary.md#user-keypackage-batch) that includes a current time stamp and the references of the returned KeyPackages.
+The QS checks if there is a QS user record with the given [FriendshipToken](glossary.md#friendship-token) and returns an [AddPackage](glossary.md#addpackage) of the matching user's client.
 
 ```rust
-struct KeyPackageBatchResponse {
+struct AddPackageResponse {
   add_packages: Vec<AddPackage>,
-  key_package_batch: KeyPackageBatch,
 }
 ```
 
@@ -422,9 +301,9 @@ struct DequeueMessagesParams {
 
 The QS deletes messages older than the given sequence number and returns messages starting with the given sequence number. The maximum number of messages returned this way is the smallest of the following values.
 
-- The number of messages remaining in the queue
-- The value of the `max_message_number` field in the request
-- The QS configured maximum number of returned messages
+* The number of messages remaining in the queue
+* The value of the `max_message_number` field in the request
+* The QS configured maximum number of returned messages
 
 ##### Authentication
 
@@ -459,7 +338,3 @@ The QS checks the `client_homeserver_domain` in the `client_queue_config`. If it
 If the domain is not the homerserver's own domain, the QS calls the [federated enqueue message](queuing_service.md#federated-enqueue-message) endpoint of the QS of the corresponding domain.
 
 If the QS learns that a message couldn't be delivered due to a missing queue, either because a local lookup has failed, or due to a response from a federated QS, it reports the `client_queue_config` and the group ID back to the DS via a [QueueDeleted](queuing_service.md#federated-enqueue-message) message.
-
-#### Future work: Persist and EAR encrypt federated messages
-
-We can't expect federated homeservers to be online all the time. Instead of sending the messages immediately, they should be stored-and-forwarded via a queue and encrypted-at-rest in the same way as with client queues.
