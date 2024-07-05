@@ -4,5 +4,3 @@ language = "en"
 multilingual = false
 src = "src"
 title = "Docs"
-
-[output.linkcheck]
