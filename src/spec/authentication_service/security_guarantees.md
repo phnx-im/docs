@@ -1,6 +1,6 @@
 # Authentication security guarantees
 
-In this document, we outline how the Phoenix homeserver protocol facilitates end-to-end authentication in this first phase of the project. This first approach will provide a baseline of authentication guarantees for users that is comparable to commonly used messaging applications. In a future version, we intend to provide more extensive authentication guarantees that go significantly beyond the current state-of-the-art in secure messaging. Among other things, [evolving identity](evolving_identities.md) will be a central part of v2 of the Phoenix homeserver authentication system.
+This section outlines how the Phoenix homeserver protocol facilitates end-to-end authentication.
 
 ## Overview
 

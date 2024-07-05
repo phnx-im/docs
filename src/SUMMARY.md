@@ -26,7 +26,6 @@
         - [State expiration](spec/general_concepts/state_expiration.md) -->
   - [Authentication service](spec/authentication_service.md)
     - [Credentials](spec/authentication_service/credentials.md)
-      - [Adding new devices](spec/authentication_service/new_device_flow.md)
     - [Discovery and connection establishment](spec/authentication_service/connection_establishment.md)
     - [Security Guarantees](spec/authentication_service/security_guarantees.md)
   - [Delivery service](spec/delivery_service.md)

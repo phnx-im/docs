@@ -16,7 +16,7 @@ The federation part of the Phoenix homeserver protocol can be split into four pa
 
 Each homeserver has a homeserver domain associated with it. The domains determines how the individual components (AS, DS, QS) of the homeserver are discovered by other homeservers and it is also the domain that appears in the user IDs of the homeservers users in a federated context.
 
-For the PoC-Phase, discovery is simple, as each homeserver is expected to be reachable at a fixed subdomain under the its homeserver domain: If the homeserver domain is `example.com`, the homeserver’s AS is reachable under `as.example.com`, the DS under `ds.example.com`, etc. For authorization reasons and to allow more flexible deployments, this will later be changed to involve a lookup at the `.well-known` of the homeserver domain.
+Discovery is simple, as each homeserver is expected to be reachable at a fixed subdomain under the its homeserver domain: If the homeserver domain is `example.com`, the homeserver’s AS is reachable under `as.example.com`, the DS under `ds.example.com`, etc.
 
 ### Authentication key distribution
 
