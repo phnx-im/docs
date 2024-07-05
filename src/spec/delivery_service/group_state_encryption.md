@@ -18,8 +18,8 @@ A group's EAR key is freshly sampled at the group's inception and is not rotated
 
 ## Credential encryption
 
-* Clients hold a Credentials Encryption Base Key (only known to clients)
-* Used to encrypt and decrypt credential chains
+* Clients hold a Credential Encryption Key (only known to clients)
+* Used to encrypt and decrypt client credentials, as well as signature encryption keys
 * The client creating the group samples the key freshly upon group creation
 * Clients joining the group receive the key encrypted via a group info extension (i.e. either via a Welcome or via an External Init package)
 * The key is fixed and is never rotated

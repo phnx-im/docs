@@ -12,11 +12,13 @@ When establishing a [connection with another user](../authentication_service/con
 
 Possession of a friendship token authorizes a client to add the original owner of the token to a group. Once added to a group, all group members must be able to authenticate the newly added user via its client.
 
-However, the QS that stores the published KeyPackages that facilitate group member additions must not learn the user's identity. Thus, KeyPackages are always published as [AddPackages](../glossary.md#addpackage), where the KeyPackage only contains a pseudonymous [Leaf Credential](../authentication_service/credentials.md#leaf-credentials) and the [intermediate client credential](../authentication_service/credentials.md#intermediate-client-credentials) that links the pseudonymous credential with the client's [Client Credential](../authentication_service/credentials.md#client-credentials) is encrypted under the friendship encryption key.
+However, the QS that stores the published KeyPackages to facilitate group member additions must not learn the user's identity. Thus, KeyPackages are always published as [AddPackages](../glossary.md#addpackage), where the KeyPackage only contains a pseudonymous [leaf credential](../authentication_service/credentials.md#leaf-credentials), a [Signature Encryption Key](../glossary.md#signature-encryption-key) and the [client credential](../authentication_service/credentials.md#client-credentials), where the latter two are encrypted under the friendship encryption key. Both leaf credential and signature encryption key are generated freshly for each AddPackage.
 
-After retrieving such a AddPackage, the adding client first decrypts the encrypted intermediate client credential and verifies that the [credential chain](../glossary.md#client-credential-chain) is correct. If this is the case, the client re-encrypts the intermediate client credential under the target group's [credential encryption key](../delivery_service/group_state_encryption.md) before performing the actual addition.
+The leaf credential contains a signature by the client credential. To prevent a DS from tracking leaf credentials signed by the same client credential across groups, that signature is encrypted under the signature encryption key, which in turn is also encrypted under the friendship encryption key.
 
-Members of the group can now decrypt the intermediate client credential and authenticate the user.
+After retrieving such a AddPackage, the adding client first decrypts the encrypted client credential and signature encryption key. The client then decrypts and verifies the signature of the [LeafCredential](../authentication_service/credentials.md#leaf-credentials). If verification is successful, the client re-encrypts both the client credential and the signature encryption key under the target group's [credential encryption key](../delivery_service/group_state_encryption.md) before performing the actual addition.
+
+As all members of a group are in possession of the credential encryption key, they can decrypt both client credential and signature encryption key and thus authenticate the added client.
 
 Note that neither DS nor QS are in possession of either the friendship encryption key or the credential encryption key. Both QS and DS store the intermediate client credential exclusively as ciphertexts.
 

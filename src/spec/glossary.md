@@ -115,14 +115,19 @@ The WelcomeAttributionInfo is encrypted under the joining client's friendship en
 
 ## AddPackage
 
-A struct consisting of a KeyPackage and the associated [Client Credential](authentication_service/credentials.md#client-credentials), where the latter is encrypted under the user's current [friendship encryption key](glossary.md#friendship-encryption-key).
+A struct consisting of a KeyPackage, as well as the associated [Client Credential](authentication_service/credentials.md#client-credentials) and [Signature Encryption Key](glossary.md), where the latter is encrypted under the user's current [friendship encryption key](glossary.md#friendship-encryption-key).
 
 ```rust
 struct AddPackage {
     key_package: KeyPackage,
-    icc_ciphertext: Vec<u8>,
+    encrypted_client_credential: Vec<u8>,
+    encrypted_signature_encryption_key: Vec<u8>,
 }
 ```
+
+### Signature encryption key
+
+The signature encryption key is used to encrypt the signature in LeafCredentials. These signatures are encrypted to prevent the DS from linking LeafCredentials across groups. Before an AddPackage is used in the context of a group, the inviting client decrypts the signature encryption key and re-encrypts it under the group's credential encryption key. See [here](./queuing_service/keypackage_publication.md#friendship-keys-and-credential-encryption) for more information.
 
 ## Friendship keys
 
@@ -134,7 +139,7 @@ A symmetric key used to encrypt information in the [Welcome Attribution Info](#w
 
 ### Friendship encryption key
 
-A symmetric key used to encrypt the credential information attached to AddPackages.
+A symmetric key used to encrypt the client credential and the signature encryption key attached to AddPackages.
 
 ### Friendship token
 
