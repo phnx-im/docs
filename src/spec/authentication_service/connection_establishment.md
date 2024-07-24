@@ -1,12 +1,12 @@
 # Discovery and connection establishment
 
-Discovery allows users to find other users based on their user name and establish a connection with them. The connection establishment process establishes a *connection group* that consists of the clients of both connected users, but otherwise functions like a regular group with the exception of the group creation process.
+Discovery allows users to find other users based on their [username](../glossary.md#username) and establish a connection with them. The connection establishment process establishes a *connection group* that consists of the clients of both connected users, but otherwise functions like a regular group with the exception of the group creation process.
 
 Once two users have a *connection*, they can add one-another to groups.
 
-The creation process of a connection group is restricted by two considerations: Until the responding user makes its decision to accept the connection, the initiator is considered untrusted and should not be able to push arbitrary content to the responder. That is with the exception of the initiator's user name which the responder can use to identify the initiator.
+The creation process of a connection group is restricted by two considerations: Until the responding user makes its decision to accept the connection, the initiator is considered untrusted and should not be able to push arbitrary content to the responder. That is with the exception of the initiator's display name which the responder can use to identify the initiator.
 
-The second consideration is that neither of the homeservers involved (with the initiator and reponder potentially belonging to two federated homeservers) should know who is connected to whom. This is not straight-forward, as the initiator has to be able to discover the responder by its real user name and use the discovered information to initiate the process.
+The second consideration is that neither of the homeservers involved (with the initiator and reponder potentially belonging to two federated homeservers) should know who is connected to whom. This is not straight-forward, as the initiator has to be able to discover the responder by its username and use the discovered information to initiate the process.
 
 ## Connection group creation
 
@@ -22,7 +22,7 @@ struct ConnectionPackage {
 }
 ```
 
-When discovering a user, the initiator fetches the connection packages the user's client. The initiator then creates a new group and sends a `ConnectionEstablishmentPackage` to the responder's client.
+When discovering a user, the initiator fetches a connection package for the user's client. The initiator then creates a new group and sends a `ConnectionEstablishmentPackage` to the responder's client.
 
 ```rust
 struct ConnectionEstablishmentPackage {

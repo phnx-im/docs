@@ -16,9 +16,9 @@ To fulfill these requirements, the homeserver will keep the following state (inf
     * Update: Account reset
     * Delete: Account deletion
     * Read: Client authentication
-* User names
+* User ids
     * Create: User registration
-    * Update: User name change
+    * Update: Display name change
     * Read: User discovery
     * Delete: Account deletion
 

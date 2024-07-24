@@ -18,7 +18,7 @@ The network includes all entities that have access to the port exposing the home
 
 ### Users
 
-Users are individuals that have registered as users with the homeserver and that are associated with a unique and immutable _user id_ scoped by the homeserver's home domain. Each user also has a unique _user name_. Registered users can have one or more registered clients.
+Users are individuals that have registered as users with the homeserver and that are associated with a unique and immutable _user id_ scoped by the homeserver's home domain. Each user also has a unique UUID called _user id_. Registered users can have one or more registered clients.
 
 The user is ultimately the entity that other users authenticate before starting a conversation.
 
@@ -56,13 +56,10 @@ Federated clients are clients which are run by federated users. They are regular
 
 The distinction between users and their clients is difficult because the user will perform most of their interactions with the homeserver through the client. The following is a list of operations performed through the client, which concern the user as their own entity and might thus also affect all of their clients.
 
-* Client management: Users MUST be able to manage clients (this includes updates to client key material).
-* Account reset: Users SHOULD be able to reset the account. Members of groups the user is in MUST be notified of the reset.
-* User name change: Users MUST be able to change their user name. Members of groups the user is in MUST be notified of the new name.
+* Display name change: Users MUST be able to change their display name. Members of groups the user is in MUST be notified of the new name.
 * User discovery: Users MUST be able to discover other users.
 * Connection establishment: Users MUST be able to initialize a connection with previously discovered users (via a two-user MLS group, implies retrieval of [KeyPackages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11) of all of the other user's clients).
 * Connection rejection: Users MUST be able to accept or reject a connection initialized by another (local or federated) user. The sender of the connection request SHOULD be notified of the acceptance or rejection of the request.
-* Connection management: Users SHOULD be able to block other (local or federated) users s.t. they don't receive messages from that user anymore. Users SHOULD be able to unblock previously blocked users.
 * Account deletion: Users MUST be able to delete their account. Members of groups the user is in MUST be notified of the deletion.
 
 ### Functional Requirements for Clients
@@ -79,7 +76,6 @@ MLS natively provides a number of group management mechanics such as membership 
 * Message retrieval: Clients MUST be able to fetch messages queued by the homeserver.
 * Client authentication: Clients MUST be able to verify the authenticity of MLS leaf [Credentials](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-credentials) of clients with which it shares a group (this implies at least partially fulfilling the [Authentication Service](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-authentication-service) role).
 * KeyPackage publishing: Clients MUST be able to publish [KeyPackages](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#section-11) (this implies the ["key retrieval"](https://www.ietf.org/id/draft-ietf-mls-architecture-08.html#name-key-retrieval) requirement). When a client publishes new KeyPackages, the homeserver MUST delete all remaining previously uploaded KeyPackages of that client.
-* Notification configuration: Clients SHOULD be able to configure notification settings of groups of which it is a member.
 
 ### Functional Requirements for Federated Homeservers
 

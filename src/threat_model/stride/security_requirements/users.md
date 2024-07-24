@@ -19,7 +19,7 @@
 | STRIDE property | Requirement                                                                                                                                                | Remark |
 | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
 | Authentication  | Not a risk. Anyone should be able to initialize user registration                                                                                          |        |
-| Integrity       | The `client_csr` included in the request must be validated (e.g. username must be unique)                                                                  |        |
+| Integrity       | The `client_csr` included in the request must be validated (e.g. user id must be unique)                                                                   |        |
 | Non-repudiation | Not a risk. The client does not need to be identified beyond the `client_csr`                                                                              |        |
 | Confidentiality | Not a risk as long as basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) hold |        |
 | Availability    | It is not critical that new users be able to register and the endpoint can be disabled to mitigate an ongoing attack                                       |        |

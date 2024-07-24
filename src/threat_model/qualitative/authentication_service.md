@@ -4,13 +4,13 @@ The authentication service (AS) plays a central role in ensuring the end-to-end 
 
 ## Baseline: Security under an honest AS
 
-An honest AS will issue only one client credential per user name. As a consequence, users can trust that MLS messages indeed comes from the apparent sender if the signature chain on the message is valid for the given user name. In particular,
+An honest AS will issue only one client credential per user id. As a consequence, users can trust that MLS messages indeed comes from the apparent sender if the signature chain on the message is valid for the given user id. In particular,
 
 - the signature of the message must be valid under the sender's leaf credential
 - the signature on the leaf credential must be valid under the sender's client credential
 - the signature on the client credential must be valid under the AS intermediate credential
 - the signature on the AS intermediate credential must be valid under the AS credential
-- the client credential contains the user name expected in the given context
+- the client credential contains the user id expected in the given context
 
 ### Security under a compromised AS
 

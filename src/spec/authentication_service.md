@@ -10,7 +10,6 @@ The AS is configurable by use of the following configuration variables:
 
 * **Anonymous token timeframe:** The amount of time which each client has to wait until it can obtain new anonymous authentication tokens.
 * **Default token allowance:** The default amount of anonymous authentication tokens issued to each user in the anonymous token timeframe.
-* **Identity provider:** Network address of the OpenID connect identity provider the authentication service delegates authentication to for account registration.
 * **Maximal QS client record age:** Maximal age of an inactive client entry.
   * Default: 90d
 * **Maximal number of requested messages:** Maximal number of messages that will be returned to a client requesting messages from a direct queue.
@@ -19,8 +18,9 @@ The AS is configurable by use of the following configuration variables:
 
 The AS generally keeps the following state
 
-* **User entries:** A database with one entry for each user account. Each entry is indexed by the user's [user name](glossary.md#user-name-un) and contains a number of sub-entries.
+* **User entries:** A database with one entry for each user account. Each entry is indexed by the user's [user id](glossary.md#user-id-uid) and contains a number of sub-entries.
   * **OPAQUE user record:** The OPAQUE protocol artifact that allows the user to authenticate itself via its password in queries to the AS.
+  * **Username:** The Username chosen by the user upon creation. It can be used by other users to discover the user.
   * **Client entries:** Sub entries for the users' clients. Indexed by the clients' [client id](glossary.md#client-id-cid).
     * **Client credential:** The [credential](authentication_service/credentials.md#client-credentials) of the client.
     * **Token issuance records:** A record of how many tokens were issued to the client.
@@ -76,7 +76,7 @@ struct Initiate2FaAuthenticationResponse {
 
 ## Initialize user registration
 
-The user registration functionality requires the user to perform an [OPAQUE registration flow](https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-offline-registration) with the homeserver. Note, that the user's chosen user name is part of the `client_csr`.
+The user registration functionality requires the user to perform an [OPAQUE registration flow](https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-offline-registration) with the homeserver. Note, that the user's chosen user id is part of the `client_csr`.
 
 ```rust
 struct InitUserRegistrationParams {
@@ -86,8 +86,9 @@ struct InitUserRegistrationParams {
 ```
 
 The AS then performs the following steps:
+
 * check if a user entry with the name given in the `client_csr` already exists
-* validate the `client_csr`
+* validate the [`client_csr`](./authentication_service/credentials.md#client-credential-signing-requests)
 * perform the [first (server side) step in the OPAQUE registration handshake](https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-createregistrationrequest)
 * sign the CSR
 * store the freshly signed ClientCredential in the ephemeral DB
@@ -100,7 +101,7 @@ struct InitUserRegistrationResponse {
 }
 ```
 
-After receiving the response, the client must call the [finalize user registration endpoint](./authentication_service.md#finish-user-registration).
+After receiving the response, the client must call the [finish user registration endpoint](./authentication_service.md#finish-user-registration).
 
 ### Authentication
 
@@ -112,17 +113,21 @@ This endpoint allows the user to finish its registration.
 
 ```rust
 struct FinishUserRegistrationParams {
-  user_name: UserName,
+  user_id: UserId,
   queue_encryption_key: HpkePublicKey,
-  connection_key_package: KeyPackage,
+  initial_queue_ratchet_key: RatchetKey,
+  connection_packages: Vec<ConnectionPackage>,
   opaque_registration_record: OpaqueRegistrationRecord,
+  username: Username,
 }
 ```
 
 The AS performs the following actions:
-* look up the initial client's ClientCredential in the ephemeral DB based on the `user_name`
+
+* look up the initial client's ClientCredential in the ephemeral DB based on the `user_id`
 * authenticate the request using the signature key in the ClientCredential
-* check (again) if the user entry exists
+* check (again) if the user id already exists
+* check if the user's chosen username is already taken
 * create the user entry with the information given in the request
 * create the initial client entry
 * delete the entry in the ephemeral OPAQUE DB
@@ -133,11 +138,11 @@ The AS performs the following actions:
 
 ## Get user connection package
 
-Given a user name, get a [connection package](authentication_service/connection_establishment.md#connection-group-creation) for the user's client.
+Given a username, get a [connection package](authentication_service/connection_establishment.md#connection-group-creation) for the user's client.
 
 ```rust
 struct UserClientsParams {
-  user_name: UserName,
+  username: Username,
 }
 ```
 
@@ -155,11 +160,11 @@ struct UserClientsResponse {
 
 ## User account deletion
 
-Delete the user account with the given user name.
+Delete the user account with the given user id.
 
 ```rust
 struct DeleteUserParams {
-  user_name: UserName,
+  user_id: UserId,
   opaque_ke3: OpaqueKe3,
 }
 ```

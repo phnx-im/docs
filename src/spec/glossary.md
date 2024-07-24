@@ -1,23 +1,23 @@
 # Glossary
 
-## User Name (UN)
+## User ID (UID)
 
-ID of a user consisting of a String qualified with the domain of the user's AS.
+ID of a user consisting of a UUID qualified with the domain of the user's AS.
 
 ```rust
-struct UserName {
+struct UserId {
     as_domain: FQDN,
-    user_name: String,
+    user_id: Uuid,
 }
 ```
 
 ## Client ID (CID)
 
-ID of a user's client, qualified by the user name of the owner's user.
+ID of a user's client, qualified by the user id of the owner's user.
 
 ```rust
 struct ClientId {
-    user_id: UserName,
+    user_id: UserId,
     client_uuid: UUID,
 }
 ```
@@ -42,6 +42,14 @@ struct PseudonymousClientId {
     client_id: UUID,
 }
 ```
+
+## Username
+
+A string that a user chooses upon account creation and that other users can use to discover that user and [establish a connection with them](./authentication_service/connection_establishment.md).
+
+## Display name
+
+A string that is shown to other users that a user is in a conversation with. The display name does not have to be unique.
 
 ## QueueConfig encryption key
 

@@ -14,7 +14,7 @@ When a client receives a message from another client, it performs the following 
 2. The signature on the sender’s leaf is valid w.r.t. the sender’s client credential.
 3. The signature on the sender’s client credential is valid w.r.t. one of the credentials published by the AS.
 
-If all signatures are indeed valid, the recipient can conclude that the message came from the user indicated by the user name in the sending client’s client ID.
+If all signatures are indeed valid, the recipient can conclude that the message came from the user indicated by the user id in the sending client’s client ID.
 
 Similarly, a joiner in a new group performs steps 2. and 3. to authenticate each member of the new group.
 
