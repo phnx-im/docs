@@ -8,7 +8,7 @@ The specification is split into subsections according to the modular structure o
 
 ## Authentication Service (AS)
 
-The [authentication service](spec/authentication_service.md) deals with user management, as well as user and client identity. For each user, it keeps an AS user record that contains the user ID, the user's display name, as well as identifiers and cryptographic key material of the user's client. The AS also provides the necessary funtionality for [discovery and connection establishment](spec/authentication_service/connection_establishment.md).
+The [authentication service](spec/authentication_service.md) deals with user management, as well as user and client identity. For each user, it keeps an AS user record that contains the user ID, as well as identifiers and cryptographic key material of the user's client. The AS also provides the necessary funtionality for [discovery and connection establishment](spec/authentication_service/connection_establishment.md).
 
 When communicating with the AS, users authenticate themselves using their real identity. This is as opposed to the rest of the homeserver, where users use pseudonyms for authentication.
 
