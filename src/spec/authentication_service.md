@@ -32,8 +32,8 @@ The AS generally keeps the following state
         * **Encryption ratchet key:** Symmetric key used to derive queue encryption keys.
       * **Current sequence number:** The current message sequence number.
       * **Queued messages:** A sequence of ciphertexts containing the messages in the queue. Each incoming message is [encrypted](./queuing_service/queue_encryption.md) and is assigned the current sequence number, after which the current sequence number is incremented.
-* **Username entries:** Data not linked to user ids and instead indexed by [Usernames](./glossary.md#username).
-  * **Username:** The Username associated with the direct queue.
+* **Alias entries:** Data not linked to user ids and instead indexed by [Aliass](./glossary.md#alias).
+  * **Alias:** The Alias associated with the direct queue.
   * **Direct queue:** A queue similar to the fan-out queues on the QS. Used to enqueue encrypted [connection establishment packages](./authentication_service/connection_establishment.md).
     * **Activity time:** Timestamp indicating the last time a client has fetched messages from the queue.
     * **Queue encryption key material:** Key material to perform [queue encryption](./queuing_service/queue_encryption.md).
@@ -57,7 +57,7 @@ There are four modes of authentication for endpoints on the AS.
 * **Client Credential:** A signature over a time stamp using the signature key in the calling client's ClientCredential. The request additionally contains the calling client's ClientCredential.
 * **Client Password:** An OPAQUE login flow.
 * **Client 2FA:** The same as **Client**, but additionally performing an [OPAQUE](https://datatracker.ietf.org/doc/draft-irtf-cfrg-opaque/) login flow
-* **Username auth key:** A signature over a time stamp using the username auth key. The request additionally contains the calling client's username.
+* **Alias auth key:** A signature over a time stamp using the alias auth key. The request additionally contains the calling client's alias.
 
 If not explicitly mentioned, all endpoints additionally require the client to provide a valid privacy pass token as part of the request.
 
@@ -140,7 +140,6 @@ The AS performs the following actions:
 * look up the initial client's ClientCredential in the ephemeral DB based on the `user_id`
 * authenticate the request using the signature key in the ClientCredential
 * check (again) if the user id already exists
-* check if the user's chosen username is already taken
 * create the user entry with the information given in the request
 * create the initial client entry
 * delete the entry in the ephemeral OPAQUE DB
@@ -301,47 +300,47 @@ struct AsCredentialsResponse {
 
 * None
 
-## Register username
+## Register alias
 
-Register the given username with the AS. After registration, the calling client can upload connection packages and dequeue messages from the queue associated with the username.
+Register the given alias with the AS. After registration, the calling client can upload connection packages and dequeue messages from the queue associated with the alias.
 
 ```rust
-struct RegisterUsername {
-  username: Username
-  username_auth_key: UsernameAuthkey,
+struct RegisterAlias {
+  alias: Alias
+  alias_auth_key: AliasAuthkey,
 }
 ```
 
 The AS performs the following actions:
 
-* Check that the username is not already registered
-* Create a username entry with the given username and auth key
+* Check that the alias is not already registered
+* Create a alias entry with the given alias and auth key
 
 ### Authentication
 
 * None
 
-## Delete username
+## Delete alias
 
-Delete the username entry with the given username, as well as the associated queue and connection packages.
+Delete the alias entry with the given alias, as well as the associated queue and connection packages.
 
 ```rust
-struct DeleteUsername {
-  username: Username,
+struct DeleteAlias {
+  alias: Alias,
 }
 ```
 
 ### Authentication
 
-* Username auth key
+* Alias auth key
 
-## Dequeue username messages
+## Dequeue alias messages
 
-Dequeue messages from a username direct queue, starting with the message with the given sequence number.
+Dequeue messages from a alias direct queue, starting with the message with the given sequence number.
 
 ```rust
-struct DequeueUsernameMessagesParams {
-  username: Username,
+struct DequeueAliasMessagesParams {
+  alias: Alias,
   sequence_number_start: u64,
   max_message_number: u64,
 }
@@ -355,15 +354,15 @@ The AS deletes messages older than the given sequence number and returns message
 
 ### Authentication
 
-* Username auth key
+* Alias auth key
 
-## Enqueue username messages
+## Enqueue alias messages
 
 Enqueue a message into a client's direct queue.
 
 ```rust
-struct EnqueueUsernameMessageParams {
-  username: Username,
+struct EnqueueAliasMessageParams {
+  alias: Alias,
   connection_establishment_ctxt: Vec<u8>,
 }
 ```
@@ -373,35 +372,35 @@ struct EnqueueUsernameMessageParams {
 
 * None
 
-## Upload username connection package payloads
+## Upload alias connection package payloads
 
-Upload the given [connection package payloads](authentication_service/connection_establishment.md#connection-group-creation) to the username entry with the given username. Note that in contrast to the similar functionality for user ids, this endpoint only takes the payloads of the connection packages as input.
+Upload the given [connection package payloads](authentication_service/connection_establishment.md#connection-group-creation) to the alias entry with the given alias. Note that in contrast to the similar functionality for user ids, this endpoint only takes the payloads of the connection packages as input.
 
 ```rust
-struct UploadUsernamePackages {
-  username: Username,
+struct UploadAliasPackages {
+  alias: Alias,
   connection_package_ctxt: Vec<ConnectionPackagePayload>,
 }
 ```
 
 ### Authentication 
 
-* Username auth key
+* Alias auth key
 
-## Get username connection package
+## Get alias connection package
 
-Given a username, get a [connection package](authentication_service/connection_establishment.md#connection-group-creation) for the user's client.
+Given a alias, get a [connection package](authentication_service/connection_establishment.md#connection-group-creation) for the user's client.
 
 ```rust
-struct UsernameClientsParams {
-  username: Username,
+struct AliasClientsParams {
+  alias: Alias,
 }
 ```
 
 The AS returns the following information.
 
 ```rust
-struct UsernameClientsResponse {
+struct AliasClientsResponse {
   connection_package: ConnectionPackagePayload,
 }
 ```

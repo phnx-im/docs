@@ -43,13 +43,13 @@ struct PseudonymousClientId {
 }
 ```
 
-## Username
+## Alias
 
 A string that a user registers anonymously with the AS. Other users can use it to discover that user and [establish a connection with them](./authentication_service/connection_establishment.md).
 
-## Username auth key
+## Alias auth key
 
-A public signature key used by the user who registered the assocated username with the AS to authenticate itself, for example, when dequeuing messages or when uploading connection packages.
+A public signature key used by the user who registered the assocated alias with the AS to authenticate itself, for example, when dequeuing messages or when uploading connection packages.
 
 ## User profile
 
