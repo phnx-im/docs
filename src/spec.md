@@ -1,12 +1,14 @@
-# Specification (Draft)
+# Specification
 
-This section contains a proof-of-concept specification of the Phoenix homeserver protocol. The goal is for it to fulfill the [functional requirements](./functional_requirements.md) and be the target for analysis via the [threat model](./threat_model.md).
+This section contains a proof-of-concept specification of the Phoenix homeserver protocol. The goal is for it to fulfill the [functional requirements](./functional_requirements.md) and be the target for analysis via the [threat model](./threat_model.md). 
+
+The protocol relies heavily on the Messaging Layer Security (MLS) protocol as specified in [RFC 9420](https://www.rfc-editor.org/rfc/rfc9420.html). This specification assumes at least some familiarity with RFC 9420, its concepts, and its terminology.
 
 The specification is split into subsections according to the modular structure of the homeserver. In particular, the specification covers the following modules.
 
 ## Authentication Service (AS)
 
-The [authentication service](spec/authentication_service.md) deals with user management, as well as user and client identity. For each user, it keeps an AS user record that contains the user name, as well as identifiers and cryptographic key material of the user's client. The AS also provides the necessary funtionality for [discovery and connection establishment](spec/authentication_service/connection_establishment.md).
+The [authentication service](spec/authentication_service.md) deals with user management, as well as user and client identity. For each user, it keeps an AS user record that contains the user ID, as well as identifiers and cryptographic key material of the user's client. The AS also provides the necessary funtionality for [discovery and connection establishment](spec/authentication_service/connection_establishment.md).
 
 When communicating with the AS, users authenticate themselves using their real identity. This is as opposed to the rest of the homeserver, where users use pseudonyms for authentication.
 

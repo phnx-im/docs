@@ -23,3 +23,9 @@ A group's EAR key is freshly sampled at the group's inception and is not rotated
 * The client creating the group samples the key freshly upon group creation
 * Clients joining the group receive the key encrypted via a group info extension (i.e. either via a Welcome or via an External Init package)
 * The key is fixed and is never rotated
+
+## User profile key encryption
+
+* Generated freshly by the group creator and distributed to group members alongside the credential encryption key
+* Used to encrypt and decrypt the group members' individual [user profile encryption keys](../glossary.md#user-profile-encryption-key)
+* The key is fixed and is never rotated

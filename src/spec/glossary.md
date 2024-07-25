@@ -1,23 +1,23 @@
 # Glossary
 
-## User Name (UN)
+## User ID (UID)
 
-ID of a user consisting of a String qualified with the domain of the user's AS.
+ID of a user consisting of a UUID qualified with the domain of the user's AS.
 
 ```rust
-struct UserName {
+struct UserId {
     as_domain: FQDN,
-    user_name: String,
+    user_id: Uuid,
 }
 ```
 
 ## Client ID (CID)
 
-ID of a user's client, qualified by the user name of the owner's user.
+ID of a user's client, qualified by the user id of the owner's user.
 
 ```rust
 struct ClientId {
-    user_id: UserName,
+    user_id: UserId,
     client_uuid: UUID,
 }
 ```
@@ -42,6 +42,26 @@ struct PseudonymousClientId {
     client_id: UUID,
 }
 ```
+
+## Alias
+
+A string that a user registers anonymously with the AS. Other users can use it to discover that user and [establish a connection with them](./authentication_service/connection_establishment.md).
+
+## Alias auth key
+
+A public signature key used by the user who registered the assocated alias with the AS to authenticate itself, for example, when dequeuing messages or when uploading connection packages.
+
+## User profile
+
+Personal user data that represents the user towards other users in the context of groups. For now, the user profile only contains the user's [display name](./glossary.md#display-name). The user profile is stored on the AS, encrypted under the user's user profile encryption key.
+
+## User profile encryption key
+
+A symmetric key used to encrypt or decrypt a user's user profile. It is held by the user itself and provisioned ([encrypted](./delivery_service/group_state_encryption.md#user-profile-key-encryption)) to the DS as part of the DS' group state.
+
+## Display name
+
+A string that is shown to other users that a user is in a conversation with. The display name does not have to be unique.
 
 ## QueueConfig encryption key
 

@@ -12,7 +12,7 @@ User creation across the different services processes in multiple stages:
 To initialize AS registration, the user has to provide
 
 - a password
-- a (desired) [user name](../glossary.md#user-name-un), which includes the domain of the provider
+- a [user id](../glossary.md#user-id-uid), which includes the domain of the provider
 
 The client can then fetch the [credentials of the providers AS](../authentication_service.md#get-as-credentials) and the [verifying key of the provider's QS](../queuing_service.md#fetch-qs-verifying-key).
 

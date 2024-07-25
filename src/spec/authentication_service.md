@@ -10,7 +10,6 @@ The AS is configurable by use of the following configuration variables:
 
 * **Anonymous token timeframe:** The amount of time which each client has to wait until it can obtain new anonymous authentication tokens.
 * **Default token allowance:** The default amount of anonymous authentication tokens issued to each user in the anonymous token timeframe.
-* **Identity provider:** Network address of the OpenID connect identity provider the authentication service delegates authentication to for account registration.
 * **Maximal QS client record age:** Maximal age of an inactive client entry.
   * Default: 90d
 * **Maximal number of requested messages:** Maximal number of messages that will be returned to a client requesting messages from a direct queue.
@@ -19,33 +18,48 @@ The AS is configurable by use of the following configuration variables:
 
 The AS generally keeps the following state
 
-* **User entries:** A database with one entry for each user account. Each entry is indexed by the user's [user name](glossary.md#user-name-un) and contains a number of sub-entries.
+* **User entries:** A database with one entry for each user account. Each entry is indexed by the user's [user id](glossary.md#user-id-uid) and contains a number of sub-entries.
   * **OPAQUE user record:** The OPAQUE protocol artifact that allows the user to authenticate itself via its password in queries to the AS.
+  * **Encrypted user profile:** The user's encrypted [user profile](./glossary.md#user-profile).
   * **Client entries:** Sub entries for the users' clients. Indexed by the clients' [client id](glossary.md#client-id-cid).
     * **Client credential:** The [credential](authentication_service/credentials.md#client-credentials) of the client.
     * **Token issuance records:** A record of how many tokens were issued to the client.
-    * **Activity time:** Timestamp indicating the last time a client has fetched messages from the queue.
-    * **Connection establishment KeyPackage:** A key package used to encrypt information in the [connection establishment process](authentication_service/connection_establishment.md).
-    * **Direct queue:** A queue similar to the fan-out queues on the QS.
+    * **Connection packages:** Packages uploaded by the client and used in the [connection establishment process](authentication_service/connection_establishment.md).
+    * **Direct queue:** A queue similar to the fan-out queues on the QS. Used to enqueue encrypted [connection establishment packages](./authentication_service/connection_establishment.md).
+      * **Activity time:** Timestamp indicating the last time a client has fetched messages from the queue.
       * **Queue encryption key material:** Key material to perform [queue encryption](./queuing_service/queue_encryption.md).
         * **Queue encryption key:** HPKE public key of the queue owner
         * **Encryption ratchet key:** Symmetric key used to derive queue encryption keys.
       * **Current sequence number:** The current message sequence number.
       * **Queued messages:** A sequence of ciphertexts containing the messages in the queue. Each incoming message is [encrypted](./queuing_service/queue_encryption.md) and is assigned the current sequence number, after which the current sequence number is incremented.
+* **Alias entries:** Data not linked to user ids and instead indexed by [Aliass](./glossary.md#alias).
+  * **Alias:** The Alias associated with the direct queue.
+  * **Direct queue:** A queue similar to the fan-out queues on the QS. Used to enqueue encrypted [connection establishment packages](./authentication_service/connection_establishment.md).
+    * **Activity time:** Timestamp indicating the last time a client has fetched messages from the queue.
+    * **Queue encryption key material:** Key material to perform [queue encryption](./queuing_service/queue_encryption.md).
+      * **Queue encryption key:** HPKE public key of the queue owner
+      * **Encryption ratchet key:** Symmetric key used to derive queue encryption keys.
+    * **Current sequence number:** The current message sequence number.
+    * **Queued messages:** A sequence of ciphertexts containing the messages in the queue. Each incoming message is [encrypted](./queuing_service/queue_encryption.md) and is assigned the current sequence number, after which the current sequence number is incremented.
+  * **Connection package payloads:** Packages uploaded by the client and used in the [connection establishment process](authentication_service/connection_establishment.md).
 * **Ephemeral OPAQUE DB:** An in-memory database that stores user-name or client-id indexed entries
   * **Client credential:** Credential of the client that is being added to an existing user entry, or the initial client of a new user entry.
   * **Optional OPAQUE state:** OPAQUE server state, only present in case of the OPAQUE online AKE flow, i.e. if a client performs 2FA, but not during an OPAQUE setup.
 * **AS credential key material:** Credentials that can be retrieved by clients, as well as the private key material used by the AS to sign client [CSRs](authentication_service/credentials.md#client-credential-signing-requests).
 * **AS OPAQUE key material:** OPRF seed, server public key and server private key as required for the server to perform OPAQUE registration a login flows with clients.
+* **AS Privacy Pass key material:** server public key and server private key as required for the server to process privacy pass token requests.
 
 ## Authentication
 
-There are three modes of authentication for endpoints on the AS.
+There are four modes of authentication for endpoints on the AS.
 
 * **None:** For endpoints that are meant to be publicly accessible, e.g. user account registration
 * **Client Credential:** A signature over a time stamp using the signature key in the calling client's ClientCredential. The request additionally contains the calling client's ClientCredential.
 * **Client Password:** An OPAQUE login flow.
 * **Client 2FA:** The same as **Client**, but additionally performing an [OPAQUE](https://datatracker.ietf.org/doc/draft-irtf-cfrg-opaque/) login flow
+* **Alias auth key:** A signature over a time stamp using the alias auth key. The request additionally contains the calling client's alias.
+
+If not explicitly mentioned, all endpoints additionally require the client to provide a valid privacy pass token as part of the request.
 
 ## Initiate 2FA operation
 
@@ -76,7 +90,7 @@ struct Initiate2FaAuthenticationResponse {
 
 ## Initialize user registration
 
-The user registration functionality requires the user to perform an [OPAQUE registration flow](https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-offline-registration) with the homeserver. Note, that the user's chosen user name is part of the `client_csr`.
+The user registration functionality requires the user to perform an [OPAQUE registration flow](https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-offline-registration) with the homeserver. Note, that the user's chosen user id is part of the `client_csr`.
 
 ```rust
 struct InitUserRegistrationParams {
@@ -86,8 +100,9 @@ struct InitUserRegistrationParams {
 ```
 
 The AS then performs the following steps:
+
 * check if a user entry with the name given in the `client_csr` already exists
-* validate the `client_csr`
+* validate the [`client_csr`](./authentication_service/credentials.md#client-credential-signing-requests)
 * perform the [first (server side) step in the OPAQUE registration handshake](https://www.ietf.org/archive/id/draft-irtf-cfrg-opaque-09.html#name-createregistrationrequest)
 * sign the CSR
 * store the freshly signed ClientCredential in the ephemeral DB
@@ -100,7 +115,7 @@ struct InitUserRegistrationResponse {
 }
 ```
 
-After receiving the response, the client must call the [finalize user registration endpoint](./authentication_service.md#finish-user-registration).
+After receiving the response, the client must call the [finish user registration endpoint](./authentication_service.md#finish-user-registration).
 
 ### Authentication
 
@@ -112,17 +127,19 @@ This endpoint allows the user to finish its registration.
 
 ```rust
 struct FinishUserRegistrationParams {
-  user_name: UserName,
+  user_id: UserId,
   queue_encryption_key: HpkePublicKey,
-  connection_key_package: KeyPackage,
+  initial_queue_ratchet_key: RatchetKey,
+  connection_packages: Vec<ConnectionPackage>,
   opaque_registration_record: OpaqueRegistrationRecord,
 }
 ```
 
 The AS performs the following actions:
-* look up the initial client's ClientCredential in the ephemeral DB based on the `user_name`
+
+* look up the initial client's ClientCredential in the ephemeral DB based on the `user_id`
 * authenticate the request using the signature key in the ClientCredential
-* check (again) if the user entry exists
+* check (again) if the user id already exists
 * create the user entry with the information given in the request
 * create the initial client entry
 * delete the entry in the ephemeral OPAQUE DB
@@ -131,13 +148,67 @@ The AS performs the following actions:
 
 * Client 2FA (the AS has to successfully complete the OPAQUE handshake and the client needs to provide Client Credential authentication using the signature key of the initial client)
 
-## Get user connection package
+## Update user profile
 
-Given a user name, get a [connection package](authentication_service/connection_establishment.md#connection-group-creation) for the user's client.
+Allows users to update their [user profile](./glossary.md#user-profile). The profile is stored on the AS encrypted under the user's [user profile encryption key](./glossary.md#user-profile-encryption-key).
+
+```rust
+struct UpdateUserProfileParams {
+  user_id: UserId,
+  new_user_profile: Vec<u8>,
+}
+```
+
+The AS overwrites the existing user profile ciphertext with the new one.
+
+### Authentication
+
+* Client credential
+
+## Fetch user profile
+
+Fetch the user profile of the user with the given user id.
+
+```rust
+struct UserProfileParams {
+  user_id: UserId,
+}
+```
+
+The AS responds with the encrypted user profile of the user with the given id.
+
+```rust
+struct UserProfileResponse {
+  user_profile: Vec<u8>,
+}
+```
+
+### Authentication
+
+* None
+
+## Upload user id connection packages
+
+Upload the given encrypted [connection packages](authentication_service/connection_establishment.md#connection-group-creation) to the user entry with the given user id.
+
+```rust
+struct UploadUserIdPackages {
+  user_id: UserId,
+  connection_package_ctxt: Vec<Vec<u8>>,
+}
+```
+
+### Authentication 
+
+* Client credential
+
+## Get user id connection package
+
+Given a user id, get a [connection package](authentication_service/connection_establishment.md#connection-group-creation) for the user's client.
 
 ```rust
 struct UserClientsParams {
-  user_name: UserName,
+  user_id: UserId,
 }
 ```
 
@@ -155,11 +226,11 @@ struct UserClientsResponse {
 
 ## User account deletion
 
-Delete the user account with the given user name.
+Delete the user account with the given user id.
 
 ```rust
 struct DeleteUserParams {
-  user_name: UserName,
+  user_id: UserId,
   opaque_ke3: OpaqueKe3,
 }
 ```
@@ -229,6 +300,116 @@ struct AsCredentialsResponse {
 
 * None
 
+## Register alias
+
+Register the given alias with the AS. After registration, the calling client can upload connection packages and dequeue messages from the queue associated with the alias.
+
+```rust
+struct RegisterAlias {
+  alias: Alias
+  alias_auth_key: AliasAuthkey,
+}
+```
+
+The AS performs the following actions:
+
+* Check that the alias is not already registered
+* Create a alias entry with the given alias and auth key
+
+### Authentication
+
+* None
+
+## Delete alias
+
+Delete the alias entry with the given alias, as well as the associated queue and connection packages.
+
+```rust
+struct DeleteAlias {
+  alias: Alias,
+}
+```
+
+### Authentication
+
+* Alias auth key
+
+## Dequeue alias messages
+
+Dequeue messages from a alias direct queue, starting with the message with the given sequence number.
+
+```rust
+struct DequeueAliasMessagesParams {
+  alias: Alias,
+  sequence_number_start: u64,
+  max_message_number: u64,
+}
+```
+
+The AS deletes messages older than the given sequence number and returns messages starting with the given sequence number. The maximum number of messages returned this way is the smallest of the following values.
+
+* The number of messages remaining in the queue
+* The value of the `max_message_number` field in the request
+* The AS configured maximum number of returned messages
+
+### Authentication
+
+* Alias auth key
+
+## Enqueue alias messages
+
+Enqueue a message into a client's direct queue.
+
+```rust
+struct EnqueueAliasMessageParams {
+  alias: Alias,
+  connection_establishment_ctxt: Vec<u8>,
+}
+```
+
+
+### Authentication
+
+* None
+
+## Upload alias connection package payloads
+
+Upload the given [connection package payloads](authentication_service/connection_establishment.md#connection-group-creation) to the alias entry with the given alias. Note that in contrast to the similar functionality for user ids, this endpoint only takes the payloads of the connection packages as input.
+
+```rust
+struct UploadAliasPackages {
+  alias: Alias,
+  connection_package_ctxt: Vec<ConnectionPackagePayload>,
+}
+```
+
+### Authentication 
+
+* Alias auth key
+
+## Get alias connection package
+
+Given a alias, get a [connection package](authentication_service/connection_establishment.md#connection-group-creation) for the user's client.
+
+```rust
+struct AliasClientsParams {
+  alias: Alias,
+}
+```
+
+The AS returns the following information.
+
+```rust
+struct AliasClientsResponse {
+  connection_package: ConnectionPackagePayload,
+}
+```
+
+### Authentication
+
+* None
+
+
 ## Token Issuance
 
 This endpoints allows both local clients and clients of federated homeservers to retrieve Privacy Pass tokens which they can then redeem to interact with the local DS.
@@ -240,7 +421,14 @@ struct RequestToken {
 }
 ```
 
-`TokenRequest` represents a Privacy Pass token request.
+`TokenRequest` represents a Privacy Pass token request. The server processes the request, checks if the client sufficient allowance left, reduces the allowance and responds with the tokens.
+
+```rust
+struct TokenResponse {
+  tokens: Vec<Token>
+}
+```
+
 
 ### Rate-limiting
 

@@ -1,4 +1,4 @@
-# Friendship tokens and KeyPackage publication
+# Friendship tokens and Key-/AddPackage publication
 
 To prevent a homeserver from learning which groups a user is a member of, the user's information on the QS and DS are pseudonymous. However, other users must be able to authenticate the user when the user's client joins a group. This would typically happen through the Credential in a client's KeyPackage. However, since the KeyPackages are published on the QS and the public trees to which the KeyPackages are added are observable by the DS, the client credential can't be included in the KeyPackage.
 
@@ -12,7 +12,7 @@ When establishing a [connection with another user](../authentication_service/con
 
 Possession of a friendship token authorizes a client to add the original owner of the token to a group. Once added to a group, all group members must be able to authenticate the newly added user via its client.
 
-However, the QS that stores the published KeyPackages to facilitate group member additions must not learn the user's identity. Thus, KeyPackages are always published as [AddPackages](../glossary.md#addpackage), where the KeyPackage only contains a pseudonymous [leaf credential](../authentication_service/credentials.md#leaf-credentials), a [Signature Encryption Key](../glossary.md#signature-encryption-key) and the [client credential](../authentication_service/credentials.md#client-credentials), where the latter two are encrypted under the friendship encryption key. Both leaf credential and signature encryption key are generated freshly for each AddPackage.
+However, the QS that stores the published KeyPackages to facilitate group member additions must not learn the user's identity. Thus, KeyPackages are always published as [AddPackages](../glossary.md#addpackage). An AddPackage contains a KeyPackage with a pseudonymous [leaf credential](../authentication_service/credentials.md#leaf-credentials), a [Signature Encryption Key](../glossary.md#signature-encryption-key) and the [client credential](../authentication_service/credentials.md#client-credentials), where the latter two are encrypted under the friendship encryption key. Both leaf credential and signature encryption key are generated freshly for each AddPackage.
 
 The leaf credential contains a signature by the client credential. To prevent a DS from tracking leaf credentials signed by the same client credential across groups, that signature is encrypted under the signature encryption key, which in turn is also encrypted under the friendship encryption key.
 
