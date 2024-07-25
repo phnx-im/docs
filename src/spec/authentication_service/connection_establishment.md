@@ -1,6 +1,6 @@
 # Discovery and connection establishment
 
-Discovery allows users to find other users based on their [username](../glossary.md#username) and establish a connection with them. The connection establishment process establishes a *connection group* that consists of the clients of both connected users, but otherwise functions like a regular group with the exception of the group creation process.
+Discovery allows users to find other users based on their [username](../glossary.md#username) or their [user id](../glossary.md#user-id-uid) and establish a connection with them. The connection establishment process establishes a *connection group* that consists of the clients of both connected users, but otherwise functions like a regular group with the exception of the group creation process.
 
 Once two users have a *connection*, they can add one-another to groups.
 
@@ -10,19 +10,23 @@ The second consideration is that neither of the homeservers involved (with the i
 
 ## Connection group creation
 
-To allow connection establishment in the first place, the user's client publishes *connection packages* with the AS which contains the client's [client credential](credentials.md#client-credentials) instead of the Leaf Credential that is used in KeyPackages.
+To allow connection establishment in the first place, the user's client publishes *connection packages* with the AS. Connection packages can be published both under the user's user id. Additionally, **connection package payloads** can be published under any of the user's registered usernames. As the usernames should not be associated with the user id of the creating user, or any other registered usernames, the payloads lack the user's client's client credential and signature.
 
 ```rust
-struct ConnectionPackage {
+struct ConnectionPackagePayload {
     encryption_key: ConnectionEncryptionKey,
     lifetime: ExpirationData,
+}
+
+struct ConnectionPackage {
+    payload: ConnectionPackagePayload,
     client_credential: ClientCredential,
     // TBS: All information above signed by the ClientCredential.
-    signature: Signature
+    signature: Signature,
 }
 ```
 
-When discovering a user, the initiator fetches a connection package for the user's client. The initiator then creates a new group and sends a `ConnectionEstablishmentPackage` to the responder's client.
+When discovering a user (either by user id or user name), the initiator fetches a connection package for the user's client. The initiator then creates a new group and sends a `ConnectionEstablishmentPackage` to the responder's client.
 
 ```rust
 struct ConnectionEstablishmentPackage {
@@ -35,7 +39,7 @@ struct ConnectionEstablishmentPackage {
 }
 ```
 
-The `ConnectionEstablishmentPackage` is signed using the initiator's client credential and encrypted under the `ConnectionEncryptionKey` of the connection package of the responder's client.
+The `ConnectionEstablishmentPackage` is signed using the initiator's client credential and encrypted under the `ConnectionEncryptionKey` included in the connection package.
 
 The receiving client must verify the signature on the package and fetch the AS credential and AS intermediate credential to verify the signature chain from the initiator's client credential to the AS credential. The responder can then decide based on the sender's user name (contained in the client credential) if it wants to accept the connection.
 

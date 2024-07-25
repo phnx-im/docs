@@ -77,6 +77,8 @@ The verification key used to create the token depends on the sender_id:
 * QsUid: [QS user record auth key](./glossary.md#qs-user-record-auth-key)
 * QsCid: [QS QS client record auth key](./glossary.md#qs-client-record-auth-key)
 
+All client endpoints additionally require the client to submit a privacy pass token valid under the privacy pass public key of the AS of the same domain as the QS. The only two exceptions are the endpoints to dequeue messages and to negotiate a websocket connection.
+
 ## DS-to-QS communication
 
 ### Enqueuing messages
@@ -158,8 +160,6 @@ Endpoints for management of QS user records. Note that a QS user record is delet
 
 #### Create new QS user record
 
-* Endpoint: `ENDPOINT_QS_CREATE_USER_RECORD`
-
 Create a new QS user record, as well as a first QS client record.
 
 ```rust
@@ -182,8 +182,6 @@ struct CreateUserRecordResponse {
 
 #### Update QS user record
 
-* Endpoint: `ENDPOINT_QS_UPDATE_USER_RECORD`
-
 Update a given QS user record, overwriting the existing values with the one given in the message.
 
 ```rust
@@ -199,8 +197,6 @@ struct UpdateUserRecordParams {
 * QsSenderId: QsUid
 
 #### Get own QS user record
-
-* Endpoint: `ENDPOINT_QS_USER_RECORD`
 
 Get the data associated with a given QS user record that you own.
 
@@ -226,8 +222,6 @@ struct UserRecordResponse {
 
 #### Delete QS user record
 
-* Endpoint: `ENDPOINT_QS_DELETE_USER_RECORD`
-
 Delete the given QS user record including all associated QS client records.
 
 ```rust
@@ -241,8 +235,6 @@ struct DeleteUserRecordParams {
 * QsSenderId: QsUid
 
 #### Publish KeyPackages
-
-* Endpoint: `ENDPOINT_QS_PUBLISH_KEY_PACKAGES`
 
 Publish the given [AddPackage](glossary.md#addpackage) under the given QsCid.
 
@@ -262,8 +254,6 @@ The QS deletes all existing KeyPackages before publishing the new ones.
 * QsSenderId: QsCid
 
 #### Get AddPackage
-
-* Endpoint: `ENDPOINT_QS_ADD_PACKAGE`
 
 Get a KeyPackage of the user with the given friendship token.
 
@@ -287,8 +277,6 @@ Instead of a QSAuthToken, the QS requires the client to provide a friendship tok
 
 #### Dequeue messages
 
-* Endpoint: `ENDPOINT_QS_DEQUEUE_MESSAGES`
-
 Dequeue messages from a queue, starting with the message with the given sequence number.
 
 ```rust
@@ -310,8 +298,6 @@ The QS deletes messages older than the given sequence number and returns message
 * QsSenderId: QsCid
 
 #### Negotiate websocket connection
-
-* Endpoint: `ENDPOINT_QS_WS`
 
 Allows a client to create a websocket connection with the QS. If such a websocket connection exists then whenever the QS would send a push notification, it instead signals the client via the websocket connection.
 

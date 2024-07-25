@@ -69,6 +69,8 @@ The verification key used to create the token depends on the `sender_id`:
 * LeafIndex: Signature key in the leaf's credential
 * KeyPackageRef: Signature key of the credential in the KeyPackage with the given KeyPackageRef
 
+All endpoints additionally require the client to submit a privacy pass token valid under the privacy pass public key of the AS of the same domain as the DS.
+
 ## GroupInfo updates
 
 When sending a commit to change the group state, the sender has to enable the DS to update the MLSGroupInfo of the group. Since the DS either already has most of the required data and can extract the rest from the message, the sender only has to include its signature over the new GroupInfo.

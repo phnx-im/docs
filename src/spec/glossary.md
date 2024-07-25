@@ -45,7 +45,19 @@ struct PseudonymousClientId {
 
 ## Username
 
-A string that a user chooses upon account creation and that other users can use to discover that user and [establish a connection with them](./authentication_service/connection_establishment.md).
+A string that a user registers anonymously with the AS. Other users can use it to discover that user and [establish a connection with them](./authentication_service/connection_establishment.md).
+
+## Username auth key
+
+A public signature key used by the user who registered the assocated username with the AS to authenticate itself, for example, when dequeuing messages or when uploading connection packages.
+
+## User profile
+
+Personal user data that represents the user towards other users in the context of groups. For now, the user profile only contains the user's [display name](./glossary.md#display-name). The user profile is stored on the AS, encrypted under the user's user profile encryption key.
+
+## User profile encryption key
+
+A symmetric key used to encrypt or decrypt a user's user profile. It is held by the user itself and provisioned ([encrypted](./delivery_service/group_state_encryption.md#user-profile-key-encryption)) to the DS as part of the DS' group state.
 
 ## Display name
 
