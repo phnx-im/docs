@@ -1,3 +1,3 @@
 # Qualitative Threat Models
 
-We have two qualitative threat models. One detailing the consequences of a compromised authentication service for confidentiality and authentication of user-to-user communication and one exploring the consequences of federation for the individual actors involved in Phoenix homeserver protocol interactions.
+The three qualitative threat models in this section detail the threats and risks specific to the authentication service, the federated environment and metadata in general on any of the services.

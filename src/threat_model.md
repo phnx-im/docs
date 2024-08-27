@@ -16,23 +16,7 @@ Both of these properties are already provided by the Messaging Layer Security (M
 
 ### Metadata privacy
 
-Confidentiality and authenticity cover the content of messages, but the metadata of messages can also reveal sensitive information. Metadata typically includes information like the sender and recipient of a message, the time it was sent, and the size of the message, and the group conversation in which it was sent. Metadata aggregation can reveal patterns of communication and can be used to infer social relationships. In particular, correlation can be used to infer social graphs. The main objective of the Phoenix homeserver protocol is to protect this metadata from adversaries by minimizing metadata and decorrelating the remaining data points as much as possible.
-
-We consider two types of adversaries:
-
-#### Snapshot adversarires
-
-Snapshot adversaries have access to snapshots of the server's persisted state. They can see the metadata of all messages that have been sent and received up to the point of the snapshot and that haven't been deleted from the long-term storage. 
-
-The main protection against the snapshot adversary is encryption at rest for almost all relevant metadata. This means snapshots become largely useless to the adversary since the senders of messages, the group in which messages were sent, etc. are encrypted. The encryption keys are either only held by clients, or are only held temporarily by the server in volatile memory and are therefore not part of the snapshot.
-
-#### Active observer adversaries
-
-Active observer adversaries have full access to the server including its volatile memory in addition to the snapshots. 
-
-The main protection against the active observer is that users interact with the services using per-group pseudonyms instead of their real identities. This means that the adversary cannot link any individual action of a user with the user's identity as seen by other users. The adversary can still see the metadata of messages, but cannot link them to the real identities of the users.
-
-This threat model does not consider analysis of traffic patterns or other use of network metadata. While the use of network metadata can yield powerful attacks, common countermeasures such as onion routing or the use of mixnets are orthogonal to the Phoenix homeserver protocol and can be used in conjunction with it to mitigate such attacks.
+Confidentiality and authenticity cover the content of messages, but the metadata of messages can also reveal sensitive information. Metadata typically includes information like the sender and recipient of a message, the time it was sent, and the size of the message, and the group conversation in which it was sent. Metadata aggregation can reveal patterns of communication and can be used to infer social relationships. In particular, correlation can be used to infer social graphs. The main objective of the Phoenix homeserver protocol is to protect this metadata from adversaries by minimizing metadata and decorrelating the remaining data points as much as possible. See the [qualitative threat model](./threat_model/qualitative/metadata.md) for more details.
 
 ### Availability
 
