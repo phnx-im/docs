@@ -56,7 +56,7 @@ There are four modes of authentication for endpoints on the AS.
 * **None:** For endpoints that are meant to be publicly accessible, e.g. user account registration
 * **Client Credential:** A signature over a time stamp using the signature key in the calling client's ClientCredential. The request additionally contains the calling client's ClientCredential.
 * **Client Password:** An OPAQUE login flow.
-* **Client 2FA:** The same as **Client**, but additionally performing an [OPAQUE](https://datatracker.ietf.org/doc/draft-irtf-cfrg-opaque/) login flow
+* **Client 2FA:** The same as **Client Credential**, but additionally performing an [OPAQUE](https://datatracker.ietf.org/doc/draft-irtf-cfrg-opaque/) login flow
 * **Alias auth key:** A signature over a time stamp using the alias auth key. The request additionally contains the calling client's alias.
 
 If not explicitly mentioned, all endpoints additionally require the client to provide a valid privacy pass token as part of the request.
@@ -67,7 +67,6 @@ The client has to query this endpoint before it can query an endpoint that requi
 
 ```rust
 struct Initiate2FaAuthenticationParams {
-  client_id: ClientId,
   opaque_ke1: OpaqueKe1,
 }
 ```
@@ -127,7 +126,6 @@ This endpoint allows the user to finish its registration.
 
 ```rust
 struct FinishUserRegistrationParams {
-  user_id: UserId,
   queue_encryption_key: HpkePublicKey,
   initial_queue_ratchet_key: RatchetKey,
   connection_packages: Vec<ConnectionPackage>,
@@ -137,7 +135,7 @@ struct FinishUserRegistrationParams {
 
 The AS performs the following actions:
 
-* look up the initial client's ClientCredential in the ephemeral DB based on the `user_id`
+* look up the initial client's ClientCredential in the ephemeral DB based on the `user_id` given as part of the client credential-based authentication
 * authenticate the request using the signature key in the ClientCredential
 * check (again) if the user id already exists
 * create the user entry with the information given in the request
@@ -154,12 +152,11 @@ Allows users to update their [user profile](./glossary.md#user-profile). The pro
 
 ```rust
 struct UpdateUserProfileParams {
-  user_id: UserId,
   new_user_profile: Vec<u8>,
 }
 ```
 
-The AS overwrites the existing user profile ciphertext with the new one.
+The AS overwrites the existing user profile ciphertext with the new one. The target user's user ID is derived from the client's ClientCredential.
 
 ### Authentication
 
@@ -193,12 +190,11 @@ Upload the given encrypted [connection packages](authentication_service/connecti
 
 ```rust
 struct UploadUserIdPackages {
-  user_id: UserId,
   connection_package_ctxt: Vec<Vec<u8>>,
 }
 ```
 
-### Authentication 
+### Authentication
 
 * Client credential
 
@@ -230,14 +226,13 @@ Delete the user account with the given user id.
 
 ```rust
 struct DeleteUserParams {
-  user_id: UserId,
   opaque_ke3: OpaqueKe3,
 }
 ```
 
 The AS performs the following actions:
 
-* look up the OPAQUE `server_state` in the ephemeral DB based on the `client_id`
+* look up the OPAQUE `server_state` in the ephemeral DB based on the `client_id` given as part of the client's credential-based authentication
 * authenticate the request using the signature key in the ClientCredential
 * perform the `ServerFinish` step of the OPAQUE online AKE flow
 * delete the user entry
@@ -253,7 +248,6 @@ Dequeue messages from a client's direct queue, starting with the message with th
 
 ```rust
 struct DequeueMessagesParams {
-  client_id: ClientId,
   sequence_number_start: u64,
   max_message_number: u64,
 }
@@ -267,7 +261,7 @@ The AS deletes messages older than the given sequence number and returns message
 
 ### Authentication
 
-* Client
+* Client Credential
 
 ## Enqueue message
 
@@ -383,7 +377,7 @@ struct UploadAliasPackages {
 }
 ```
 
-### Authentication 
+### Authentication
 
 * Alias auth key
 
@@ -416,7 +410,6 @@ This endpoints allows both local clients and clients of federated homeservers to
 
 ```rust
 struct RequestToken {
-  client_id: ClientId,
   token_request: TokenRequest,
 }
 ```
