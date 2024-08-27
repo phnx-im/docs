@@ -2,7 +2,7 @@
 
 Protection of metadata is a key goal of the Phoenix homeserver protocol. Metadata typically includes information like the sender and recipient of a message, the time it was sent, and the size of the message, and the group conversation in which it was sent. Metadata aggregation can reveal patterns of communication and can be used to infer social relationships. In particular, correlation can be used to infer social graphs.
 
-The metadata threat model considers two types of adversaries: snapshot adversaries and active observer adversaries. This section describes the two adversaries and the information they have access to.
+The metadata threat model considers two types of adversaries: snapshot adversaries and active observer adversaries.
 
 ## Snapshot adversarires
 
@@ -46,3 +46,18 @@ As per definition, active observer adversaries have access to all data on the se
 ## Traffic analysis
 
 Traffic analysis, i.e. the analysis of data traffic patterns, is not considered part of the threat model. While the use of network metadata can allow an active observer (be it on the server or just the network) to infer social graphs and other sensitive information, the Phoenix homeserver protocol does not aim to protect against such attacks. Instead, common countermeasures such as onion routing or the use of mixnets can be used in conjunction with the Phoenix homeserver protocol to mitigate such attacks. However, to the extent possible, the protocol avoids behaviours obvious traffic patterns such as batched queries, messages at regular intervals, etc.
+
+## Privacy Pass
+
+[Privacy Pass](https://datatracker.ietf.org/doc/draft-ietf-privacypass-batched-tokens/) is used to rate-limit individual users without violating their metadata privacy.
+
+The protocol flow is as follows:
+
+- A registered client requests a number of tokens from the AS.
+- The AS checks the client's token allowance and issues the requested tokens if the client has not exceeded their allowance. The Privacy Pass protocol ensures that the tokens are not linked to the client's identity.
+- Whenever the client needs to interact with an endpoint that is rate-limited using PrivacyPass, the client includes a token as part of its request.
+- The endpoint verifies that the token is valid and has not yet been spent. If the token is valid, the endpoint processes the request and marks the token as spent.
+
+To create and verify tokens the AS uses a pair of public/private keys. As long as the AS uses the same keypair for all clients, it cannot correlate the tokens with the clients' identities. However, a malicious AS could use distinct keypairs for each client and thus correlate the tokens with the clients' identities. To prevent this, the AS must use the same keypair for all clients.
+
+The Phoenix homeserver protocol currently does not mitigate this attack. In the future, AS public/private keys will either be gossiped between clients as part of their group state, or a key transparency-like mechanism will be used to allow clients to verifiably track Privacy Pass key material used by the AS.
