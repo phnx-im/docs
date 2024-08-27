@@ -58,6 +58,6 @@ The protocol flow is as follows:
 - Whenever the client needs to interact with an endpoint that is rate-limited using PrivacyPass, the client includes a token as part of its request.
 - The endpoint verifies that the token is valid and has not yet been spent. If the token is valid, the endpoint processes the request and marks the token as spent.
 
-To create and verify tokens the AS uses a pair of public/private keys. As long as the AS uses the same keypair for all clients, it cannot correlate the tokens with the clients' identities. However, a malicious AS could use distinct keypairs for each client and thus correlate the tokens with the clients' identities. To prevent this, the AS must use the same keypair for all clients.
+To create and verify tokens the AS uses a pair of public/private keys. As long as the AS uses the same keypair for all clients, it cannot correlate the tokens with the clients' identities. However, a malicious AS could use distinct keypairs for each client and thus correlate the tokens with the clients' identities. See [Section 6.2 of RFC 9576](https://www.rfc-editor.org/rfc/rfc9576.html#section-6.2) for more information on this threat.
 
 The Phoenix homeserver protocol currently does not mitigate this attack. In the future, AS public/private keys will either be gossiped between clients as part of their group state, or a key transparency-like mechanism will be used to allow clients to verifiably track Privacy Pass key material used by the AS.
