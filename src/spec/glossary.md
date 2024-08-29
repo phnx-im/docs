@@ -85,6 +85,10 @@ struct QueueConfig {
 
 The `SealedQueueConfig` is the client's `QueueConfig` encrypted using HPKE in the asymmetrically authenticated mode using the `QueueConfigEncryptionKey` of the client's QS and the client's own [QS QS client record key](glossary.md#qs-client-record-auth-key).
 
+## Queue ID encryption key
+
+An HPKE public key that is stored by the DS alongside encrypted group states. It is used to encrypt any sealed queue configs returned by a QS during message fanout. The corresponding private key is part of the encrypted group state.
+
 ## RolesExtension
 
 An MLS group context extension that contains information on the roles of the individual members in a given group. A member's role can be either *admin* or *member*.
