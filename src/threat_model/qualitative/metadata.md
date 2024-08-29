@@ -49,15 +49,16 @@ Traffic analysis, i.e. the analysis of data traffic patterns, is not considered 
 
 ## Privacy Pass
 
-[Privacy Pass](https://datatracker.ietf.org/doc/draft-ietf-privacypass-batched-tokens/) is used to rate-limit individual users without violating their metadata privacy.
+The [Privacy Passbatched tokens issuance protocol](https://datatracker.ietf.org/doc/draft-ietf-privacypass-batched-tokens/) is used to rate-limit individual users without violating their metadata privacy.
 
 The protocol flow is as follows:
 
-- A registered client requests a number of tokens from the AS.
-- The AS checks the client's token allowance and issues the requested tokens if the client has not exceeded their allowance. The Privacy Pass protocol ensures that the tokens are not linked to the client's identity.
-- Whenever the client needs to interact with an endpoint that is rate-limited using PrivacyPass, the client includes a token as part of its request.
-- The endpoint verifies that the token is valid and has not yet been spent. If the token is valid, the endpoint processes the request and marks the token as spent.
+- A registered client requests tokens from the AS. To amortize the cost of the issuance, the client can request several tokens at once.
+- The AS verifies the client is allowed to request the requested number of tokens and issues the requested tokens. In the positive case, the AS issues the tokens. The Privacy Pass protocol ensures that the tokens are not linked to the client's identity when redeemed later.
+- Whenever the client connects to an endpoint rate-limited using Privacy Pass, it sends a token along with the request.
+- The endpoint verifies that the token has previously been issued by the AS and has not yet been spent. If both criteria are met, the endpoint marks the token as spent and continues with processing the request.
 
-To create and verify tokens the AS uses a pair of public/private keys. As long as the AS uses the same keypair for all clients, it cannot correlate the tokens with the clients' identities. However, a malicious AS could use distinct keypairs for each client and thus correlate the tokens with the clients' identities. See [Section 6.2 of RFC 9576](https://www.rfc-editor.org/rfc/rfc9576.html#section-6.2) for more information on this threat.
+In the issuance and redemption phase of tokens the AS uses a pair of public/private keys. As long as the AS uses the same keypair for all clients, it cannot correlate the tokens with the clients' identities. However, a malicious AS could use distinct keypairs for each client and thus correlate the tokens with the clients' identities. See [Section 6.2 of RFC 9576](https://www.rfc-editor.org/rfc/rfc9576.html#section-6.2) for more information on this threat.
 
 The Phoenix homeserver protocol currently does not mitigate this attack. In the future, AS public/private keys will either be gossiped between clients as part of their group state, or a key transparency-like mechanism will be used to allow clients to verifiably track Privacy Pass key material used by the AS.
+For now, clients can however still download the public key anonymously at any given point in time, making it harder for the server to issue a specific key per client.
