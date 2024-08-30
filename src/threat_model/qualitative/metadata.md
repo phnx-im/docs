@@ -18,15 +18,16 @@ As a consequence, snapshots become largely useless to the adversary since the se
 Despite the use of encryption at rest, the snapshot adversary can still see the following data:
 
 - For each group on the DS
-  - The rough size of the group
-  - The timestamp of the last time the group was active (e.g. due to a key update)
-- Reserved group IDs
+  - The size of the encrypted group (depends on padding configuration of the DS)
+  - The timestamp (month and year) of the last time the group was active (e.g. due to a key update) 
+- Reserved group IDs (randomly generated UUIDs)
 - AS key material
   - Credentials of all clients (includes usernames)
   - AS credentials and key material
   - OPAQUE key material
   - Privacy Pass key material
 - The number of messages in the connection queues of all clients (but not the contents of the messages)
+- The number of messages in the connection queues of all aliases (but not the contents of the messages, not correlated with any users)
 - All user pseudonyms and their associated client pseudonyms
 - All currently available KeyPackages of all clients
 - The number of messages in all client queues and the (padded) length of each message (but not the contents)
