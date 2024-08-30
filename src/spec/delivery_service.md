@@ -99,8 +99,9 @@ To distribute MLS messages the DS sends messages on to the local QS to enqueue i
 
 In cases where the QS responds with a message indicating that a target queue doesn't exist, the DS assumes that the queue was deleted and proposes the removal of the corresponding group member as specified [here](delivery_service.md#ds-induced-removals).
 
-## Activity time
+## Activity times
 
+The DS tracks both the last time individual group members were active (encrypted at rest as part of the group state), as well as the last time the group in general was actively used. A timestamp consists only of the month and the year of last activity.
 Whenever a client sends a commit as part of a query to an endpoint, the DS updates the *activity time* and *activity epoch* of the sender.
 
 ## Client endpoints
