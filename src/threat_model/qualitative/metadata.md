@@ -49,7 +49,7 @@ Traffic analysis, i.e. the analysis of data traffic patterns, is not considered 
 
 ## Privacy Pass
 
-The [Privacy Passbatched tokens issuance protocol](https://datatracker.ietf.org/doc/draft-ietf-privacypass-batched-tokens/) is used to rate-limit individual users without violating their metadata privacy.
+The [Privacy Pass batched tokens issuance protocol](https://datatracker.ietf.org/doc/draft-ietf-privacypass-batched-tokens/) is used to rate-limit individual users without violating their metadata privacy.
 
 The protocol flow is as follows:
 
