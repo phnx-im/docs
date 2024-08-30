@@ -6,9 +6,10 @@ The metadata threat model considers two types of adversaries: snapshot adversari
 
 ## Snapshot adversarires
 
-Snapshot adversaries have access to snapshots of the server's persisted state. They can see the metadata of all messages that have been sent and received up to the point of the snapshot and that haven't been deleted from the long-term storage. An example of a snapshot adversary is a government that has seized the server's hard drives, or a provider that is forced to comply with a government request to hand over data.
+Snapshot adversaries have access to snapshots of the server's persisted state. They can see the metadata of all messages sent and received up to the point of the snapshot that haven't been deleted from the long-term storage. An example of a snapshot adversary is law enforcement that has seized the server's hard drives or a provider forced to comply with a legal request to hand over data.
 
 The main protection against the snapshot adversary is encryption at rest for most relevant metadata. In this instance, encryption at rest means that clients hold the key material and supply it to the server for individual queries. The server can decrypt the data and process the query before re-encrypting the data and deleting the key from memory.
+The underlying assumption is that the server infrastructure cannot record the keys without substantial technical changes to the infrastructure. Such technical changes are out-of-scope for this kind of adversary.
 
 As a consequence, snapshots become largely useless to the adversary since the senders of messages, the group in which messages were sent, etc. are encrypted. The encryption keys are either only held by clients, or are only held temporarily by the server in volatile memory and are therefore not part of the snapshot.
 
