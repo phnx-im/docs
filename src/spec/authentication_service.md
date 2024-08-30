@@ -156,7 +156,7 @@ struct UpdateUserProfileParams {
 }
 ```
 
-The AS overwrites the existing user profile ciphertext with the new one. The target user's user ID is derived from the client's ClientCredential.
+The AS overwrites the existing user profile ciphertext with the new one. The target user's ID is derived from the client's ClientCredential.
 
 ### Authentication
 
