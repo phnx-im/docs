@@ -8,6 +8,8 @@ The delivery service keeps track of groups and (pseudonymous) group membership a
   * Default: 1h
 * Maximal duration of client commit inactivity: Maximal duration between two commits of an individual client before the removal of the client is proposed by the DS.
   * Default: 90d
+* Padding target (in percentiles (1..10)): When padding the size of groups for encryption at rest, this determines the size of the padding. The largest group on the DS in the given percentile (ordered by number of members per group) determines the smallest size that groups are padded to before encryption. As a result, after encryption, all groups look at least as large as that group. Larger groups are padded to the closes multiple of that size. The actual padding is then computed from the group's ciphersuite, as well as the size of the credentials.
+  * Default: 8
 
 ## DS state
 

@@ -1,6 +1,6 @@
 # Group state encryption
 
-Generally, the DS encrypts group state at rest, such that only a group ID and a time stamp are stored in plaintext.
+Generally, the DS encrypts group state at rest, such that the group ID, the time of last activity, the Queue ID encryption key and the encrypted queue IDs marked for deletion are stored in plaintext.
 
 Parts of the group state are additionally encrypted such that they are only readable by group members.
 
@@ -11,6 +11,7 @@ With each group operation request, clients include the group's EAR key, which al
 A group's EAR key is freshly sampled at the group's inception and is not rotated until the group is deleted.
 
 * Clients send the key to the server for each operation
+* The group state is padded according to the configured padding percentile (as defined [here](../delivery_service.md#ds-configuration-options))
 * The key is used to encrypt the whole group state
 * The client creating the group samples the key freshly upon group creation
 * Clients joining the group receive the key encrypted via a group info extension (i.e. either via a Welcome or via an External Init package)
