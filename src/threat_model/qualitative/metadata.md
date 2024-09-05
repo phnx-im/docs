@@ -2,7 +2,7 @@
 
 Protection of metadata is a key goal of the Phoenix homeserver protocol. Metadata typically includes information like the sender and recipient of a message, the time it was sent, and the size of the message, and the group conversation in which it was sent. Metadata aggregation can reveal patterns of communication and can be used to infer social relationships. In particular, correlation can be used to infer social graphs.
 
-The metadata threat model considers two types of adversaries: snapshot adversaries and active observer adversaries.
+The metadata threat model considers two types of adversaries: snapshot adversaries and contiuous monitoring adversaries.
 
 ## Snapshot adversarires
 
@@ -29,21 +29,26 @@ For both clients and aliases, the SA can view the connection queues, as well as 
 
 The SA also has access to the key material pre-published for connection establishment (connection packages) of all clients.
 
+### Data not available to snapshot adversaries
+
+Generally, the SA only has access to the data listed above. In particular, the SA does not have access to
+
+- push tokens
+- group memberhsip
+- links between identities and pseudonyms
+- links between identities and aliases
+
 #### Client pseudonyms (QS)
 
 On the QS, the SA can observe all user pseudonyms and their associated client pseudonyms. Note that these pseudonyms are not linked to any aliases, client- or user identities.
 
 For each client pseudonym the SA can see pre-published key material (add packages) and queues. The SA can thus also see the number of messages in each queue, but not their content due to at-rest encryption.
 
-## Active observer adversaries
+## Continuous monitoring adversaries
 
-Active observer adversaries have full access to the server including its volatile memory in addition to the snapshots.
+Continuous monitoring adversaries have full access to the server including its volatile memory and its persisted state.
 
-The main protection against the active observer is that users interact with the services using per-group pseudonyms instead of their real identities. This means that the adversary cannot link any individual action of a user with the user's identity as seen by other users. The adversary can still see the metadata of messages, but cannot link them to the real identities of the users.
-
-### Data available to active observer adversaries
-
-As per definition, active observer adversaries have access to all data on the server at the time of their activity.
+The main protection against the continuous monitoring adversary is that users interact with the services using per-group pseudonyms instead of their real identities. This means that the adversary cannot link any individual action of a user with the user's identity as seen by other users. The adversary can still see the metadata of messages, but cannot link them to the real identities of the users.
 
 ## Traffic analysis
 
