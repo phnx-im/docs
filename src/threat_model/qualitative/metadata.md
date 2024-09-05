@@ -15,25 +15,25 @@ As a consequence, snapshots become largely useless to the adversary since the se
 
 ### Data available to snapshot adversaries
 
-Despite the use of encryption at rest, the snapshot adversary can still see the following data:
+Despite the use of encryption at rest, the snapshot adversary (SA) can still access various pieces of data on the server. The following lists all data accessible by the SA that are relevant to users' metadata privacy. The list omits data such as cryptographic key material that is irrelevant to metadata privacy. For example, the SA can obtain the keypair used to issue Privacy Pass tokens, but that would only help the adversary bypass the server's rate-limiting measures, so it won't be on the list.
 
-- For each group on the DS
-  - The size of the encrypted group (depends on padding configuration of the DS)
-  - The timestamp (month and year) of the last time the group was active (e.g. due to a key update) 
-- Reserved group IDs (randomly generated UUIDs)
-- AS key material
-  - Credentials of all clients (includes usernames)
-  - AS credentials and key material
-  - OPAQUE key material
-  - Privacy Pass key material
-- The number of messages in the connection queues of all clients (but not the contents of the messages)
-- The number of messages in the connection queues of all aliases (but not the contents of the messages, not correlated with any users)
-- All user pseudonyms and their associated client pseudonyms
-- All currently available KeyPackages of all clients
-- The number of messages in all client queues and the (padded) length of each message (but not the contents)
-- QS key material
-  - QS signing keys
-  - QS HPKE encryption keys
+#### Group Information (DS)
+
+For each group tracked on the DS, the SA can observe the size of the encrypted group state. The degree to which the ciphertext size correlates with the number of clients in the group is determined by the [padding settings](../../spec/delivery_service.md#ds-configuration-options) of the DS. In addition to the size, the SA can also view the month and year that the group was last active, where activity is determined by any message sent to the group including periodic key updates.
+
+#### Users, clients and aliases (AS)
+
+With a snapshot, the SA obtains a list of every user registered with the AS, as well as of their clients, including each client's public authentication key material (i.e. client credentials). The SA can also view a list of all aliases registered with the AS. Note that there is no link between aliases and user identities.
+
+For both clients and aliases, the SA can view the connection queues, as well as the number of currently enqueued messages within them (but not the content, as connection requests are encrypted).
+
+The SA also has access to the key material pre-published for connection establishment (connection packages) of all clients.
+
+#### Client pseudonyms (QS)
+
+On the QS, the SA can observe all user pseudonyms and their associated client pseudonyms. Note that these pseudonyms are not linked to any aliases, client- or user identities.
+
+For each client pseudonym the SA can see pre-published key material (add packages) and queues. The SA can thus also see the number of messages in each queue, but not their content due to at-rest encryption.
 
 ## Active observer adversaries
 
@@ -47,7 +47,7 @@ As per definition, active observer adversaries have access to all data on the se
 
 ## Traffic analysis
 
-Traffic analysis, i.e. the analysis of data traffic patterns, is not considered part of the threat model. While the use of network metadata can allow an active observer (be it on the server or just the network) to infer social graphs and other sensitive information, the Phoenix homeserver protocol does not aim to protect against such attacks. Instead, common countermeasures such as onion routing or the use of mixnets can be used in conjunction with the Phoenix homeserver protocol to mitigate such attacks. However, to the extent possible, the protocol avoids behaviours obvious traffic patterns such as batched queries, messages at regular intervals, etc.
+Traffic analysis, i.e. the analysis of data traffic patterns, is not considered part of the threat model. While the use of network metadata can allow an active observer (be it on the server or just the network) to infer social graphs and other sensitive information, the Phoenix homeserver protocol does not aim to protect against such attacks. Instead, common countermeasures such as onion routing or the use of mixnets can be used in conjunction with the Phoenix homeserver protocol to mitigate such attacks. However, to the extent possible, the protocol avoids obvious traffic patterns such as batched queries, messages at regular intervals, etc.
 
 ## Privacy Pass
 
