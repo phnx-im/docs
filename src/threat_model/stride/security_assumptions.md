@@ -1,6 +1,6 @@
 # Security assumptions
 
-The operator of a homeserver can leverage its conrol over the homeserver to influence if and how the homeserver serves its users. While the goal of the protocol should be to reduce the amount of control the operator has, there are a few assumptions that need to be made.
+The operator of a homeserver can leverage its control over the homeserver to influence if and how the homeserver serves its users. While the goal of the protocol should be to reduce the amount of control the operator has, there are a few assumptions that need to be made.
 
 ## Operators are trusted not to spam users
 
