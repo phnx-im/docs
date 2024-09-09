@@ -34,7 +34,7 @@ The SA also has access to the key material pre-published for connection establis
 Generally, the SA only has access to the data listed above. In particular, the SA does not have access to
 
 - push tokens
-- group memberhsip
+- group membership
 - links between identities and pseudonyms
 - links between identities and aliases
 
@@ -42,7 +42,7 @@ Generally, the SA only has access to the data listed above. In particular, the S
 
 On the QS, the SA can observe all user pseudonyms and their associated client pseudonyms. Note that these pseudonyms are not linked to any aliases, client- or user identities.
 
-For each client pseudonym the SA can see pre-published key material (add packages) and queues. The SA can thus also see the number of messages in each queue, but not their content due to at-rest encryption.
+The SA can see pre-published key material (add packages) and queues for each client pseudonym. The SA can therefore also see the number of messages in each queue, but not their content due to at-rest encryption.
 
 ## Continuous monitoring adversaries
 
