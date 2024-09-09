@@ -22,7 +22,7 @@
       - [Federated Users](./threat_model/stride/security_requirements/federated_users.md)
       - [Federated Clients](./threat_model/stride/security_requirements/federated_clients.md)
 - [Cryptographic Primitives and Schemes](./cryptographic_primitives.md)
-- [Specification (Draft)](./spec.md)
+- [Specification](./spec.md)
     <!-- - [General concepts](spec/general_concepts.md)
         - [State expiration](spec/general_concepts/state_expiration.md) -->
   - [Authentication service](spec/authentication_service.md)

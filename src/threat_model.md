@@ -10,7 +10,7 @@ The Phoenix homeserver system aims to provide confidentiality and authenticity f
 
 ### Confidentiality and authenticity
 
-Confidentiality and authenticity of user communication are the foremost priorities of the protocol. Specifically, users can expect that messages are readable only by their intended recipients and that recieved messages indeed originate from the apparent sender.
+Confidentiality and authenticity of user communication are the foremost priorities of the protocol. Specifically, users can expect that messages are readable only by their intended recipients and that received messages indeed originate from the apparent sender.
 
 Both of these properties are already provided by the Messaging Layer Security (MLS) protocol underlying the Phoenix homeserver protocol. However, the authentication service (AS) is responsible for the issuance and distribution of authentication key material. Consequences of AS compromise on confidentiality and authenticity are detailed in the qualitative threat model.
 

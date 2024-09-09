@@ -6,7 +6,7 @@ Once two users have a *connection*, they can add one-another to groups.
 
 The creation process of a connection group is restricted by two considerations: Until the responding user makes its decision to accept the connection, the initiator is considered untrusted and should not be able to push arbitrary content to the responder.
 
-The second consideration is that neither of the homeservers involved (with the initiator and reponder potentially belonging to two federated homeservers) should know who is connected to whom. This is not straight-forward, as the initiator has to be able to discover the responder by its alias and use the discovered information to initiate the process.
+The second consideration is that neither of the homeservers involved (with the initiator and responder potentially belonging to two federated homeservers) should know who is connected to whom. This is not straight-forward, as the initiator has to be able to discover the responder by its alias and use the discovered information to initiate the process.
 
 ## Connection group creation
 

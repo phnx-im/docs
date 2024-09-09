@@ -16,7 +16,7 @@ Finally, user creates the initial MLS group locally and calls the [group creatio
 
 ## Inviting other users
 
-A client can invite other users (or rather their clients) that they are [connected with](../authentication_service/connection_establishment.md) to join a group by first fetching an AddPackge for each client that is meant to be added to the target group.
+A client can invite other users (or rather their clients) that they are [connected with](../authentication_service/connection_establishment.md) to join a group by first fetching an AddPackage for each client that is meant to be added to the target group.
 
 The inviting client prepares the query to the DS by performing the following steps:
 

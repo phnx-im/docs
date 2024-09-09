@@ -326,7 +326,7 @@ struct ResyncClientParams {
 
 * The commit must contain exactly one Add and one Remove proposal referencing the same leaf
 * The DS validates the commit and updates its public tree
-* The leaf credential of the resynced client must remain the same
+* The leaf credential of the re-synced client must remain the same
 * Finally, the DS sends the `commit` to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.
 
 #### Authentication

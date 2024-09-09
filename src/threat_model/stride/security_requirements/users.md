@@ -37,7 +37,7 @@
 | Confidentiality | Not a risk as long as basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) hold |        |
 | Availability    | It is not critical that new users be able to register and the endpoint can be disabled to mitigate an ongoing attack                                       |        |
 | Authorization   | Not a risk. Only clients that have previously initiated registration should be able to complete it                                                         |        |
-| Spam prevention | User registration is a big potential amplifier for spam and measures need to be taken to prevent sybil attacks                                             |        |
+| Spam prevention | User registration is a big potential amplifier for spam and measures need to be taken to prevent sibyl attacks                                             |        |
 
 ### User account deletion
 
