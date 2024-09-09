@@ -135,7 +135,7 @@ struct FinishUserRegistrationParams {
 
 The AS performs the following actions:
 
-* look up the initial client's ClientCredential in the ephemeral DB based on the `user_id` given as part of the client credential-based authentication
+* look up the initial client's ClientCredential in the ephemeral DB based on the `user_id` in the client's credential included in the request as part of Client 2FA authentication
 * authenticate the request using the signature key in the ClientCredential
 * check (again) if the user id already exists
 * create the user entry with the information given in the request
@@ -232,7 +232,7 @@ struct DeleteUserParams {
 
 The AS performs the following actions:
 
-* look up the OPAQUE `server_state` in the ephemeral DB based on the `client_id` given as part of the client's credential-based authentication
+* look up the OPAQUE `server_state` in the ephemeral DB based on the `client_id` in the client's credential included in the request as part of Client 2FA authentication
 * authenticate the request using the signature key in the ClientCredential
 * perform the `ServerFinish` step of the OPAQUE online AKE flow
 * delete the user entry
