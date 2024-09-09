@@ -49,7 +49,7 @@ A string that a user registers anonymously with the AS. Other users can use it t
 
 ## Alias auth key
 
-A public signature key used by the user who registered the assocated alias with the AS to authenticate itself, for example, when dequeuing messages or when uploading connection packages.
+A public signature key used by the user who registered the associated alias with the AS to authenticate itself, for example, when dequeuing messages or when uploading connection packages.
 
 ## User profile
 

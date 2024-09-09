@@ -1,6 +1,6 @@
 # Queuing Service (QS)
 
-The main purpose of the queuing service is to store-and-forward messages delivered by the [delivery service](./delivery_service.md), as well as the publication of KeyPackages. In this chapter we discuss the various concepts used by the QS to provide its functionalitites, as well as its individual endpoints.
+The main purpose of the queuing service is to store-and-forward messages delivered by the [delivery service](./delivery_service.md), as well as the publication of KeyPackages. In this chapter we discuss the various concepts used by the QS to provide its functionalities, as well as its individual endpoints.
 
 ## Overview
 
@@ -129,7 +129,7 @@ struct QsToQsMessage {
 }
 ```
 
-When receing a `QsToQsMessage`, the QS verifies that it is the intended
+When receiving a `QsToQsMessage`, the QS verifies that it is the intended
 destination and tries to fetch the verifying key of the sending QS (if it is not
 cached locally) based on the `source` field. The recipient QS then uses the
 verifying key to verify the signature. If the signature is valid, the QS

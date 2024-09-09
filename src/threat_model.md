@@ -10,17 +10,17 @@ The Phoenix homeserver system aims to provide confidentiality and authenticity f
 
 ### Confidentiality and authenticity
 
-Confidentiality and authenticity of user communication are the foremost priorities of the protocol. Specifically, users can expect that messages are readable only by their intended recipients and that recieved messages indeed originate from the apparent sender.
+Confidentiality and authenticity of user communication are the foremost priorities of the protocol. Specifically, users can expect that messages are readable only by their intended recipients and that received messages indeed originate from the apparent sender.
 
 Both of these properties are already provided by the Messaging Layer Security (MLS) protocol underlying the Phoenix homeserver protocol. However, the authentication service (AS) is responsible for the issuance and distribution of authentication key material. Consequences of AS compromise on confidentiality and authenticity are detailed in the qualitative threat model.
 
 ### Metadata privacy
 
-Confidentiality and authenticity cover the content of messages, but the metadata of messages can also reveal sensitive information. Metadata typically includes information like the sender and recipient of a message, the time it was sent, and the size of the message, and the group conversation in which it was sent. Metadata aggregation can reveal patterns of communication and can be used to infer social relationships. In particular, correlation can be used to infer social graphs. The main objective of the Phoenix homeserver protocol is to protect this metadata from adversaries by minimizing metadata and decorrelating the remaining data points as much as possible.
+Confidentiality and authenticity cover the content of messages, but the metadata of messages can also reveal sensitive information. Metadata typically includes information like the sender and recipient of a message, the time it was sent, and the size of the message, and the group conversation in which it was sent. Metadata aggregation can reveal patterns of communication and can be used to infer social relationships. In particular, correlation can be used to infer social graphs. The main objective of the Phoenix homeserver protocol is to protect this metadata from adversaries by minimizing metadata and de-correlating the remaining data points as much as possible.
 
 We consider two types of adversaries:
 
-#### Snapshot adversarires
+#### Snapshot adversaries
 
 Snapshot adversaries have access to snapshots of the server's persisted state. They can see the metadata of all messages that have been sent and received up to the point of the snapshot and that haven't been deleted from the long-term storage. 
 

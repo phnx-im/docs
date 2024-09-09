@@ -1,6 +1,6 @@
 # Authentication Service (AS)
 
-In this chapter, we detail the different functionalitites of the authentication service. See the subchapter on [credentials](authentication_service/credentials.md) for more details on the credential types referenced in this chapter.
+In this chapter, we detail the different functionalities of the authentication service. See the sub-chapter on [credentials](authentication_service/credentials.md) for more details on the credential types referenced in this chapter.
 
 For an overview over the security of the AS see [here](./authentication_service/security_guarantees.md).
 
@@ -8,8 +8,8 @@ For an overview over the security of the AS see [here](./authentication_service/
 
 The AS is configurable by use of the following configuration variables:
 
-* **Anonymous token timeframe:** The amount of time which each client has to wait until it can obtain new anonymous authentication tokens.
-* **Default token allowance:** The default amount of anonymous authentication tokens issued to each user in the anonymous token timeframe.
+* **Anonymous token time-frame:** The amount of time which each client has to wait until it can obtain new anonymous authentication tokens.
+* **Default token allowance:** The default amount of anonymous authentication tokens issued to each user in the anonymous token time-frame.
 * **Maximal QS client record age:** Maximal age of an inactive client entry.
   * Default: 90d
 * **Maximal number of requested messages:** Maximal number of messages that will be returned to a client requesting messages from a direct queue.
@@ -434,7 +434,7 @@ struct TokenResponse {
 
 Token issuance is the main way of rate-limiting queries to the endpoints of the DS of a homeserver, which means that the AS should rate-limit token issuance based on a per-client basis, essentially giving each client a certain allowance of tokens.
 
-If the calling client is a federated client, rate-limiting should also occur on a per-homeserver (or per homeserver domain) basis to protect agains malicious or negligent homeservers that allow an attacker to register a large number of clients.
+If the calling client is a federated client, rate-limiting should also occur on a per-homeserver (or per homeserver domain) basis to protect against malicious or negligent homeservers that allow an attacker to register a large number of clients.
 
 ### Authentication
 

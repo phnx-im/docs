@@ -46,7 +46,7 @@ Federated clients are clients which are run by federated users. They are regular
 
 * Homeserver management: Operators MUST be able to configure the homeserver and manage its users locally.
 * Homedomain setup: Operators MUST be able to set the home domain of the homeserver during setup.
-* Federation configuration: Operators MUST be able to configure federation: Either by allowlisting other homeservers by their home domain, or by allowing open federation except for a blocklist of home domains for homeservers with which federation is not desired.
+* Federation configuration: Operators MUST be able to configure federation: Either by allowlisting other homeservers by their home domain, or by allowing open federation except for a block-list of home domains for homeservers with which federation is not desired.
 
 ### Functional Requirements for the Network
 

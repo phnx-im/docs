@@ -16,7 +16,7 @@ Friends of a user can currently invite the user's clients to large, very active 
 
 ## Tighter authentication
 
-The AuthTokens required for client-side authentication by QS and DS prove that the client owns a signature key and are bound losely to the context in which they are used. However, having the signature cover the whole request would provide a tighter bind between authentication and context. One drawback is that we either have to re-serialize the request to sign/verify, or that we have to fix the general request serialization scheme to a deterministic one that accommodates signatures.
+The AuthTokens required for client-side authentication by QS and DS prove that the client owns a signature key and are bound loosely to the context in which they are used. However, having the signature cover the whole request would provide a tighter bind between authentication and context. One drawback is that we either have to re-serialize the request to sign/verify, or that we have to fix the general request serialization scheme to a deterministic one that accommodates signatures.
 
 ## Re-initialization of groups
 
