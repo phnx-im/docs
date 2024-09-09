@@ -31,7 +31,7 @@ The SA also has access to the key material pre-published for connection establis
 
 ### Data not available to snapshot adversaries
 
-Generally, the SA only has access to the data listed above. In particular, the SA does not have access to
+The SA only has access to the data listed above. In particular, the SA does not have access to
 
 - push tokens
 - group membership
@@ -44,11 +44,11 @@ On the QS, the SA can observe all user pseudonyms and their associated client ps
 
 The SA can see pre-published key material (add packages) and queues for each client pseudonym. The SA can therefore also see the number of messages in each queue, but not their content due to at-rest encryption.
 
-## Continuous monitoring adversaries
+## Honest-but-curious adversaries
 
-Continuous monitoring adversaries have full access to the server including its volatile memory and its persisted state.
+Honest-but-curious adversaries have full access to the server including its volatile memory and its persisted state, but don't actively interfere with the server's operations.
 
-The main protection against the continuous monitoring adversary is that users interact with the services using per-group pseudonyms instead of their real identities. This means that the adversary cannot link any individual action of a user with the user's identity as seen by other users. The adversary can still see the metadata of messages, but cannot link them to the real identities of the users.
+The main protection against honest-but-curious adversaries is that users interact with the services using per-group pseudonyms instead of their real identities. This means that the adversary cannot link any individual action of a user with the user's identity as seen by other users. The adversary can still see the metadata of messages, but cannot link them to the real identities of the users.
 
 ## Traffic analysis
 
