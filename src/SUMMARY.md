@@ -9,6 +9,7 @@
   - [Qualitative Threat Models](./threat_model/qualitative.md)
     - [Authentication Service](./threat_model/qualitative/authentication_service.md)
     - [Federation](./threat_model/qualitative/federation.md)
+    - [Metadata](./threat_model/qualitative/metadata.md)
   - [STRIDE](./threat_model/stride.md)
     - [Security Assumptions](./threat_model/stride/security_assumptions.md)
     - [Application Assets](./threat_model/stride/application_assets.md)
