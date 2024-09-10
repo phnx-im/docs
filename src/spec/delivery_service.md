@@ -11,13 +11,14 @@ The delivery service keeps track of groups and (pseudonymous) group membership a
 
 ## DS state
 
-The DS has a database of EAR encrypted group states indexed by their group ID.
+The DS has a database of EAR encrypted group states indexed by their group ID. Alongside each encrypted group state, the DS stores some metadata such as the timestamp indicating when the group was last used, as well as a list of encrypted queue IDs.
 
 ```rust
 struct GroupStateDbEntry {
   encrypted_group_state: Vec<u8>,
   timestamp: Timestamp,
-  deleted_queues: Vec<SealedQueueConfig>,
+  queue_id_encryption_key: QueueIdEncryptionKey,
+  deleted_queues: Vec<Vec<u8>>,
 }
 ```
 
@@ -37,6 +38,7 @@ The plaintext group state contains the following data:
   * **Public ratchet tree**
   * **Joining clients:** List of the KeyPackagerefs of all clients that are expected to pick up this group state.
 * **Proposal store:** List of proposals sent in this group in this epoch. Gets cleared upon every epoch change.
+* **Queue ID decryption key:** The private key corresponding to the QueueIdEncryptionKey stored alongside the encrypted group state.
 
 ## Proposal store
 
@@ -97,7 +99,9 @@ If all validation steps pass, the DS performs the endpoint and message-specific 
 
 To distribute MLS messages the DS sends messages on to the local QS to enqueue in a local client's queue or to forward to a federated QS. For the message format see [here](glossary.md#fan-out-message).
 
-In cases where the QS responds with a message indicating that a target queue doesn't exist, the DS assumes that the queue was deleted and proposes the removal of the corresponding group member as specified [here](delivery_service.md#ds-induced-removals).
+In cases where the QS responds with a message indicating that a target queue doesn't exist, the DS assumes that the queue was deleted and that the associated group member should be removed. Since the group state has already been re-encrypted by the time the QS can respond, the DS encrypts any returned [SealedQueueConfigs](./glossary.md#sealed-queue-config) under the group's [QueueIdEncryptionKey](./glossary.md#queue-id-encryption-key). The corresponding private key is stored encrypted as part of the group state.
+
+When the group state is next decrypted for message processing, so are the sealed queue configs. For each sealed queue config, the DS locates the associated group members and proposes their removal as specified [here](delivery_service.md#ds-induced-removals).
 
 ## Activity time
 
