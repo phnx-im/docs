@@ -28,4 +28,4 @@ Homeservers must allow federated homeservers to discover local users to facilita
 
 ### Message distribution
 
-Both QS and DS provide endpoints required for federated message distribution. The DS makes all of its endpoints publicly available safe for the `CreateGroup` and the `RequestGroupId` endpoints, as we only allow local clients to create groups on a given DS. The QS on the other hand only provides the `FederatedEnqueueMessage` endpoint for federated homeservers.
+Both QS and DS provide endpoints required for federated message distribution. The DS makes all of its endpoints publicly available except for the `CreateGroup` and the `RequestGroupId` endpoints, as we only allow local clients to create groups on a given DS. The QS on the other hand only provides the `FederatedEnqueueMessage` endpoint for federated homeservers.
