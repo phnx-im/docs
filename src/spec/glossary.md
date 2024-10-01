@@ -205,6 +205,9 @@ struct FanOutMessage {
 ## Last resort extension
 
 A KeyPackage extension that marks the given KeyPackage as a [KeyPackage of last resort](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-keypackage-reuse).
+While ordinary KeyPackages are meant to be used only once, a Last Resort
+KeyPackage is meant to be used multiple times when no further ordinary
+KeyPackages are available.
 
 ## Push-token encryption key
 
