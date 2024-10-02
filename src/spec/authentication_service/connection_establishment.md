@@ -43,4 +43,4 @@ The `ConnectionEstablishmentPackage` is signed using the initiator's client cred
 
 The receiving client must verify the signature on the package and fetch the AS credential and AS intermediate credential to verify the signature chain from the initiator's client credential to the AS credential. The responder can then decide based on the sender's user name (contained in the client credential) if it wants to accept the connection.
 
-The responder accepts the connection by fetching the external commit information required to join the group from the initiator's DS and joins the group via the *join connection group* endpoint of said DS.
+The responder accepts the connection by fetching the [external commit information](../delivery_service.md#get-external-commit-information) required to join the group from the initiator's DS and joins the group via the [join connection group](../delivery_service.md#join-connection-group) endpoint of said DS.
