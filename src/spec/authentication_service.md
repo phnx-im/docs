@@ -308,7 +308,7 @@ struct RegisterAlias {
 The AS performs the following actions:
 
 * Check that the alias is not already registered
-* Create a alias entry with the given alias and auth key
+* Create an alias entry with the given alias and auth key
 
 ### Authentication
 
@@ -330,7 +330,7 @@ struct DeleteAlias {
 
 ## Dequeue alias messages
 
-Dequeue messages from a alias direct queue, starting with the message with the given sequence number.
+Dequeue messages from an alias direct queue, starting with the message with the given sequence number.
 
 ```rust
 struct DequeueAliasMessagesParams {
@@ -383,7 +383,7 @@ struct UploadAliasPackages {
 
 ## Get alias connection package
 
-Given a alias, get a [connection package](authentication_service/connection_establishment.md#connection-group-creation) for the user's client.
+Given an alias, get a [connection package](authentication_service/connection_establishment.md#connection-group-creation) for the user's client.
 
 ```rust
 struct AliasClientsParams {
