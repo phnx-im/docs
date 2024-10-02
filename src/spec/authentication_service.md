@@ -51,9 +51,11 @@ The AS generally keeps the following state
 
 ## Authentication
 
-There are four modes of authentication for endpoints on the AS.
-
+Some endpoints do not require authentication and are marked with **None**:
 * **None:** For endpoints that are meant to be publicly accessible, e.g. user account registration
+
+There are four modes of authentication for endpoints on the AS:
+
 * **Client Credential:** A signature over a time stamp using the signature key in the calling client's ClientCredential. The request additionally contains the calling client's ClientCredential.
 * **Client Password:** An OPAQUE login flow.
 * **Client 2FA:** The same as **Client Credential**, but additionally performing an [OPAQUE](https://datatracker.ietf.org/doc/draft-irtf-cfrg-opaque/) login flow
