@@ -371,7 +371,7 @@ struct EnqueueAliasMessageParams {
 
 ## Upload alias connection package payloads
 
-Upload the given [connection package payloads](authentication_service/connection_establishment.md#connection-group-creation) to the alias entry with the given alias. Note that in contrast to the similar functionality for user ids, this endpoint only takes the payloads of the connection packages as input.
+Upload the given [connection package payloads](authentication_service/connection_establishment.md#connection-group-creation) to the alias entry with the given alias. Note that in contrast to [the similar functionality for user ids](#upload-user-id-connection-packages), this endpoint only takes the payloads of the connection packages as input.
 
 ```rust
 struct UploadAliasPackages {
