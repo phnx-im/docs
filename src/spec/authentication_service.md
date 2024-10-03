@@ -32,7 +32,7 @@ The AS generally keeps the following state
         * **Encryption ratchet key:** Symmetric key used to derive queue encryption keys.
       * **Current sequence number:** The current message sequence number.
       * **Queued messages:** A sequence of ciphertexts containing the messages in the queue. Each incoming message is [encrypted](./queuing_service/queue_encryption.md) and is assigned the current sequence number, after which the current sequence number is incremented.
-* **Alias entries:** Data not linked to user ids and instead indexed by [Aliass](./glossary.md#alias).
+* **Alias entries:** Data not linked to user ids and instead indexed by [Alias](./glossary.md#alias).
   * **Alias:** The Alias associated with the direct queue.
   * **Direct queue:** A queue similar to the fan-out queues on the QS. Used to enqueue encrypted [connection establishment packages](./authentication_service/connection_establishment.md).
     * **Activity time:** Timestamp indicating the last time a client has fetched messages from the queue.
