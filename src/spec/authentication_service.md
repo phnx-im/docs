@@ -121,6 +121,7 @@ After receiving the response, the client must call the [finish user registration
 ### Authentication
 
 * None
+* No Privacy Pass token required
 
 ## Finish user registration
 
@@ -436,3 +437,4 @@ If the calling client is a federated client, rate-limiting should also occur on 
 For this endpoint, the AS also accepts authentication by federated clients. If the `client_id` in the client credential indicates that the client belongs to a federated homeserver, the AS looks up the authentication key material of that client's AS using the [corresponding endpoint](./authentication_service.md#get-as-credentials), or looks the key material up in its local cache. The AS then uses that key material to verify the query.
 
 * Client Credential
+* No Privacy Pass token required (obviously, as this is about obtaining tokens)
