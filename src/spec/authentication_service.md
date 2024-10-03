@@ -247,7 +247,7 @@ The AS performs the following actions:
 
 ## Dequeue messages
 
-Dequeue messages from a client's direct queue, starting with the message with the given sequence number.
+Dequeue Connection Establishment messages from a client's direct queue, starting with the message with the given sequence number.
 
 ```rust
 struct DequeueMessagesParams {
@@ -268,7 +268,7 @@ The AS deletes messages older than the given sequence number and returns message
 
 ## Enqueue message
 
-Enqueue a message into a client's direct queue.
+Enqueue a Connection Establishment message into a client's direct queue.
 
 ```rust
 struct EnqueueMessageParams {
@@ -333,7 +333,7 @@ struct DeleteAlias {
 
 ## Dequeue alias messages
 
-Dequeue messages from an alias direct queue, starting with the message with the given sequence number.
+Dequeue Connection Establishment messages from an alias direct queue, starting with the message with the given sequence number.
 
 ```rust
 struct DequeueAliasMessagesParams {
@@ -343,7 +343,7 @@ struct DequeueAliasMessagesParams {
 }
 ```
 
-The AS deletes messages older than the given sequence number and returns messages starting with the given sequence number. The maximum number of messages returned this way is the smallest of the following values.
+The AS deletes Connection Establishment messages older than the given sequence number and returns messages starting with the given sequence number. The maximum number of messages returned this way is the smallest of the following values.
 
 * The number of messages remaining in the queue
 * The value of the `max_message_number` field in the request
@@ -355,7 +355,7 @@ The AS deletes messages older than the given sequence number and returns message
 
 ## Enqueue alias messages
 
-Enqueue a message into a client's direct queue.
+Enqueue a Connection Establishment message into a client's alias queue.
 
 ```rust
 struct EnqueueAliasMessageParams {
