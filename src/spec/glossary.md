@@ -131,11 +131,12 @@ struct WelcomeBundle {
     welcome: Welcome,
     encrypted_welcome_attribution_info: Vec<u8>,
     encrypted_group_state_ear_key: Vec<u8>,
+    encrypted_credential_encryption_key: Vec<u8>,
     group_id: GroupId,
 }
 ```
 
-The WelcomeAttributionInfo is encrypted under the joining client's friendship encryption key. The group state EAR key is by the DS under the recipient's init key (contained in the recipient's KeyPackage).
+The WelcomeAttributionInfo is encrypted under the joining client's friendship encryption key. The group state EAR key is encrypted by the DS under the recipient's init key (contained in the recipient's KeyPackage).
 
 ## AddPackage
 
