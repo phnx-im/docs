@@ -10,7 +10,7 @@ The second consideration is that neither of the homeservers involved (with the i
 
 ## Connection group creation
 
-To allow connection establishment in the first place, the user's client publishes *connection packages* with the AS. Connection packages can be published both under the user's user id. Additionally, **connection package payloads** can be published under any of the user's registered aliases. As the aliases should not be associated with the user id of the creating user, or any other registered alias, the payloads lack the user's client's client credential and signature. Users also shouldn't use the same connection encryption key across multiple aliases and their user id.
+To allow connection establishment in the first place, the user's client publishes *connection packages* with the AS. Connection packages can be published both under the user's [user id](../authentication_service.html#upload-user-id-connection-packages) and the [Alias ID](../authentication_service.html#upload-alias-connection-package-payloads). Additionally, **connection package payloads** can be published under any of the user's registered aliases. As the aliases should not be associated with the user id of the creating user, or any other registered alias, the payloads lack the user's client's client credential and signature. Users also shouldn't use the same connection encryption key across multiple aliases and their user id.
 
 ```rust
 struct ConnectionPackagePayload {
