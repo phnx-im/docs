@@ -83,7 +83,7 @@ struct QueueConfig {
 }
 ```
 
-The `SealedQueueConfig` is the client's `QueueConfig` encrypted using HPKE in the asymmetrically authenticated mode using the [`QueueConfigEncryptionKey`](#queueconfig-encryption-key) of the client's QS and the client's own [QS client record key](glossary.md#qs-client-record-auth-key).
+The `SealedQueueConfig` is the client's `QueueConfig` encrypted using HPKE in the asymmetrically authenticated mode using the [`QueueConfigEncryptionKey`](#queueconfig-encryption-key) of the client's QS and signed using the client's own [QS client record key](glossary.md#qs-client-record-auth-key).
 
 ## Queue ID encryption key
 
