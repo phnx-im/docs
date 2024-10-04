@@ -140,7 +140,7 @@ The WelcomeAttributionInfo is encrypted under the joining client's friendship en
 
 ## AddPackage
 
-A struct consisting of a KeyPackage, as well as the associated [Client Credential](authentication_service/credentials.md#client-credentials) and [Signature Encryption Key](glossary.md), where the latter is encrypted under the user's current [friendship encryption key](glossary.md#friendship-encryption-key).
+A struct consisting of a KeyPackage, the associated [Client Credential](authentication_service/credentials.md#client-credentials) encrypted under the [Friendship Encryption Key](glossary.md#friendship-encryption-key), and a freshly generated [Signature Encryption Key](glossary.md##signature-encryption-key) encrypted under the [Friendship Encryption Key](glossary.md#friendship-encryption-key).
 
 ```rust
 struct AddPackage {
