@@ -164,7 +164,7 @@ A symmetric key used to encrypt information in the [Welcome Attribution Info](#w
 
 ### Friendship encryption key
 
-A symmetric key used to encrypt the client credential and the signature encryption key attached to AddPackages.
+A symmetric key used to encrypt the client credential and the [signature encryption key](glossary.html#signature-encryption-key) attached to AddPackages.
 
 ### Friendship token
 
