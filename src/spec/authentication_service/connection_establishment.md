@@ -26,7 +26,7 @@ struct ConnectionPackage {
 }
 ```
 
-When discovering a user (either by user id or user name), the initiator fetches a connection package for the user's client. The initiator then [creates a new group](../delivery_service.html#create-group) and sends a `ConnectionEstablishmentPackage` to the responder's client through either the [Alias Queue](../authentication_service.html#enqueue-alias-messages) or the [Direct User Queue](../authentication_service.html#enqueue-message).
+When discovering a user (either by [User ID](../authentication_service.html#get-user-id-connection-package) or [Alias](../authentication_service.html#get-alias-connection-package)), the initiator fetches a connection package for the user's client. The initiator then [creates a new group](../delivery_service.html#create-group) and sends a `ConnectionEstablishmentPackage` to the responder's client through either the [Alias Queue](../authentication_service.html#enqueue-alias-messages) or the [Direct User Queue](../authentication_service.html#enqueue-message).
 
 ```rust
 struct ConnectionEstablishmentPackage {
