@@ -124,7 +124,7 @@ struct WelcomeAttributionInfo {
 
 ## WelcomeBundle
 
-A bundle allowing a client to join a new group.
+A bundle allowing a client to join a new group with a [Welcome](https://datatracker.ietf.org/doc/html/rfc9420#name-joining-via-welcome-message) message.
 
 ```rust
 struct WelcomeBundle {
