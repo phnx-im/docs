@@ -36,8 +36,7 @@ The QS keeps the following state.
       * **Queued messages:** A sequence of ciphertexts containing the messages in the queue. Each incoming message is [encrypted](./queuing_service/queue_encryption.md) and is assigned the current sequence number, after which the current sequence number is incremented..
       * **Blocklist salt:** Salt that is used when hashing values for the *Group blocklist*. Generated randomly by the QS upon queue creation.
       * **Blocklist:** List of salted group ID hashes that the QS should not accept messages from for this queue.
-* **Queue ID authentication key:** A symmetric key that the QS uses to MAC a queue ID. Clients have to include that MAC when they encrypt their queue ID under the Queue ID encryption key. The QS uses this key to validate queue IDs after encryption and before enqueuing a message.
-* **Queue ID encryption keypair:** [A public/private HPKE keypair](glossary.md#queueconfig-encryption-key) that clients can encrypt their queue ID and queue id MAC under before providing it to a local or federated DS.
+* **Queue ID encryption keypair:** [A public/private HPKE keypair](glossary.md#queueconfig-encryption-key) that clients can encrypt their queue ID under before providing it to a local or federated DS.
 * **QS signing key:** [A public/private signature keypair](./glossary.md#qs-signing-key) that the QS uses to sign KeyPackage bundles before returning them upon request. Also used to sign messages when forwarding them from the local DS to a remote QS.
 * **QS-to-QS queues:** A database of queues indexed by the remote QS' domain. Each queue has the same queue encryption key material attached as the client queues.
 
@@ -89,9 +88,9 @@ The receiving QS first checks the FQDNs in the `client_queue_configs` and
 [forwards the messages for remote
 QS'](./queuing_service.md#federated-qs-to-qs-communication).
 
-For all local `client_queue_configs`, the QS decrypts the ciphertext, verifies the MACs using its symmetric
-authentication key and checks if the QS client record exists. If it doesn't, it
-responds to the sending QS with the following message.
+For all local `client_queue_configs`, the QS decrypts the ciphertext and checks
+if the QS client record exists. If it doesn't, it responds to the sending QS
+with the following message.
 
 ```rust
 struct QueueDeleted {
