@@ -302,6 +302,8 @@ Register the given alias with the AS. After registration, the calling client can
 struct RegisterAlias {
   alias: Alias
   alias_auth_key: AliasAuthkey,
+  queue_encryption_key: HpkePublicKey,
+  initial_queue_ratchet_key: RatchetKey,
 }
 ```
 
