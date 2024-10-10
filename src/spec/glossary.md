@@ -83,7 +83,7 @@ struct QueueConfig {
 }
 ```
 
-The `SealedQueueConfig` is the client's `QueueConfig` encrypted using HPKE in the asymmetrically authenticated mode using the `QueueConfigEncryptionKey` of the client's QS and the client's own [QS QS client record key](glossary.md#qs-client-record-auth-key).
+The `SealedQueueConfig` is the client's `QueueConfig` encrypted using HPKE in the asymmetrically authenticated mode using the [`QueueConfigEncryptionKey`](#queueconfig-encryption-key) of the client's QS and signed using the client's own [QS client record key](glossary.md#qs-client-record-auth-key).
 
 ## Queue ID encryption key
 
@@ -124,22 +124,23 @@ struct WelcomeAttributionInfo {
 
 ## WelcomeBundle
 
-A bundle allowing a client to join a new group.
+A bundle allowing a client to join a new group with a [Welcome](https://datatracker.ietf.org/doc/html/rfc9420#name-joining-via-welcome-message) message.
 
 ```rust
 struct WelcomeBundle {
     welcome: Welcome,
     encrypted_welcome_attribution_info: Vec<u8>,
     encrypted_group_state_ear_key: Vec<u8>,
+    encrypted_credential_encryption_key: Vec<u8>,
     group_id: GroupId,
 }
 ```
 
-The WelcomeAttributionInfo is encrypted under the joining client's friendship encryption key. The group state EAR key is by the DS under the recipient's init key (contained in the recipient's KeyPackage).
+The WelcomeAttributionInfo is encrypted under the joining client's friendship encryption key. The group state EAR key is encrypted by the DS under the recipient's init key (contained in the recipient's KeyPackage).
 
 ## AddPackage
 
-A struct consisting of a KeyPackage, as well as the associated [Client Credential](authentication_service/credentials.md#client-credentials) and [Signature Encryption Key](glossary.md), where the latter is encrypted under the user's current [friendship encryption key](glossary.md#friendship-encryption-key).
+A struct consisting of a KeyPackage, the associated [Client Credential](authentication_service/credentials.md#client-credentials) encrypted under the [Friendship Encryption Key](glossary.md#friendship-encryption-key), and a freshly generated [Signature Encryption Key](glossary.md#signature-encryption-key) encrypted under the [Friendship Encryption Key](glossary.md#friendship-encryption-key).
 
 ```rust
 struct AddPackage {
@@ -163,7 +164,7 @@ A symmetric key used to encrypt information in the [Welcome Attribution Info](#w
 
 ### Friendship encryption key
 
-A symmetric key used to encrypt the client credential and the signature encryption key attached to AddPackages.
+A symmetric key used to encrypt the client credential and the [signature encryption key](glossary.html#signature-encryption-key) attached to AddPackages.
 
 ### Friendship token
 
@@ -205,10 +206,13 @@ struct FanOutMessage {
 ## Last resort extension
 
 A KeyPackage extension that marks the given KeyPackage as a [KeyPackage of last resort](https://www.ietf.org/archive/id/draft-ietf-mls-protocol-16.html#name-keypackage-reuse).
+While ordinary KeyPackages are meant to be used only once, a Last Resort
+KeyPackage is meant to be used multiple times when no further ordinary
+KeyPackages are available.
 
 ## Push-token encryption key
 
-A symmetric encryption key that a client uses to encrypt its push-token on its QS QS client record. It is part of the client's encrypted [QueueConfig](glossary.md#sealed-queue-config).
+A symmetric encryption key that a client uses to encrypt its push-token on its QS client record. It is part of the client's encrypted [QueueConfig](glossary.md#sealed-queue-config).
 
 ## QueueConfig extension
 

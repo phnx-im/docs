@@ -32,7 +32,7 @@ The AS generally keeps the following state
         * **Encryption ratchet key:** Symmetric key used to derive queue encryption keys.
       * **Current sequence number:** The current message sequence number.
       * **Queued messages:** A sequence of ciphertexts containing the messages in the queue. Each incoming message is [encrypted](./queuing_service/queue_encryption.md) and is assigned the current sequence number, after which the current sequence number is incremented.
-* **Alias entries:** Data not linked to user ids and instead indexed by [Aliass](./glossary.md#alias).
+* **Alias entries:** Data not linked to user ids and instead indexed by [Alias](./glossary.md#alias).
   * **Alias:** The Alias associated with the direct queue.
   * **Direct queue:** A queue similar to the fan-out queues on the QS. Used to enqueue encrypted [connection establishment packages](./authentication_service/connection_establishment.md).
     * **Activity time:** Timestamp indicating the month and year a client has last fetched messages from the queue.
@@ -51,9 +51,11 @@ The AS generally keeps the following state
 
 ## Authentication
 
-There are four modes of authentication for endpoints on the AS.
-
+Some endpoints do not require authentication and are marked with **None**:
 * **None:** For endpoints that are meant to be publicly accessible, e.g. user account registration
+
+There are four modes of authentication for endpoints on the AS:
+
 * **Client Credential:** A signature over a time stamp using the signature key in the calling client's ClientCredential. The request additionally contains the calling client's ClientCredential.
 * **Client Password:** An OPAQUE login flow.
 * **Client 2FA:** The same as **Client Credential**, but additionally performing an [OPAQUE](https://datatracker.ietf.org/doc/draft-irtf-cfrg-opaque/) login flow
@@ -119,6 +121,7 @@ After receiving the response, the client must call the [finish user registration
 ### Authentication
 
 * None
+* No Privacy Pass token required
 
 ## Finish user registration
 
@@ -244,7 +247,7 @@ The AS performs the following actions:
 
 ## Dequeue messages
 
-Dequeue messages from a client's direct queue, starting with the message with the given sequence number.
+Dequeue Connection Establishment messages from a client's direct queue, starting with the message with the given sequence number.
 
 ```rust
 struct DequeueMessagesParams {
@@ -265,7 +268,7 @@ The AS deletes messages older than the given sequence number and returns message
 
 ## Enqueue message
 
-Enqueue a message into a client's direct queue.
+Enqueue a Connection Establishment message into a client's direct queue.
 
 ```rust
 struct EnqueueMessageParams {
@@ -310,7 +313,7 @@ struct RegisterAlias {
 The AS performs the following actions:
 
 * Check that the alias is not already registered
-* Create a alias entry with the given alias and auth key
+* Create an alias entry with the given alias and auth key
 
 ### Authentication
 
@@ -332,7 +335,7 @@ struct DeleteAlias {
 
 ## Dequeue alias messages
 
-Dequeue messages from a alias direct queue, starting with the message with the given sequence number.
+Dequeue Connection Establishment messages from an alias direct queue, starting with the message with the given sequence number.
 
 ```rust
 struct DequeueAliasMessagesParams {
@@ -342,7 +345,7 @@ struct DequeueAliasMessagesParams {
 }
 ```
 
-The AS deletes messages older than the given sequence number and returns messages starting with the given sequence number. The maximum number of messages returned this way is the smallest of the following values.
+The AS deletes Connection Establishment messages older than the given sequence number and returns messages starting with the given sequence number. The maximum number of messages returned this way is the smallest of the following values.
 
 * The number of messages remaining in the queue
 * The value of the `max_message_number` field in the request
@@ -354,7 +357,7 @@ The AS deletes messages older than the given sequence number and returns message
 
 ## Enqueue alias messages
 
-Enqueue a message into a client's direct queue.
+Enqueue a Connection Establishment message into a client's alias queue.
 
 ```rust
 struct EnqueueAliasMessageParams {
@@ -370,7 +373,7 @@ struct EnqueueAliasMessageParams {
 
 ## Upload alias connection package payloads
 
-Upload the given [connection package payloads](authentication_service/connection_establishment.md#connection-group-creation) to the alias entry with the given alias. Note that in contrast to the similar functionality for user ids, this endpoint only takes the payloads of the connection packages as input.
+Upload the given [connection package payloads](authentication_service/connection_establishment.md#connection-group-creation) to the alias entry with the given alias. Note that in contrast to [the similar functionality for user ids](#upload-user-id-connection-packages), this endpoint only takes the **payloads** of the connection packages as input, i.e. without the ClientCredential contained in the full ConnectionPackage.
 
 ```rust
 struct UploadAliasPackages {
@@ -385,7 +388,7 @@ struct UploadAliasPackages {
 
 ## Get alias connection package
 
-Given a alias, get a [connection package](authentication_service/connection_establishment.md#connection-group-creation) for the user's client.
+Given an alias, get a [connection package](authentication_service/connection_establishment.md#connection-group-creation) for the user's client.
 
 ```rust
 struct AliasClientsParams {
@@ -436,3 +439,4 @@ If the calling client is a federated client, rate-limiting should also occur on 
 For this endpoint, the AS also accepts authentication by federated clients. If the `client_id` in the client credential indicates that the client belongs to a federated homeserver, the AS looks up the authentication key material of that client's AS using the [corresponding endpoint](./authentication_service.md#get-as-credentials), or looks the key material up in its local cache. The AS then uses that key material to verify the query.
 
 * Client Credential
+* No Privacy Pass token required (obviously, as this is about obtaining tokens)

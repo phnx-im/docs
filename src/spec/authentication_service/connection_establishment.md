@@ -10,7 +10,7 @@ The second consideration is that neither of the homeservers involved (with the i
 
 ## Connection group creation
 
-To allow connection establishment in the first place, the user's client publishes *connection packages* with the AS. Connection packages can be published both under the user's user id. Additionally, **connection package payloads** can be published under any of the user's registered aliases. As the aliases should not be associated with the user id of the creating user, or any other registered alias, the payloads lack the user's client's client credential and signature. Users also shouldn't use the same connection encryption key across multiple aliases and their user id.
+To allow connection establishment in the first place, the user's client publishes *connection packages* with the AS. Connection packages can be published either under the user's [user id](../authentication_service.html#upload-user-id-connection-packages) or any of the users' [Aliases](../authentication_service.html#upload-alias-connection-package-payloads). When published under an alias, a **connection package payload** is used rather than a full ConnectionPackage. As the aliases should not be associated with the user id of the creating user, or any other registered alias, the payloads lack the user's client's client credential and signature. Users also shouldn't use the same connection encryption key across multiple aliases and their user id.
 
 ```rust
 struct ConnectionPackagePayload {
@@ -26,7 +26,7 @@ struct ConnectionPackage {
 }
 ```
 
-When discovering a user (either by user id or user name), the initiator fetches a connection package for the user's client. The initiator then creates a new group and sends a `ConnectionEstablishmentPackage` to the responder's client.
+When discovering a user (either by [User ID](../authentication_service.html#get-user-id-connection-package) or [Alias](../authentication_service.html#get-alias-connection-package)), the initiator fetches a connection package for the user's client. The initiator then [creates a new group](../delivery_service.html#create-group) and sends a `ConnectionEstablishmentPackage` to the responder's client through either the [Alias Queue](../authentication_service.html#enqueue-alias-messages) or the [Direct User Queue](../authentication_service.html#enqueue-message).
 
 ```rust
 struct ConnectionEstablishmentPackage {
@@ -43,4 +43,4 @@ The `ConnectionEstablishmentPackage` is signed using the initiator's client cred
 
 The receiving client must verify the signature on the package and fetch the AS credential and AS intermediate credential to verify the signature chain from the initiator's client credential to the AS credential. The responder can then decide based on the sender's user name (contained in the client credential) if it wants to accept the connection.
 
-The responder accepts the connection by fetching the external commit information required to join the group from the initiator's DS and joins the group via the *join connection group* endpoint of said DS.
+The responder accepts the connection by fetching the [external commit information](../delivery_service.md#get-external-commit-information) required to join the group from the initiator's DS and joins the group via the [join connection group](../delivery_service.md#join-connection-group) endpoint of said DS.

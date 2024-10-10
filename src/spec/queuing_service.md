@@ -74,7 +74,7 @@ struct QsAuthToken {
 The verification key used to create the token depends on the sender_id:
 
 * QsUid: [QS user record auth key](./glossary.md#qs-user-record-auth-key)
-* QsCid: [QS QS client record auth key](./glossary.md#qs-client-record-auth-key)
+* QsCid: [QS client record auth key](./glossary.md#qs-client-record-auth-key)
 
 All client endpoints additionally require the client to submit a privacy pass token valid under the privacy pass public key of the AS of the same domain as the QS. The only two exceptions are the endpoints to dequeue messages and to negotiate a websocket connection.
 
