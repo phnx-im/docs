@@ -26,7 +26,7 @@ The AS generally keeps the following state
     * **Token issuance records:** A record of how many tokens were issued to the client.
     * **Connection packages:** Packages uploaded by the client and used in the [connection establishment process](authentication_service/connection_establishment.md).
     * **Direct queue:** A queue similar to the fan-out queues on the QS. Used to enqueue encrypted [connection establishment packages](./authentication_service/connection_establishment.md).
-      * **Activity time:** Timestamp indicating the last time a client has fetched messages from the queue.
+      * **Activity time:** Timestamp indicating the month and year a client has last fetched messages from the queue.
       * **Queue encryption key material:** Key material to perform [queue encryption](./queuing_service/queue_encryption.md).
         * **Queue encryption key:** HPKE public key of the queue owner
         * **Encryption ratchet key:** Symmetric key used to derive queue encryption keys.
@@ -35,7 +35,7 @@ The AS generally keeps the following state
 * **Alias entries:** Data not linked to user ids and instead indexed by [Aliass](./glossary.md#alias).
   * **Alias:** The Alias associated with the direct queue.
   * **Direct queue:** A queue similar to the fan-out queues on the QS. Used to enqueue encrypted [connection establishment packages](./authentication_service/connection_establishment.md).
-    * **Activity time:** Timestamp indicating the last time a client has fetched messages from the queue.
+    * **Activity time:** Timestamp indicating the month and year a client has last fetched messages from the queue.
     * **Queue encryption key material:** Key material to perform [queue encryption](./queuing_service/queue_encryption.md).
       * **Queue encryption key:** HPKE public key of the queue owner
       * **Encryption ratchet key:** Symmetric key used to derive queue encryption keys.
@@ -302,6 +302,8 @@ Register the given alias with the AS. After registration, the calling client can
 struct RegisterAlias {
   alias: Alias
   alias_auth_key: AliasAuthkey,
+  queue_encryption_key: HpkePublicKey,
+  initial_queue_ratchet_key: RatchetKey,
 }
 ```
 
