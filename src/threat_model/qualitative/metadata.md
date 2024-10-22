@@ -52,6 +52,8 @@ Honest-but-curious adversaries have full access to the server including its vola
 
 The main protection against honest-but-curious adversaries is that users interact with the services using per-group pseudonyms instead of their real identities. This means that the adversary cannot link any individual action of a user with the user's identity as seen by other users. The adversary can still see the metadata of messages, but cannot link them to the real identities of the users.
 
+In the federated setting, honest-but-curious adversaries can observe the individual domains of users. Even though the identity of users is hidden through pseudonyms, the domain may allow adversaries to infer partial social graphs and group structures.
+
 ## Traffic analysis
 
 Traffic analysis, i.e. the analysis of data traffic patterns, is not considered part of the threat model. While the use of network metadata can allow an adversary (be it on the server or just the network) to infer social graphs and other sensitive information, the Phoenix homeserver protocol does not aim to protect against such attacks. Instead, common countermeasures such as onion routing or the use of mixnets can be used in conjunction with the Phoenix homeserver protocol to mitigate such attacks. However, to the extent possible, the protocol avoids obvious traffic patterns such as batched queries, messages at regular intervals, etc.
