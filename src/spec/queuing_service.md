@@ -170,7 +170,11 @@ struct CreateUserRecordParams {
 }
 ```
 
-The QS creates the QS user record and QS client record, indexed by a freshly sampled QsUid and QsCid. The QS returns the following:
+Upon reception, the QS must verify that the FriendshipToken is not already
+present in an existing QS user record.
+
+The QS creates the QS user record and QS client record, indexed by a freshly
+sampled QsUid and QsCid. The QS returns the following:
 
 ```rust
 struct CreateUserRecordResponse {
@@ -190,6 +194,8 @@ struct UpdateUserRecordParams {
   friendship_token: FriendshipToken,
 }
 ```
+
+The QS must verify that the new FriendshipToken is not already present in another QS user record.
 
 ##### Authentication
 
@@ -269,6 +275,8 @@ struct AddPackageResponse {
   add_packages: Vec<AddPackage>,
 }
 ```
+
+When receiving an AddPackageResponse, the client must verify that the AddPackage is signed by the client of the expected user.
 
 ##### Authentication
 
