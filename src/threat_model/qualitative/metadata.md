@@ -23,7 +23,7 @@ For each group tracked on the DS, the SA can observe the size of the encrypted g
 
 #### Users, clients and aliases (AS)
 
-With a snapshot, the SA obtains a list of every user registered with the AS, as well as of their clients, including each client's public authentication key material (i.e. client credentials). The SA can also view a list of all aliases registered with the AS. With a sufficient number of users on a server, there is no link between aliases and user identities.
+With a snapshot, the SA obtains a list of every user registered with the AS, as well as of their clients, including each client's public authentication key material (i.e. client credentials). The SA can also view a list of all aliases registered with the AS. With a sufficient number of user accounts on a server, there is no link between aliases and user identities.
 
 For both clients and aliases, the SA can view the connection queues, as well as the number of currently enqueued messages within them (but not the content, as connection requests are encrypted).
 
@@ -38,7 +38,7 @@ The SA only has access to the data listed above. In particular, the SA does not 
 - links between identities and pseudonyms
 - links between identities and aliases
 
-Note that unlinkability between identities and pseudonyms or aliases only applies to servers with a sufficiently large number of users.
+Note that unlinkability between identities and pseudonyms or aliases only applies to servers with a sufficiently large number of user accounts.
 
 #### Client pseudonyms (QS)
 
@@ -54,7 +54,7 @@ Honest-but-curious adversaries have full access to the server including its vola
 
 The main protection against honest-but-curious adversaries is that users interact with the services using per-group pseudonyms instead of their real identities. On servers with a sufficient number of users, this prevents adversaries from linking any individual action of a user with the user's identity as seen by other users. The adversary can still see the metadata of messages, but cannot link them to the real identities of the users.
 
-In the federated setting, honest-but-curious adversaries can observe the individual domains of users. Even though the identity of users is hidden through pseudonyms, the domain may allow adversaries to infer partial social graphs and group structures.
+In the federated setting, honest-but-curious adversaries can observe the individual domain names of users. Even though the identity of users is hidden through pseudonyms, the domain name may allow adversaries to infer partial social graphs and group structures.
 
 ## Traffic analysis
 
