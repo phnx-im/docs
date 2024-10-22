@@ -42,7 +42,9 @@ The SA only has access to the data listed above. In particular, the SA does not 
 
 On the QS, the SA can observe all user pseudonyms and their associated client pseudonyms. Note that these pseudonyms are not linked to any aliases, client- or user identities.
 
-The SA can see pre-published key material (add packages) and queues for each client pseudonym. The SA can therefore also see the number of messages in each queue, but not their content due to at-rest encryption.
+The SA can see pre-published key material (add packages) and queues for each client pseudonym. The SA can therefore also see the number of messages in each queue, but not their content due to at-rest encryption. 
+
+Note that the adversary may be able to determine how active a given client pseudonym is from the number of messages in a queue. Also, despite individual message padding, the padded message size of individual messages may allow the adversary to infer information about communication patterns.
 
 ## Honest-but-curious adversaries
 
