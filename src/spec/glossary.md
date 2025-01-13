@@ -138,6 +138,8 @@ struct WelcomeBundle {
 
 The WelcomeAttributionInfo is encrypted under the joining client's friendship encryption key. The group state EAR key is encrypted by the DS under the recipient's init key (contained in the recipient's KeyPackage).
 
+When a client receives a WelcomeBundle, the recipient must verify that it has a connection with the sender of the WelcomeBundle and otherwise drop the message.
+
 ## AddPackage
 
 A struct consisting of a KeyPackage, the associated [Client Credential](authentication_service/credentials.md#client-credentials) encrypted under the [Friendship Encryption Key](glossary.md#friendship-encryption-key), and a freshly generated [Signature Encryption Key](glossary.md#signature-encryption-key) encrypted under the [Friendship Encryption Key](glossary.md#friendship-encryption-key).
