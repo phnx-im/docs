@@ -209,90 +209,83 @@ struct WelcomeInfoResponse {
 
 * DSSenderId: LeafIndex
 
+### Perform group operation
 
-### Adding new users to the group
+* Endpoint: `ENDPOINT_DS_GROUP_OPERATION`
 
-* Endpoint: `ENDPOINT_DS_ADD_USERS`
-
-Operation, where the commit contains one or more inline Add proposals containing the client(s) of one or more new users.
+Clients can use this endpoint to perform one or more operations on the group with the given GroupId.
 
 ```rust
-struct AddUsersParams {
-  commit: MlsMessage,
-  group_state_ear_key: GroupStateEarKey,
-  group_info_update: GroupInfoUpdate,
+struct WelcomeParts {
   welcome: Welcome,
-  welcome_attribution_info: Vec<WelcomeAttributionInfo>,
-  key_package: Vec<KeyPackage>,
+  encrypted_welcome_attribution_infos: Vec<Vec<u8>> // ordered like the EncryptedGroupSecrets in the welcome
 }
 
-struct AddUsersParamsAad {
-  encrypted_credential_information: Vec<Vec<u8>>
+struct GroupOperationAad{
+  new_encrypted_credential_information: Vec<Vec<u8>>,
+  encrypted_credential_information_update_option: Option<Vec<u8>>,
+}
+
+struct GroupOperation {
+  commit: MlsMessage,
+  group_state_ear_key: GroupStateEarKey,
+  group_info_update: GroupInfoUpdate,
+  welcome_parts_option: Option<WelcomeParts>,
 }
 ```
 
-The `commit` must include the `AddUserParamsAad` of all added users in the AAD of the MLSContent, where the ciphertexts in the `encrypted_credential_information` are sorted in the same way as the Add proposals in the `commit`.
+Server verification:
+* The commit MUST contain all (valid) pending proposals
+* If one or more new users are added in the commit
+  * `welcome_parts_option` MUST be `Some`
+  * There MUST be as many `encrypted_welcome_attribution_infos` as new users
+  * There MUST be as many `new_encrypted_credential_information` entries as new
+    clients added
+  * The sender MUST have sufficient privileges to add new users to the group
+  * The KeyPackages of all new clients MUST contain an extension that contains a
+    [ClientQueueConfig](./glossary.md#sealed-queue-config)
+* If one or more users are removed in the commit
+  * The sender MUST have sufficient privileges to remove users from the group
+* If the credential in the sender's leaf has changed, the
+  `encrypted_credential_information_update_option` MUST be `Some`
+* If there is encrypted client credential information in the commit's AAD, the
+  DS also updates its corresponding state
+* If the commit contains a ExternalInit proposal
+  * There MUST be two other proposals: one Add and one Remove proposal, where
+    the remove proposal targets the sender.
+  * In addition to the ExternalInit, Add and Remove proposals above, there MUST
+    NOT be other proposals than SelfRemove proposals.
+  * The credential of the sender MUST not change.
 
-This operation can only be performed by clients of users marked as *admin* and all KeyPackages have to contain an extension that contains a [ClientQueueConfig](./glossary.md#sealed-queue-config).
+Server processing:
+* If users were removed in the commit, the server removes any orphaned user
+  profiles and encrypted credential information.
+* If the `encrypted_credential_information_update_option` is `Some`, the DS uses
+  the content to updates the senders encrypted credential information.
+* If the KeyPackageRef of the updating client (prior to applying the update) is
+  in one of the *joining clients* vectors in the group's storage of old group
+  states, the DS removes that KeyPackageRef from the vector. If this leaves the
+  vector empty, the DS removes this particular copy of the group state.
+* The DS sends the `commit` to the group members by sending them on to its local
+  QS, either for it to forward the the client's federated QS or to a local
+  queue.
+* If users were added in the commit, the server sends
+  [WelcomeBundles](./glossary.md#welcomebundle) to the newly added clients
 
-The DS also has to verify that the timestamp is not older than the DS' configured maximal KeyPackage age.
-
-Finally, the DS sends the `commit` to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue. It also sends [WelcomeBundles](./glossary.md#welcomebundle) to the newly added clients.
+Client verification (the same as the server's plus the following):
+* If one or more new users are added in the commit
+  * The `encrypted_credential_information` entries MUST be decryptable using the
+    group's credential encryption key.
+  * The entries MUST be sorted like the Add proposals in the commit, where each
+    decrypted credential MUST verify the corresponding leaf credential of the
+    new user.
+* If `encrypted_credential_information_update_option` is `Some`, the content
+  MUST be decryptable using the group's credential encryption key and the
+  plaintext MUST verify the leaf credential of the sender.
 
 #### Authentication
 
 * DsSenderId: LeafIndex
-
-### Remove users
-
-* Endpoint: `ENDPOINT_DS_REMOVE_USERS`
-
-```rust
-struct RemoveUserParams {
-  commit: MlsMessage,
-  group_state_ear_key: GroupStateEarKey,
-  group_info_update: GroupInfoUpdate,
-}
-```
-
-* The commit must exclusively contain Remove proposals
-* The sending client must be a client of an admin
-* The DS validates the commit and updates its public tree
-* The DS removes the user profiles for the evicted users and the encrypted credential information of all of their clients
-* Note, that a user can't remove itself due to MLS constraints
-* Finally, the DS sends the `commit` to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.
-
-#### Authentication
-
-* DsSenderId: LeafIndex
-
-### Updating the sending client's own key material
-
-* Endpoint: `ENDPOINT_DS_UPDATE_CLIENT`
-
-```rust
-struct UpdateClientParams {
-  commit: MlsMessage,
-  group_state_ear_key: GroupStateEarKey,
-  group_info_update: GroupInfoUpdate,
-}
-
-struct UpdateClientParamsAad {
-    option_encrypted_credential_information: Option<Vec<u8>>,
-}
-```
-
-* DS validates the commit and changes its public tree
-  * The commit must contain an update path, as well as all pending proposals
-  * If the credential in the sender's KeyPackage has changed, there must be encrypted credential information in the AAD
-* If there is encrypted client credential information in the commit's AAD, the DS also updates its corresponding state
-* If a remove proposal is committed as part of the commit, the DS removes the associated client and user profiles.
-* If the KeyPackageRef of the updating client (prior to applying the update) is in one of the *joining clients* vectors in the group's storage of old group states, the DS removes that KeyPackageRef from the vector. If this leaves the vector empty, the DS removes this particular copy of the group state.
-* Finally, the DS sends the `commit` to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.
-
-#### Authentication
-
-* SenderId: LeafIndex
 
 ### Join connection group
 
@@ -316,26 +309,6 @@ struct JoinConnectionGroupParamsAad {
 
 No additional authentication is required for this endpoint. The knowledge of the group's EAR key effectively authenticates the joining client.
 
-### ReSync
-
-* Endpoint: `ENDPOINT_DS_RESYNC_CLIENT`
-
-```rust
-struct ResyncClientParams {
-  external_commit: MlsMessage,
-  group_state_ear_key: GroupStateEarKey,
-  group_info_update: GroupInfoUpdate,
-}
-```
-
-* The commit must contain exactly one Add and one Remove proposal referencing the same leaf
-* The DS validates the commit and updates its public tree
-* The leaf credential of the re-synced client must remain the same
-* Finally, the DS sends the `commit` to the group members by sending them on to its local QS, either for it to forward the the client's federated QS or to a local queue.
-
-#### Authentication
-
-* SenderId: LeafIndex
 
 ### User self remove
 
