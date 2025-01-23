@@ -19,7 +19,7 @@ publicly readable parts of each message.
 | Integrity       | The user retrieving the client information must be able to verify it                                                                                       |        |
 | Non-repudiation | Not a risk. Users must be able to discover other users anonymously                                                                                         |        |
 | Confidentiality | Not a risk as long as basic [confidentiality and authentication requirements](./../security_requirements.md#basic-confidentiality-and-authentication) hold |        |
-| Availability    | Users should be able to discover a reasonable number of users at a time. However, it must be hard to exhaust a user's AddPackages                          |        |
+| Availability    | Users should be able to discover a reasonable number of users at a time. However, it must be hard to exhaust a user's KeyPackages                          |        |
 | Authorization   | Not a risk. All users should be able to discover other users                                                                                               |        |
 | Spam prevention | Not a risk. Discovering a user should not be message sending                                                                                               |        |
 

@@ -1,4 +1,4 @@
-# Friendship tokens and Key-/AddPackage publication
+# Friendship tokens and KeyPackage publication
 
 To prevent a homeserver from learning which groups a user is a member of, the user's information on the QS and DS are pseudonymous. However, other users must be able to authenticate the user when the user's client joins a group. This would typically happen through the Credential in a client's KeyPackage. However, since the KeyPackages are published on the QS and the public trees to which the KeyPackages are added are observable by the DS, the client credential can't be included in the KeyPackage.
 
@@ -6,21 +6,19 @@ The goal of this mechanism is thus to protect the unlinkability between the user
 
 The mechanism outlined in this section does not protect against the use of traffic pattern analysis. However, it can be used in conjunction with an onion routing system or a mixnet.
 
-## Friendship keys and credential encryption
+## Friendship keys and identity links
 
 When establishing a [connection with another user](../authentication_service/connection_establishment.md), the users exchange [friendship keys](../glossary.md#friendship-keys). This set of keys includes a friendship encryption key and a friendship token. Both keys are used in the context of KeyPackage publishing.
 
 Possession of a friendship token authorizes a client to add the original owner of the token to a group. Once added to a group, all group members must be able to authenticate the newly added user via its client.
 
-However, the QS that stores the published KeyPackages to facilitate group member additions must not learn the user's identity. Thus, KeyPackages are always published as [AddPackages](../glossary.md#addpackage). An AddPackage contains a KeyPackage with a pseudonymous [leaf credential](../authentication_service/credentials.md#leaf-credentials), a [Signature Encryption Key](../glossary.md#signature-encryption-key) and the [client credential](../authentication_service/credentials.md#client-credentials), where the latter two are encrypted under the friendship encryption key. Both leaf credential and signature encryption key are generated freshly for each AddPackage.
+However, the QS that stores the published KeyPackages to facilitate group member additions must not learn the user's identity. A KeyPackage thus contains a [pseudonymous credential](../authentication_service/credentials.md#pseudonymous-credentials), which contains an identity link encrypted under a key derived from the user's friendship key. The identity link in turn contains a signature by the uploading client's client credential.
 
-The leaf credential contains a signature by the client credential. To prevent a DS from tracking leaf credentials signed by the same client credential across groups, that signature is encrypted under the signature encryption key, which in turn is also encrypted under the friendship encryption key.
+After retrieving a KeyPackage, the adding client decrypts the identity link and verifies the signature over the [PseudonymousCredential](../authentication_service/credentials.md#pseudonymous-credentials). If verification is successful, the client encrypts the identity link key under the target group's [identity link wrapper key](../delivery_service/group_state_encryption.md) before performing the actual addition.
 
-After retrieving such a AddPackage, the adding client first decrypts the encrypted client credential and signature encryption key. The client then decrypts and verifies the signature of the [LeafCredential](../authentication_service/credentials.md#leaf-credentials). If verification is successful, the client re-encrypts both the client credential and the signature encryption key under the target group's [credential encryption key](../delivery_service/group_state_encryption.md) before performing the actual addition.
+As all members of a group are in possession of the identity link wrapper key, they can decrypt both the identity link key and subsequently the identity link and thus authenticate the added client.
 
-As all members of a group are in possession of the credential encryption key, they can decrypt both client credential and signature encryption key and thus authenticate the added client.
-
-Note that neither DS nor QS are in possession of either the friendship encryption key or the credential encryption key. Both QS and DS store the intermediate client credential exclusively as ciphertexts.
+Note that neither DS nor QS are in possession of either the friendship encryption key or the identity link wrapper key.
 
 ## Welcome attribution
 

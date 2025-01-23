@@ -102,21 +102,36 @@ struct ClientCredential {
 
 When a client requests that its credential be signed by an AS, it sends the CredentialSelfSignedPayload as defined [here](./credentials.md#credential-signing-and-self-signatures).
 
-## Leaf credentials
+## Pseudonymous credentials
 
 - per-group credential
 - contains the client's pseudonymous identity for that group
 - contains an encrypted signature by the client credential
-- signature encrypted under the client's [Friendship Encryption Key](../glossary.md#friendship-encryption-key)
+- the client's ClientCredential encrypted under the client's [Friendship Encryption Key](../glossary.md#friendship-encryption-key)
 - to be used in leaves in an MLS group
 
 ```rust
-struct LeafCredential {
+struct PseudonymousCredential {
   identity: Vec<u8>,
   expiration_data: ExpirationData,
   credential_ciphersuite: CredentialCiphersuite,
   public_key: PublicSignatureKey,
   signer_fingerprint: CredentialFingerprint,
-  encrypted_signature: Vec<u8>,
+  identity_link_ciphertext: Vec<u8>,
+}
+
+struct PseudonymousCredentialTBS {
+  identity: Vec<u8>,
+  expiration_data: ExpirationData,
+  credential_ciphersuite: CredentialCiphersuite,
+  public_key: PublicSignatureKey,
+  signer_fingerprint: CredentialFingerprint,
+}
+
+struct IdentityLinkTBE {
+  /* SignWithLabel(., "PseudonymousCredentialTBS",
+    PseudonymousCredentialTBS) */
+  signature: Signature,
+  client_credential: ClientCredential,
 }
 ```

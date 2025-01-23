@@ -20,12 +20,12 @@ client interacts with its homeserver, or other, federated instances.
 * Pseudonymous client id
 * Client record auth key
 * QS User record auth key
-* Own AddPackages (and private keys)
+* Own KeyPackages (and private keys)
 * Connection establishment KeyPackage (and private keys)
 * For each group:
   * MLS group state
   * group state EAR key
-  * credential encryption key
+  * identity link wrapper key
 * For each connected user:
   * friendship token
   * friendship encryption key

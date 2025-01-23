@@ -107,7 +107,7 @@ Encrypted under the recipient's friendship encryption key. The TBS has to be sig
 ```rust
 struct WelcomeAttributionInfoPayload {
     sender_client_id: ClientId,
-    group_credential_encryption_key: GroupCredentialEarKey,
+    group_identity_link_wrapper_key: IdentityLinkWrapperKey,
 }
 
 struct WelcomeAttributionInfoTbs {
@@ -131,7 +131,7 @@ struct WelcomeBundle {
     welcome: Welcome,
     encrypted_welcome_attribution_info: Vec<u8>,
     encrypted_group_state_ear_key: Vec<u8>,
-    encrypted_credential_encryption_key: Vec<u8>,
+    encrypted_identity_link_wrapper_key: Vec<u8>,
     group_id: GroupId,
 }
 ```
@@ -140,21 +140,9 @@ The WelcomeAttributionInfo is encrypted under the joining client's friendship en
 
 When a client receives a WelcomeBundle, the recipient must verify that it has a connection with the sender of the WelcomeBundle and otherwise drop the message.
 
-## AddPackage
+### Identity link key
 
-A struct consisting of a KeyPackage, the associated [Client Credential](authentication_service/credentials.md#client-credentials) encrypted under the [Friendship Encryption Key](glossary.md#friendship-encryption-key), and a freshly generated [Signature Encryption Key](glossary.md#signature-encryption-key) encrypted under the [Friendship Encryption Key](glossary.md#friendship-encryption-key).
-
-```rust
-struct AddPackage {
-    key_package: KeyPackage,
-    encrypted_client_credential: Vec<u8>,
-    encrypted_signature_encryption_key: Vec<u8>,
-}
-```
-
-### Signature encryption key
-
-The signature encryption key is used to encrypt the signature in LeafCredentials. These signatures are encrypted to prevent the DS from linking LeafCredentials across groups. Before an AddPackage is used in the context of a group, the inviting client decrypts the signature encryption key and re-encrypts it under the group's credential encryption key. See [here](./queuing_service/keypackage_publication.md#friendship-keys-and-credential-encryption) for more information.
+The identity link key is used to encrypt the identity link in PseudonymousCredentials. Identity links are encrypted to prevent the DS from linking PseudonymousCredentials across groups and with individual ClientCredentials. Before a KeyPackage is used in the context of a group, the inviting client derives the identity link key from the new client's connection key and encrypts it under the group's identity link wrapper key. See [here](./queuing_service/keypackage_publication.md#friendship-keys-and-identity-links) for more information.
 
 ## Friendship keys
 
@@ -166,7 +154,18 @@ A symmetric key used to encrypt information in the [Welcome Attribution Info](#w
 
 ### Friendship encryption key
 
-A symmetric key used to encrypt the client credential and the [signature encryption key](glossary.html#signature-encryption-key) attached to AddPackages.
+A symmetric key used to by a user's contacts to encrypt [welcome attribution infos](./glossary.md#welcome-attribution-info).
+
+### Connection key
+
+A key to derive [identity link keys](./glossary.md#identity-link-key) for the PseudonymousCredentials of a client.
+
+A new identity link key is derived as follows:
+
+```c
+identity_link_key = ExpandWithLabel(connection_key,
+  "IdentityLinkKey", PseudonymousCredentialTBS, KDF.Nh)
+```
 
 ### Friendship token
 

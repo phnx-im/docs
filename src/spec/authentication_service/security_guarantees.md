@@ -6,7 +6,7 @@ This section outlines how the Phoenix homeserver protocol facilitates end-to-end
 
 The authentication system consists of the authentication services (AS’, one operated by each homeserver operator), which act as a trusted third party for their respective homeserver, and a validation module run on each client. For more information on the consequences of a malicious or compromised AS, see [here](../../threat_model/qualitative/authentication_service.md).
 
-The AS of a homeserver issues client credentials its users’ clients. The clients can then use the credentials to sign the leaf credentials used in each of their groups or in their pre-published MLS KeyPackages. The leaf credentials are then used to sign messages as per the MLS specification.
+The AS of a homeserver issues client credentials its users’ clients. The clients can then use the credentials to sign pseudonymous credentials used in each of their groups or in their pre-published MLS KeyPackages. The pseudonymous credentials are then used to sign messages as per the MLS specification.
 
 When a client receives a message from another client, it performs the following validation steps:
 
