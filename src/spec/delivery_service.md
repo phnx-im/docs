@@ -216,7 +216,7 @@ struct WelcomeInfoResponse {
 Clients can use this endpoint to perform one or more operations on the group with the given GroupId.
 
 ```rust
-struct WelcomeParts {
+struct AddUsersInfo {
   welcome: Welcome,
   encrypted_welcome_attribution_infos: Vec<Vec<u8>> // ordered like the EncryptedGroupSecrets in the welcome
 }
@@ -230,20 +230,22 @@ struct GroupOperation {
   commit: MlsMessage,
   group_state_ear_key: GroupStateEarKey,
   group_info_update: GroupInfoUpdate,
-  welcome_parts_option: Option<WelcomeParts>,
+  add_users_info_option: Option<AddUsersInfo>,
 }
 ```
 
 Server verification:
 * The commit MUST contain all (valid) pending proposals
 * If one or more new users are added in the commit
-  * `welcome_parts_option` MUST be `Some`
+  * `add_users_info_option` MUST be `Some`
   * There MUST be as many `encrypted_welcome_attribution_infos` as new users
   * There MUST be as many `new_encrypted_credential_information` entries as new
     clients added
   * The sender MUST have sufficient privileges to add new users to the group
   * The KeyPackages of all new clients MUST contain an extension that contains a
     [ClientQueueConfig](./glossary.md#sealed-queue-config)
+  * There MUST be an EncryptedGroupSecrets entry in the Welcome for each added
+    client
 * If one or more users are removed in the commit
   * The sender MUST have sufficient privileges to remove users from the group
 * If the credential in the sender's leaf has changed, the
@@ -251,10 +253,8 @@ Server verification:
 * If there is encrypted client credential information in the commit's AAD, the
   DS also updates its corresponding state
 * If the commit contains a ExternalInit proposal
-  * There MUST be two other proposals: one Add and one Remove proposal, where
-    the remove proposal targets the sender.
-  * In addition to the ExternalInit, Add and Remove proposals above, there MUST
-    NOT be other proposals than SelfRemove proposals.
+  * There MUST be a Remove proposal, where the remove proposal targets the
+    sender.
   * The credential of the sender MUST not change.
 
 Server processing:
