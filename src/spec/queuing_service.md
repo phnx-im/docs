@@ -241,14 +241,14 @@ struct DeleteUserRecordParams {
 
 #### Publish KeyPackages
 
-Publish the given [AddPackage](glossary.md#addpackage) under the given QsCid.
+Publish the given KeyPackage under the given QsCid.
 
-All of the KeyPackages contained in the AddPackages have to contain a [QueueConfigExtension](glossary.md#queueconfig-extension) and at least one of the AddPackage has to contain a KeyPackage marked as [KeyPackage of last resort](glossary.md#last-resort-extension).
+All of the KeyPackages have to contain a [QueueConfigExtension](glossary.md#queueconfig-extension) and at least one of the KeyPackages has to be marked as [KeyPackage of last resort](glossary.md#last-resort-extension).
 
 ```rust
 struct PublishKeyPackagesParams {
   qs_cid: QsCid,
-  add_packages: Vec<AddPackage>,
+  key_packages: Vec<KeyPackage>,
 }
 ```
 
@@ -258,25 +258,25 @@ The QS deletes all existing KeyPackages before publishing the new ones.
 
 * QsSenderId: QsCid
 
-#### Get AddPackage
+#### Get KeyPackage
 
 Get a KeyPackage of the user with the given friendship token.
 
 ```rust
-struct AddPackageParams {
+struct KeyPackageParams {
   friendship_token: FriendshipToken,
 }
 ```
 
-The QS checks if there is a QS user record with the given [FriendshipToken](glossary.md#friendship-token) and returns an [AddPackage](glossary.md#addpackage) of the matching user's client.
+The QS checks if there is a QS user record with the given [FriendshipToken](glossary.md#friendship-token) and returns a KeyPackage of the matching user's client.
 
 ```rust
-struct AddPackageResponse {
-  add_packages: Vec<AddPackage>,
+struct KeyPackageResponse {
+  key_packages: Vec<KeyPackage>,
 }
 ```
 
-When receiving an AddPackageResponse, the client must verify that the AddPackage is signed by the client of the expected user.
+When receiving a KeyPackageResponse, the client must verify that the KeyPackage is signed by the client of the expected user.
 
 ##### Authentication
 

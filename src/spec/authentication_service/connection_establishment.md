@@ -33,7 +33,7 @@ struct ConnectionEstablishmentPackage {
     sender_client_credential: ClientCredential,
     connection_group_id: GroupId,
     connection_group_ear_key: GroupStateEarKey,
-    connection_group_credential_key: CredentialEarKey,
+    connection_group_credential_key: IdentityLinkWrapperKey,
     // TBS: All information above signed by the ClientCredential.
     signature: Signature,
 }

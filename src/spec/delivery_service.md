@@ -309,7 +309,6 @@ struct JoinConnectionGroupParamsAad {
 
 No additional authentication is required for this endpoint. The knowledge of the group's EAR key effectively authenticates the joining client.
 
-
 ### User self remove
 
 * Endpoint: `ENDPOINT_DS_SELF_REMOVE_USER`
